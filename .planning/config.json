@@ -1,0 +1,118 @@
+{
+  "project": {
+    "name": "ai-job-bot",
+    "display_name": "AI Job Bot — Telegram Mini App",
+    "created_at": "2026-04-16",
+    "owner": "Vadym Melnychenko",
+    "contact": "melnicenkovadik@gmail.com",
+    "repo_root": "/Users/vadymmelnychenko/Projects/ai-job-bot",
+    "plan_file": "~/.claude/plans/effervescent-wibbling-breeze.md"
+  },
+  "workflow": {
+    "mode": "quality-first",
+    "deadline": null,
+    "tdd_enforced_in": ["packages/core"],
+    "per_phase_ritual_required": true,
+    "commit_style": "conventional",
+    "language": {
+      "communication": "ru",
+      "code": "en",
+      "commits": "en"
+    }
+  },
+  "ui": {
+    "design_tool": "frontend-design:frontend-design",
+    "figma": false,
+    "ui_phase_for": [2, 3, 5],
+    "ui_review_for": [6],
+    "responsive_contract_enforced_from_phase": 1,
+    "visual_regression": {
+      "viewports": [320, 360, 390, 768, 1280],
+      "themes": ["light", "dark"],
+      "locales_stressed": ["en", "ru", "x-loud"]
+    }
+  },
+  "i18n": {
+    "locales": ["en", "uk", "ru", "it", "pl"],
+    "default": "en",
+    "auto_detect_from_telegram": true,
+    "override_in_settings": true,
+    "wrap_first": true,
+    "translation_phase": 6
+  },
+  "payments": {
+    "primary": "telegram_stars",
+    "secondary": "ton_connect",
+    "deferred": ["stripe"],
+    "pricing": "pay_per_run"
+  },
+  "data": {
+    "db": "supabase_postgres",
+    "shared_with_downstream": true,
+    "mini_app_writes": true,
+    "downstream_reads_via_view": "v_paid_campaigns_for_worker",
+    "snapshot_immutable_after_paid": true,
+    "snapshot_schema_version": 1
+  },
+  "categories": {
+    "fixed_enum": [
+      "tech",
+      "design",
+      "marketing",
+      "sales",
+      "product",
+      "finance",
+      "hr",
+      "support",
+      "content",
+      "ops",
+      "data",
+      "web3"
+    ],
+    "taxonomy": "esco",
+    "max_target_roles_per_campaign": 5,
+    "one_category_per_campaign": true
+  },
+  "documentation": {
+    "per_feature_doc_required": true,
+    "adr_on_irreversible_decisions": true,
+    "changelog_per_phase": true,
+    "project_map_maintained": true,
+    "session_log_appended": true
+  },
+  "testing": {
+    "tdd_core": true,
+    "unit": "vitest",
+    "integration": "vitest + supabase_local",
+    "e2e": "playwright",
+    "visual_regression": "playwright",
+    "property_based": "fast-check"
+  },
+  "architecture": {
+    "style": "clean_architecture",
+    "monorepo": "pnpm_workspaces + turborepo",
+    "layers": ["domain", "application", "infrastructure", "presentation"],
+    "boundary_enforcement": "biome_no_restricted_imports"
+  },
+  "state_management": {
+    "server_state": "tanstack_query",
+    "client_state_narrow": "zustand",
+    "zustand_scope": "campaign_wizard_draft_only",
+    "form_state": "react_hook_form",
+    "navigation_state": "url_params",
+    "telegram_sdk_state": "sdk_signals"
+  },
+  "phases": {
+    "count": 8,
+    "names": [
+      "Bootstrap & scaffolding",
+      "Bot + Mini App skeleton + auth",
+      "Profile + AI resume parse (multi-profile)",
+      "Campaign wizard (data model + flow)",
+      "Payments — Stars + TON",
+      "Dashboard & notifications",
+      "i18n + a11y + theme polish",
+      "Production hardening & handoff"
+    ]
+  }
+}
