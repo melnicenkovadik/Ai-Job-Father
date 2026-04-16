@@ -1,0 +1,25 @@
+{
+  "home": {
+    "greeting": "[UK] Hi, {name}!",
+    "description": "[UK] AI Job Bot helps you find the right role — across tech, design, marketing, and more.",
+    "cta": {
+      "create_campaign": "[UK] Create a campaign"
+    }
+  },
+  "auth": {
+    "loading": "[UK] Authenticating...",
+    "error": {
+      "generic": "[UK] Something went wrong. Tap Retry.",
+      "missing_init_data": "[UK] Please open this app from Telegram.",
+      "stale_init_data": "[UK] Session expired. Reloading...",
+      "invalid_signature": "[UK] Invalid Telegram session.",
+      "malformed_init_data": "[UK] Malformed session data."
+    },
+    "retry": "[UK] Retry"
+  },
+  "common": {
+    "loading": "[UK] Loading...",
+    "error": "[UK] Something went wrong",
+    "retry": "[UK] Retry"
+  }
+}

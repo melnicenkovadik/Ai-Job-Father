@@ -1,0 +1,25 @@
+{
+  "home": {
+    "greeting": "Hi, {name}!",
+    "description": "AI Job Bot helps you find the right role — across tech, design, marketing, and more.",
+    "cta": {
+      "create_campaign": "Create a campaign"
+    }
+  },
+  "auth": {
+    "loading": "Authenticating...",
+    "error": {
+      "generic": "Something went wrong. Tap Retry.",
+      "missing_init_data": "Please open this app from Telegram.",
+      "stale_init_data": "Session expired. Reloading...",
+      "invalid_signature": "Invalid Telegram session.",
+      "malformed_init_data": "Malformed session data."
+    },
+    "retry": "Retry"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "retry": "Retry"
+  }
+}

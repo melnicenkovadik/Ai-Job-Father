@@ -1,0 +1,25 @@
+{
+  "home": {
+    "greeting": "[RU] Hi, {name}!",
+    "description": "[RU] AI Job Bot helps you find the right role — across tech, design, marketing, and more.",
+    "cta": {
+      "create_campaign": "[RU] Create a campaign"
+    }
+  },
+  "auth": {
+    "loading": "[RU] Authenticating...",
+    "error": {
+      "generic": "[RU] Something went wrong. Tap Retry.",
+      "missing_init_data": "[RU] Please open this app from Telegram.",
+      "stale_init_data": "[RU] Session expired. Reloading...",
+      "invalid_signature": "[RU] Invalid Telegram session.",
+      "malformed_init_data": "[RU] Malformed session data."
+    },
+    "retry": "[RU] Retry"
+  },
+  "common": {
+    "loading": "[RU] Loading...",
+    "error": "[RU] Something went wrong",
+    "retry": "[RU] Retry"
+  }
+}

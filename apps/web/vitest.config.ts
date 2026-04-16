@@ -14,7 +14,12 @@ export default defineConfig({
     },
   },
   test: {
-    include: ['lib/**/*.test.ts', 'components/**/*.test.{ts,tsx}', 'features/**/*.test.{ts,tsx}'],
+    include: [
+      'lib/**/*.test.ts',
+      'components/**/*.test.{ts,tsx}',
+      'features/**/*.test.{ts,tsx}',
+      'messages/**/*.test.ts',
+    ],
     environment: 'node',
     setupFiles: [],
   },
