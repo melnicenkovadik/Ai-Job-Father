@@ -4,13 +4,14 @@ import { z } from 'zod';
 export const env = createEnv({
   server: {
     NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
-    // Phase 1 — Supabase + Telegram
-    SUPABASE_URL: z.string().url().optional(),
-    SUPABASE_ANON_KEY: z.string().optional(),
-    SUPABASE_SERVICE_ROLE_KEY: z.string().optional(),
-    SUPABASE_JWT_SECRET: z.string().optional(),
-    TELEGRAM_BOT_TOKEN: z.string().optional(),
-    TELEGRAM_WEBHOOK_SECRET_TOKEN: z.string().optional(),
+    // Phase 1 — Supabase
+    SUPABASE_URL: z.string().url(),
+    SUPABASE_ANON_KEY: z.string().min(1),
+    SUPABASE_SERVICE_ROLE_KEY: z.string().min(1),
+    SUPABASE_JWT_SECRET: z.string().min(1),
+    // Phase 1 — Telegram
+    TELEGRAM_BOT_TOKEN: z.string().min(1),
+    TELEGRAM_WEBHOOK_SECRET_TOKEN: z.string().min(1),
     // Phase 2 — AI
     ANTHROPIC_API_KEY: z.string().optional(),
     ANTHROPIC_MODEL: z.string().default('claude-sonnet-4-5'),
@@ -27,9 +28,9 @@ export const env = createEnv({
   },
   client: {
     NEXT_PUBLIC_APP_URL: z.string().url().optional(),
-    NEXT_PUBLIC_MINI_APP_URL: z.string().url().optional(),
-    NEXT_PUBLIC_SUPABASE_URL: z.string().url().optional(),
-    NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().optional(),
+    NEXT_PUBLIC_MINI_APP_URL: z.string().url(),
+    NEXT_PUBLIC_SUPABASE_URL: z.string().url(),
+    NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1),
     NEXT_PUBLIC_SENTRY_DSN: z.string().optional(),
     NEXT_PUBLIC_TONCONNECT_MANIFEST_URL: z.string().url().optional(),
   },
