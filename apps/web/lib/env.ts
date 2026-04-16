@@ -1,0 +1,62 @@
+import { createEnv } from '@t3-oss/env-nextjs';
+import { z } from 'zod';
+
+export const env = createEnv({
+  server: {
+    NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
+    // Phase 1 — Supabase + Telegram
+    SUPABASE_URL: z.string().url().optional(),
+    SUPABASE_ANON_KEY: z.string().optional(),
+    SUPABASE_SERVICE_ROLE_KEY: z.string().optional(),
+    SUPABASE_JWT_SECRET: z.string().optional(),
+    TELEGRAM_BOT_TOKEN: z.string().optional(),
+    TELEGRAM_WEBHOOK_SECRET_TOKEN: z.string().optional(),
+    // Phase 2 — AI
+    ANTHROPIC_API_KEY: z.string().optional(),
+    ANTHROPIC_MODEL: z.string().default('claude-sonnet-4-5'),
+    // Phase 3 — ESCO
+    ESCO_API_BASE: z.string().url().default('https://ec.europa.eu/esco/api'),
+    // Phase 4 — TON
+    TON_API_KEY: z.string().optional(),
+    TON_NETWORK: z.enum(['testnet', 'mainnet']).default('testnet'),
+    TON_MANIFEST_URL: z.string().url().optional(),
+    TON_PAYMENT_RECIPIENT_ADDRESS: z.string().optional(),
+    // Phase 7 — Observability
+    SENTRY_DSN: z.string().optional(),
+    SENTRY_AUTH_TOKEN: z.string().optional(),
+  },
+  client: {
+    NEXT_PUBLIC_APP_URL: z.string().url().optional(),
+    NEXT_PUBLIC_MINI_APP_URL: z.string().url().optional(),
+    NEXT_PUBLIC_SUPABASE_URL: z.string().url().optional(),
+    NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().optional(),
+    NEXT_PUBLIC_SENTRY_DSN: z.string().optional(),
+    NEXT_PUBLIC_TONCONNECT_MANIFEST_URL: z.string().url().optional(),
+  },
+  runtimeEnv: {
+    NODE_ENV: process.env.NODE_ENV,
+    SUPABASE_URL: process.env.SUPABASE_URL,
+    SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY,
+    SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
+    SUPABASE_JWT_SECRET: process.env.SUPABASE_JWT_SECRET,
+    TELEGRAM_BOT_TOKEN: process.env.TELEGRAM_BOT_TOKEN,
+    TELEGRAM_WEBHOOK_SECRET_TOKEN: process.env.TELEGRAM_WEBHOOK_SECRET_TOKEN,
+    ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY,
+    ANTHROPIC_MODEL: process.env.ANTHROPIC_MODEL,
+    ESCO_API_BASE: process.env.ESCO_API_BASE,
+    TON_API_KEY: process.env.TON_API_KEY,
+    TON_NETWORK: process.env.TON_NETWORK,
+    TON_MANIFEST_URL: process.env.TON_MANIFEST_URL,
+    TON_PAYMENT_RECIPIENT_ADDRESS: process.env.TON_PAYMENT_RECIPIENT_ADDRESS,
+    SENTRY_DSN: process.env.SENTRY_DSN,
+    SENTRY_AUTH_TOKEN: process.env.SENTRY_AUTH_TOKEN,
+    NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
+    NEXT_PUBLIC_MINI_APP_URL: process.env.NEXT_PUBLIC_MINI_APP_URL,
+    NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
+    NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    NEXT_PUBLIC_SENTRY_DSN: process.env.NEXT_PUBLIC_SENTRY_DSN,
+    NEXT_PUBLIC_TONCONNECT_MANIFEST_URL: process.env.NEXT_PUBLIC_TONCONNECT_MANIFEST_URL,
+  },
+  emptyStringAsUndefined: true,
+  skipValidation: process.env.SKIP_ENV_VALIDATION === '1',
+});
