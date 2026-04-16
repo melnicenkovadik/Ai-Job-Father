@@ -1,0 +1,93 @@
+{
+  "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
+  "files": {
+    "ignoreUnknown": true,
+    "ignore": [
+      ".next",
+      "node_modules",
+      ".turbo",
+      "dist",
+      ".vercel",
+      "playwright-report",
+      "test-results",
+      "packages/db/supabase/.temp",
+      "packages/db/supabase/.branches",
+      "pnpm-lock.yaml",
+      "packages/db/types/generated.ts",
+      "**/.next/**",
+      "**/node_modules/**",
+      "**/dist/**"
+    ]
+  },
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineWidth": 100
+  },
+  "organizeImports": {
+    "enabled": true
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true
+    }
+  },
+  "javascript": {
+    "formatter": {
+      "quoteStyle": "single",
+      "semicolons": "always",
+      "trailingCommas": "all"
+    }
+  },
+  "json": {
+    "formatter": {
+      "trailingCommas": "none"
+    }
+  },
+  "overrides": [
+    {
+      "include": ["packages/core/**/*.ts"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "paths": {
+                  "next": "packages/core is framework-free — move framework code to apps/web/lib",
+                  "next/headers": "packages/core is framework-free — move to apps/web/lib",
+                  "next/server": "packages/core is framework-free — move to apps/web/lib",
+                  "react": "packages/core must not depend on React — UI lives in apps/web",
+                  "react-dom": "packages/core must not depend on React — UI lives in apps/web",
+                  "@supabase/supabase-js": "packages/core must not import infrastructure — use a port + adapter",
+                  "@supabase/ssr": "packages/core must not import infrastructure — use a port + adapter",
+                  "@anthropic-ai/sdk": "packages/core must not import infrastructure — use a port + adapter",
+                  "grammy": "packages/core must not import infrastructure — use a port + adapter",
+                  "@tonconnect/ui-react": "packages/core must not import UI or infrastructure",
+                  "@tonconnect/sdk": "packages/core must not import infrastructure — use a port + adapter",
+                  "@telegram-apps/sdk-react": "packages/core must not import UI",
+                  "@telegram-apps/sdk": "packages/core must not import infrastructure — use a port + adapter"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "include": ["apps/web/**/*.{ts,tsx}"],
+      "linter": {
+        "rules": {
+          "recommended": true
+        }
+      }
+    }
+  ]
+}
