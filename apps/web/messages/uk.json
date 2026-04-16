@@ -2,6 +2,8 @@
   "home": {
     "greeting": "[UK] Hi, {name}!",
     "description": "[UK] AI Job Bot helps you find the right role — across tech, design, marketing, and more.",
+    "fallbackName": "[UK] friend",
+    "phaseNote": "[UK] Phase 1 skeleton. Profile, campaign wizard and payments land in the next phases.",
     "cta": {
       "create_campaign": "[UK] Create a campaign"
     }

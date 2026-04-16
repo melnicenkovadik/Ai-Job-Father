@@ -2,6 +2,8 @@
   "home": {
     "greeting": "[PL] Hi, {name}!",
     "description": "[PL] AI Job Bot helps you find the right role — across tech, design, marketing, and more.",
+    "fallbackName": "[PL] friend",
+    "phaseNote": "[PL] Phase 1 skeleton. Profile, campaign wizard and payments land in the next phases.",
     "cta": {
       "create_campaign": "[PL] Create a campaign"
     }
