@@ -21,7 +21,9 @@
       "packages/db/types/generated.ts",
       "**/.next/**",
       "**/node_modules/**",
-      "**/dist/**"
+      "**/dist/**",
+      ".planning",
+      ".claude"
     ]
   },
   "formatter": {
@@ -56,7 +58,7 @@
       "include": ["packages/core/**/*.ts"],
       "linter": {
         "rules": {
-          "style": {
+          "nursery": {
             "noRestrictedImports": {
               "level": "error",
               "options": {
