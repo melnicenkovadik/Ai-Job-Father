@@ -1,6 +1,6 @@
-import { detectLocale, SUPPORTED_LOCALES, type Locale } from '@ai-job-bot/core';
-import { cookies, headers } from 'next/headers';
+import { type Locale, SUPPORTED_LOCALES, detectLocale } from '@ai-job-bot/core';
 import { getRequestConfig } from 'next-intl/server';
+import { cookies, headers } from 'next/headers';
 
 /**
  * Locale priority (first match wins):

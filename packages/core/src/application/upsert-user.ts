@@ -1,4 +1,4 @@
-import { detectLocale, type Locale } from '../domain/locale';
+import { type Locale, detectLocale } from '../domain/locale';
 import { TelegramId, type User } from '../domain/user';
 import type { UserRepo } from './ports/user-repo';
 
@@ -24,10 +24,7 @@ export interface UpsertUserCommand {
  * On subsequent upserts, persisted locale is preserved — user's explicit choice
  * (Phase 5 settings) wins, not whatever device they last opened the app on.
  */
-export async function upsertUser(
-  cmd: UpsertUserCommand,
-  deps: UpsertUserDeps,
-): Promise<User> {
+export async function upsertUser(cmd: UpsertUserCommand, deps: UpsertUserDeps): Promise<User> {
   const telegramId = TelegramId.from(cmd.telegramId);
   const existing = await deps.userRepo.findByTelegramId(telegramId);
   const locale: Locale = existing?.locale ?? detectLocale(cmd.languageCode);

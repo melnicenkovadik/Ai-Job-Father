@@ -1,3 +1,4 @@
+import { resolve } from 'node:path';
 /**
  * Register the Telegram webhook against the Mini App deployment.
  * Usage: `pnpm set-webhook` (reads env from `.env.local` or process env).
@@ -6,7 +7,6 @@
  */
 import { config as loadDotenv } from 'dotenv';
 import { Bot } from 'grammy';
-import { resolve } from 'node:path';
 
 loadDotenv({ path: resolve(process.cwd(), '.env.local') });
 
@@ -14,8 +14,7 @@ function requireEnv(name: string): string {
   const value = process.env[name];
   if (!value) {
     console.error(
-      `Missing env var ${name}. Set TELEGRAM_BOT_TOKEN, TELEGRAM_WEBHOOK_SECRET_TOKEN, ` +
-        'and NEXT_PUBLIC_MINI_APP_URL in .env.local (public HTTPS URL).',
+      `Missing env var ${name}. Set TELEGRAM_BOT_TOKEN, TELEGRAM_WEBHOOK_SECRET_TOKEN, and NEXT_PUBLIC_MINI_APP_URL in .env.local (public HTTPS URL).`,
     );
     process.exit(1);
   }

@@ -1,5 +1,5 @@
-import * as React from 'react';
 import { cn } from '@/lib/cn';
+import type * as React from 'react';
 
 export interface FieldGroupProps {
   label: React.ReactNode;
@@ -18,10 +18,7 @@ export interface FieldGroupProps {
 export function FieldGroup({ label, hint, error, id, className, children }: FieldGroupProps) {
   return (
     <div className={cn('flex min-w-0 flex-col gap-1', className)}>
-      <label
-        htmlFor={id}
-        className="text-sm font-medium [overflow-wrap:anywhere]"
-      >
+      <label htmlFor={id} className="text-sm font-medium [overflow-wrap:anywhere]">
         {label}
       </label>
       {children}

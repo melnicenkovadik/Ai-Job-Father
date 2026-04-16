@@ -1,4 +1,4 @@
-import { clsx, type ClassValue } from 'clsx';
+import { type ClassValue, clsx } from 'clsx';
 
 /**
  * Thin wrapper around clsx. If tailwind-merge becomes necessary to deduplicate

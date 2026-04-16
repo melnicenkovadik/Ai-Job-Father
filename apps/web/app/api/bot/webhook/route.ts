@@ -1,9 +1,9 @@
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-import { webhookCallback } from 'grammy';
-import { bot } from '@/lib/telegram/bot';
 import { env } from '@/lib/env';
+import { bot } from '@/lib/telegram/bot';
+import { webhookCallback } from 'grammy';
 
 // `secretToken` makes grammY reject any POST missing the
 // `X-Telegram-Bot-Api-Secret-Token` header (R-1.7).

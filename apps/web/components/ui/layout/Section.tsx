@@ -1,5 +1,5 @@
-import * as React from 'react';
 import { cn } from '@/lib/cn';
+import * as React from 'react';
 import { Stack } from './Stack';
 
 export interface SectionProps extends Omit<React.HTMLAttributes<HTMLElement>, 'title'> {

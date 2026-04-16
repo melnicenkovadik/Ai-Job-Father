@@ -65,10 +65,7 @@ export interface VerifyInitDataOptions {
  * 6. `timingSafeEqual(computed, hash)`.
  * 7. Check `auth_date` freshness against `nowSeconds() - maxAgeSeconds`.
  */
-export function verifyInitData(
-  rawInitData: string,
-  opts: VerifyInitDataOptions,
-): VerifiedInitData {
+export function verifyInitData(rawInitData: string, opts: VerifyInitDataOptions): VerifiedInitData {
   if (typeof rawInitData !== 'string' || rawInitData.length === 0) {
     throw new MalformedInitDataError('empty');
   }

@@ -1,5 +1,5 @@
-import * as React from 'react';
 import { cn } from '@/lib/cn';
+import * as React from 'react';
 
 export interface ScreenProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Reserve 96px bottom padding for Telegram MainButton (R-13.8). Default true. */

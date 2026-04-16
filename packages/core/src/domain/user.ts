@@ -5,7 +5,7 @@
  * via `User.rehydrate(...)` after loading rows or verifying initData.
  */
 
-import { isLocale, type Locale } from './locale';
+import { type Locale, isLocale } from './locale';
 
 export class DomainError extends Error {
   constructor(message: string) {

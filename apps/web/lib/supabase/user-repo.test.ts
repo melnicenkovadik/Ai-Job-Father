@@ -1,5 +1,5 @@
-import { createClient } from '@supabase/supabase-js';
 import { TelegramId } from '@ai-job-bot/core';
+import { createClient } from '@supabase/supabase-js';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import type { Database } from './types';
 import { SupabaseUserRepo } from './user-repo';

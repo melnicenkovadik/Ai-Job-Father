@@ -1,5 +1,5 @@
-import * as React from 'react';
 import { cn } from '@/lib/cn';
+import * as React from 'react';
 import type { Gap } from './Stack';
 
 export interface RowProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -39,10 +39,7 @@ const JUSTIFY_CLASS: Record<NonNullable<RowProps['justify']>, string> = {
  * so truncation works predictably.
  */
 export const Row = React.forwardRef<HTMLDivElement, RowProps>(
-  (
-    { className, gap = 3, align = 'center', justify = 'start', wrap = false, ...rest },
-    ref,
-  ) => (
+  ({ className, gap = 3, align = 'center', justify = 'start', wrap = false, ...rest }, ref) => (
     <div
       ref={ref}
       className={cn(

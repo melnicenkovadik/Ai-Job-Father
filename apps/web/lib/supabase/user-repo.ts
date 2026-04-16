@@ -1,14 +1,14 @@
 import 'server-only';
-import type { SupabaseClient } from '@supabase/supabase-js';
 import {
-  isLocale,
   type Locale,
   TelegramId,
+  type UpsertUserInput,
   User,
   UserId,
-  type UpsertUserInput,
   type UserRepo,
+  isLocale,
 } from '@ai-job-bot/core';
+import type { SupabaseClient } from '@supabase/supabase-js';
 import type { Database, UserRow } from './types';
 
 /**

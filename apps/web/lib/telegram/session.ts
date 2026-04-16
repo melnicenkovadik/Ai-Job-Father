@@ -1,10 +1,10 @@
 import 'server-only';
-import { upsertUser, type User } from '@ai-job-bot/core';
-import { env } from '../env';
+import { type User, upsertUser } from '@ai-job-bot/core';
 import { signSupabaseJwt } from '../auth/jwt';
+import { env } from '../env';
 import { createServiceRoleClient } from '../supabase/server';
 import { SupabaseUserRepo } from '../supabase/user-repo';
-import { verifyInitData, type VerifiedInitData } from './verify-init-data';
+import { type VerifiedInitData, verifyInitData } from './verify-init-data';
 
 export interface ResolvedSession {
   readonly user: User;

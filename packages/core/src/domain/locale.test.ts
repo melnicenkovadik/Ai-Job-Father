@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { detectLocale, isLocale, SUPPORTED_LOCALES } from './locale';
+import { SUPPORTED_LOCALES, detectLocale, isLocale } from './locale';
 
 describe('SUPPORTED_LOCALES', () => {
   it('exposes the five MVP locales in a stable order', () => {

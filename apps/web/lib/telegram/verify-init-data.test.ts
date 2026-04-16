@@ -61,24 +61,24 @@ describe('verifyInitData', () => {
     const userJson = params.get('user') as string;
     params.set('user', userJson.replace('"id":42', '"id":999'));
     const tampered = params.toString();
-    expect(() =>
-      verifyInitData(tampered, { botToken: BOT_TOKEN, maxAgeSeconds: 86400 }),
-    ).toThrow(InvalidInitDataSignatureError);
+    expect(() => verifyInitData(tampered, { botToken: BOT_TOKEN, maxAgeSeconds: 86400 })).toThrow(
+      InvalidInitDataSignatureError,
+    );
   });
 
   it('throws InvalidInitDataSignatureError when signed with a different bot token', () => {
     const initData = signInitData(freshPairs(), 'different:token');
-    expect(() =>
-      verifyInitData(initData, { botToken: BOT_TOKEN, maxAgeSeconds: 86400 }),
-    ).toThrow(InvalidInitDataSignatureError);
+    expect(() => verifyInitData(initData, { botToken: BOT_TOKEN, maxAgeSeconds: 86400 })).toThrow(
+      InvalidInitDataSignatureError,
+    );
   });
 
   it('throws StaleInitDataError when auth_date is older than maxAge', () => {
     const staleTs = Math.floor(Date.now() / 1000) - 10_000;
     const initData = signInitData(freshPairs({ auth_date: String(staleTs) }));
-    expect(() =>
-      verifyInitData(initData, { botToken: BOT_TOKEN, maxAgeSeconds: 60 }),
-    ).toThrow(StaleInitDataError);
+    expect(() => verifyInitData(initData, { botToken: BOT_TOKEN, maxAgeSeconds: 60 })).toThrow(
+      StaleInitDataError,
+    );
   });
 
   it('accepts initData exactly at the freshness boundary', () => {
@@ -101,7 +101,7 @@ describe('verifyInitData', () => {
 
   it('throws MalformedInitDataError when auth_date is missing', () => {
     const p = freshPairs();
-    delete (p as Partial<FixturePairs>).auth_date;
+    (p as Partial<FixturePairs>).auth_date = undefined;
     const initData = signInitData(p as FixturePairs);
     expect(() => verifyInitData(initData, { botToken: BOT_TOKEN, maxAgeSeconds: 86400 })).toThrow(
       MalformedInitDataError,

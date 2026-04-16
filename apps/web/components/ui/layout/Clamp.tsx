@@ -1,6 +1,6 @@
 'use client';
-import * as React from 'react';
 import { cn } from '@/lib/cn';
+import * as React from 'react';
 
 export interface ClampProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
   lines: 1 | 2 | 3 | 4 | 5;
