@@ -1,18 +1,19 @@
 'use client';
 
 import { createBrowserClient } from '@supabase/ssr';
-import type { SupabaseClient } from '@supabase/supabase-js';
 import { env } from '../env';
 import type { Database } from './types';
 
-let cached: SupabaseClient<Database> | null = null;
+type BrowserClient = ReturnType<typeof createBrowserClient<Database>>;
+
+let cached: BrowserClient | null = null;
 
 /**
  * Browser Supabase client keyed by the anon key. JWT (minted by
  * `/api/auth/session`) is applied via `applySupabaseJwt`; RLS then keys on
  * `auth.uid() = users.id`.
  */
-export function getBrowserClient(): SupabaseClient<Database> {
+export function getBrowserClient(): BrowserClient {
   if (typeof window === 'undefined') {
     throw new Error('getBrowserClient() invoked on the server');
   }
