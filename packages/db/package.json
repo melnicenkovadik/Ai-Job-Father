@@ -1,0 +1,24 @@
+{
+  "name": "@ai-job-bot/db",
+  "private": true,
+  "type": "module",
+  "version": "0.0.1",
+  "main": "./types/generated.ts",
+  "types": "./types/generated.ts",
+  "scripts": {
+    "db:start": "supabase start --workdir supabase",
+    "db:stop": "supabase stop --workdir supabase",
+    "db:status": "supabase status --workdir supabase",
+    "db:reset": "supabase db reset --workdir supabase",
+    "db:migrate": "supabase migration up --workdir supabase",
+    "db:gen-types": "supabase gen types typescript --local --workdir supabase > types/generated.ts",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome check .",
+    "test": "echo 'no unit tests in @ai-job-bot/db' && exit 0",
+    "test:unit": "echo 'no unit tests in @ai-job-bot/db' && exit 0",
+    "clean": "rm -rf dist .turbo node_modules"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0"
+  }
+}
