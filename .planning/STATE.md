@@ -1,24 +1,34 @@
 # Project State
 
 **Last updated:** 2026-04-16
-**Current phase:** Pre-Phase-0 (intake done, awaiting `/gsd:plan-phase 0`)
+**Current phase:** Phase 0 shipped (38 atomic commits). Phase 1 planning next.
 **Plan file:** `~/.claude/plans/effervescent-wibbling-breeze.md`
 
 ## Where we are
 
-Intake (`/gsd:new-project`) complete. All artifacts written:
-- `.planning/PROJECT.md` — project context + decisions summary
-- `.planning/config.json` — workflow preferences
-- `.planning/REQUIREMENTS.md` — R-1 through R-15 + NFR-1 through NFR-8
-- `.planning/ROADMAP.md` — 8 phases with observable outcomes and tasks
-- `.planning/STATE.md` — this file
+Phase 0 (Bootstrap & Scaffolding) ✅ complete. Independently verified: 38 atomic conventional commits, all ritual artifacts present, typecheck green across 3 packages, `pnpm dev` + `/api/health` confirmed.
+
+Artifacts shipped:
+- Monorepo scaffolded (pnpm 10 + Turborepo 2, `apps/web` + `packages/core` + `packages/db`)
+- Next.js 15 App Router with health endpoint
+- Biome 1.9.4 with layer-boundary `noRestrictedImports` (validated — `packages/core` blocks `next`, `react`, etc.)
+- Tailwind v4 with `@theme` in CSS (no JS config)
+- TS strict (`noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`)
+- Supabase CLI installed, `supabase init` done (local `supabase start` deferred — Docker)
+- CI workflow (typecheck + lint + build + unit)
+- Root docs: `CLAUDE.md`, `README.md`, `docs/ARCHITECTURE.md`, 3 ADRs, `CHANGELOG.md`, `PROJECT-MAP.md` (v0), `SESSION-LOG.md`, `docs/features/bootstrap.md`, `.planning/phases/0/verify.md`
+
+Deferred from Phase 0:
+- T0.40 GitHub repo creation (moved to Phase 7 or on-request)
+- `supabase start` (needs Docker; Phase 1 if required)
+- Supabase cloud project (Phase 1 for webhook public URL, or Phase 7)
 
 ## What's next
 
-1. `/gsd:plan-phase 0` — generates `.planning/phases/0/PLAN.md` for scaffolding
-2. Execute Phase 0 via `/gsd:execute-phase 0`
-3. `/gsd:verify-work 0` — confirm outcome + ritual artifacts
-4. Repeat for phases 1 through 7
+1. `/gsd:plan-phase 1` — Bot + Mini App skeleton + auth (in progress)
+2. Execute Phase 1 — will pause on BotFather interaction (bot token required)
+3. Verify Phase 1
+4. Repeat for phases 2 through 7
 5. `/gsd:complete-milestone` at MVP end
 
 ## Key references (for new sessions)
