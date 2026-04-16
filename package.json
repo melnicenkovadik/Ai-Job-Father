@@ -13,11 +13,20 @@
     "format": "biome format --write .",
     "test": "turbo run test",
     "test:unit": "turbo run test:unit",
+    "test:e2e": "pnpm --filter @ai-job-bot/web test:e2e",
+    "db:start": "pnpm --filter @ai-job-bot/db db:start",
+    "db:stop": "pnpm --filter @ai-job-bot/db db:stop",
+    "db:status": "pnpm --filter @ai-job-bot/db db:status",
+    "db:reset": "pnpm --filter @ai-job-bot/db db:reset",
+    "db:types": "pnpm --filter @ai-job-bot/db db:gen-types",
+    "set-webhook": "tsx scripts/set-webhook.ts",
+    "verify:layers": "tsx scripts/verify-layers.ts",
     "clean": "turbo run clean && rm -rf node_modules .turbo"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
     "@types/node": "^20.19.0",
+    "tsx": "^4.21.0",
     "turbo": "^2.3.0",
     "typescript": "^5.7.0"
   }
