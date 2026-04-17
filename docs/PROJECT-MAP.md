@@ -1,7 +1,6 @@
 # Project Map — AI Job Bot
 
-**Last updated:** 2026-04-17 (Phase 1 shipped; BotFather menu button + real-device flow are the
-only open Phase-1 user checkpoints)
+**Last updated:** 2026-04-17 (Phase 2 in progress — Profile UI + heuristic resume parse shipped; AI-tier parse + ESCO wait for Phase 3/4)
 
 ## Live Systems
 
@@ -9,9 +8,11 @@ only open Phase-1 user checkpoints)
 |---|---|---|
 | **Bot (Telegram)** | **token issued** | @AiJobFatherBot, token in `TELEGRAM_BOT_TOKEN`. `/setmenubutton` with the Vercel URL is a pending user action. |
 | **Mini App** | **deploys to Vercel via GitHub integration** | GitHub remote: `git@github.com:melnicenkovadik/Ai-Job-Father.git`. Vercel project linked + Supabase Marketplace integration active. |
-| **Supabase (cloud)** | **live** | Project `fixvzokjvqgqyzdidabo`, eu-central-2. `public.users` + RLS policies applied. |
+| **Supabase (cloud)** | **live** | Project `fixvzokjvqgqyzdidabo`, eu-central-2. `public.users` + `public.profiles` + RLS policies + `resumes` Storage bucket applied. |
 | **Supabase (local)** | scaffolded (unused) | `supabase/config.toml` present but Docker not required — dev hits Cloud via `.env.local`. |
-| **Anthropic** | not configured | Phase 2 |
+| **Resume parse (free tier)** | **live** | Pure-TS `HeuristicResumeParser` (unpdf + multilingual regex) wired into `POST /api/profile/parse-resume`. |
+| **OpenAI (paid tier)** | **env set, un-routed** | `OPENAI_API_KEY` + `OPENAI_RESUME_MODEL=gpt-5.1` encrypted in Vercel. Adapter in place; payment gate ships in Phase 4. |
+| **Anthropic** | deprecated for resume parse | Kept optional in env for rollback; superseded by ADR 0006 / 0007. |
 | **TON / Stars** | not configured | Phase 4 |
 | **Sentry** | not configured | Phase 7 |
 | **GitHub repo** | **created + pushed** | `melnicenkovadik/Ai-Job-Father`. `main` tracks origin; git identity is `melnicenkovadik <melnicenkovadik@gmail.com>` (verified after a one-off HTTPS-creds mismatch was corrected by switching remote to SSH). |
@@ -21,11 +22,17 @@ only open Phase-1 user checkpoints)
 | Table | Phase | Columns | RLS |
 |---|---|---|---|
 | `public.users` | 1 | `id uuid PK`, `telegram_id bigint UNIQUE`, `username`, `first_name`, `last_name`, `locale`, `is_premium`, `timezone`, `created_at`, `updated_at` (trigger-maintained) | enabled; `users_self_read` + `users_self_update` keyed on `auth.uid() = id`; service-role bypasses for inserts |
+| `public.profiles` | 2 | `id`, `user_id FK`, `name`, `is_default`, `preferred_categories job_category[]`, contact block, `headline`, `summary`, `years_total`, `english_level`, `skills / experience / education / languages / category_fields jsonb`, resume provenance (`resume_storage_path`, `resume_parsed_at`, `resume_parse_model`, `resume_file_hash`), timestamps | enabled; 4 policies keyed on `auth.uid() = user_id`. Partial-unique index `profiles_one_default_per_user`. |
 
-Phase-2+ tables live on `.planning/ROADMAP.md`:
+Storage buckets:
+
+| Bucket | Phase | Scope |
+|---|---|---|
+| `resumes` | 2 | `resumes/{user_id}/…` path prefix; policies scoped per-user. Not wired into the UI yet (ADR retention pending). |
+
+Phase-3+ tables live on `.planning/ROADMAP.md`:
 | Phase | Adds |
 |---|---|
-| 2 | `profiles` (multi-per-user, partial unique on `is_default`), Storage bucket `resumes` |
 | 3 | `campaigns` (snapshot_data JSONB + immutability trigger + view + indexes), `esco_cache` |
 | 4 | `payments` (unique on provider+provider_charge_id) |
 | 5 | `notifications` outbox |
@@ -45,7 +52,8 @@ Extensions installed by `20260417000000_init.sql`: `pgcrypto`, `pg_trgm`, `uuid-
   pending real device handshake, local build proves wiring)
 - ✅ `/api/auth/session` with signed initData → upsert `users` row + mint Supabase JWT +
   pass RLS (Phase 1 — covered by unit + integration tests)
-- ⏳ PDF upload → Claude parses → review → `profiles` row (Phase 2)
+- ✅ `/profile` editor + 📎 Upload CV (heuristic parse) → draft filled → Save → `profiles` row (Phase 2 — MVP tier)
+- ⏳ Paid AI-re-parse (OpenAI gpt-5.1) behind Stars paywall (Phase 4)
 - ⏳ 3-screen wizard → `campaigns (draft)` with valid snapshot (Phase 3, per
   `~/.claude/plans/lucky-noodling-pike.md`)
 - ⏳ Pay via Stars or TON → `status=paid` → snapshot frozen → push notification (Phase 4)

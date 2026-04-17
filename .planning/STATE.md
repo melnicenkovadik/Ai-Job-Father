@@ -1,8 +1,8 @@
 # Project State
 
-**Last updated:** 2026-04-17
-**Current phase:** Phase 1 shipped (code + docs + Cloud migrations). BotFather menu button
-+ real-device flow are the only open Phase-1 checkpoints (user-gated).
+**Last updated:** 2026-04-17 (evening)
+**Current phase:** Phase 2 in progress — Profile data layer + heuristic parser + UI
+shipped; AI-tier parse gated behind Stars (Phase 4).
 **Plan file:** `~/.claude/plans/effervescent-wibbling-breeze.md`
 **Wizard compression addendum:** `~/.claude/plans/lucky-noodling-pike.md` (approved
 2026-04-17 — 8-step wizard → 3 screens via progressive disclosure; data contract unchanged)

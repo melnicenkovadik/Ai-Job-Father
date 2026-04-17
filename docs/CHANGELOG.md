@@ -2,6 +2,106 @@
 
 All notable changes per phase. Append-only. One section per phase.
 
+## Phase 2 — Profile + resume parse (2026-04-17 → in progress)
+
+**Observable outcome:** `/profile` renders a single-scroll editor with 5 labeled
+sections. 📎 Upload CV runs the free-tier heuristic parser (pure TS, 5 locales,
+zero AI) and fills empty fields while preserving user edits. Save persists via
+`PUT/POST /api/profile` into Supabase `public.profiles` (RLS in force). Telegram
+MainButton drives the save action; web fallback for dev.
+
+### Added
+
+**Database (Supabase Cloud migrations applied 2026-04-17):**
+- `20260419000000_profiles.sql` — `profiles` table (multi-per-user, partial-unique
+  index `profiles_one_default_per_user`). Resumes storage bucket + RLS in
+  `20260419000100_profiles_rls.sql` + `20260419000200_resumes_bucket.sql`.
+
+**Core domain + application (TDD):**
+- `domain/profile.ts` — `Profile` aggregate + `ProfileId`, CEFR levels,
+  skill / experience / education / language types. `rehydrate` validates
+  invariants (name 1..40, years 0..80, CEFR, job categories).
+- `domain/job-category.ts` — 12 fixed slugs + category meta.
+- `domain/pricing.ts`, `domain/volume-estimate.ts` — pure; property tests.
+- `domain/snapshot/schema.ts` — Zod `SnapshotV1` discriminated union (tech
+  arm strict, other 11 categories pending until Phase 3).
+- `domain/category-fields/base.ts` + `/tech.ts` — shared primitives + first
+  category-specific schema.
+- `domain/resume-heuristics/` — section-split + 6 extractors + orchestrator
+  (multilingual EN/UK/RU/IT/PL). Tagged `model: "heuristic-v1"`.
+- `application/ports/profile-repo.ts` + `resume-parser.ts` — interfaces.
+- `application/save-profile.ts` — create / update / delete.
+- `application/parse-resume.ts` — size + PDF-signature guards + parser delegate.
+- `test/fakes/fake-profile-repo.ts`, `fake-resume-parser.ts`.
+
+**Infrastructure adapters (`apps/web/lib`):**
+- `supabase/profile-repo.ts` — `SupabaseProfileRepo` with default-flip on
+  create/update (two-statement UPDATE + INSERT, partial-unique index as
+  correctness net). 8 integration tests (auto-skip on unreachable DB).
+- `resume/heuristic-parser.ts` — unpdf → `parseResumeText`; short-text
+  (< 200 chars) → `ResumeFormatError`. 4 unit tests with `vi.mock('unpdf')`.
+- `openai/resume-parser.ts` — `OpenAIResumeParser` (gpt-5.1 + Structured
+  Outputs). Stub-factory degrades gracefully when `OPENAI_API_KEY` absent.
+- `profile/schema.ts` — `profileDraftSchema` (Zod) + `ProfileDto` + `profileToDto`.
+- `http/authed-fetch.ts` — adds `Authorization: Tma <initData>` to every
+  client fetch.
+
+**API routes (Node runtime, authed via `requireAuth`):**
+- `GET /api/profile` — default profile for the current user (or `null`).
+- `POST /api/profile` — create with Zod-validated body; `isDefault: true`.
+- `PUT /api/profile/:id` — partial update; owner-only (403 otherwise).
+- `POST /api/profile/parse-resume` — multipart PDF (≤ 10 MB) →
+  `HeuristicResumeParser` → `ParsedResume` JSON. Error codes map to the four
+  `ResumeParseError` subclasses (415 / 429 / 503 / 500).
+
+**Profile UI (`apps/web/features/profile/` + route `/profile`):**
+- `types.ts` — `ProfileDraft` view-model, dto↔draft mappers,
+  `mergeParsedResume` with "empty fields only" rule.
+- `use-profile-draft.ts` — single-state hook + dirty tracking (JSON compare).
+- `upload-cv-button.tsx` — multipart upload + spinner + inline success /
+  error banners; `<output>` element for live region.
+- `identity-section.tsx` — name (required), headline, summary, location,
+  timezone, yearsTotal, English CEFR chip row.
+- `experience-section.tsx` + `education-section.tsx` — `<details>`-based
+  collapsible cards; one-liner summary collapsed, full form open.
+- `skills-section.tsx` + `languages-section.tsx` — chip grid + always-visible
+  input; tap existing chip → inline editor (years slider / CEFR picker).
+- `links-section.tsx` — email, phone, LinkedIn, GitHub, portfolio.
+- `save-profile-button.tsx` — Telegram MainButton bridge + web fallback.
+- Route `(app)/profile/page.tsx` — orchestrator: `useQuery` load + `useMutation`
+  save + draft merge on upload. Disabled MainButton until draft valid + dirty.
+
+**Home page:** CTA button linking to `/profile`.
+
+**Docs:**
+- `docs/DECISIONS/0006-openai-resume-parser.md` — gpt-5.1 adoption (supersedes
+  Claude Sonnet 4.5 mention in main plan).
+- `docs/DECISIONS/0007-two-tier-resume-parse.md` — heuristic free + OpenAI paid
+  (Stars-gated, Phase 4 wiring).
+- `docs/features/profile.md` — feature doc (routes, state model, sections,
+  merge rule, error surfaces, out-of-scope list).
+- `docs/superpowers/specs/2026-04-17-profile-ui-design.md` — approved UI spec.
+
+**i18n:** `profile.*` keys in `messages/en.json` (real EN); stubbed
+`[UK|RU|IT|PL] …` entries in the other four locales (parity test green).
+
+**Envs:**
+- `OPENAI_API_KEY` + `OPENAI_RESUME_MODEL` — optional server env; encrypted in
+  Vercel for production.
+
+### Changed
+
+- `packages/core/src/index.ts` no longer re-exports `./domain/dedup`
+  (`node:crypto` can't land in a client bundle). Server callers import directly
+  as `@ai-job-bot/core/domain/dedup`.
+
+### Tests
+
+Aggregate at 282 passing (259 core + 23 web; 12 Supabase integration tests skip
+when local DB isn't reachable).
+
+---
+
 ## Phase 1 — Bot + Mini App skeleton + auth (2026-04-17 → in progress)
 
 **Observable outcome:** `/start` → Mini App opens → localized greeting renders → `users` row
