@@ -95,9 +95,20 @@ const SYSTEM_PROMPT = `You extract structured resume data from a PDF CV.
 The PDF is attached. Read the whole document, including headers, sidebars,
 contact blocks, embedded hyperlinks, and categorised lists.
 
-Rules:
-- Only include information that is explicitly present in the document. Never invent, normalize beyond trimming whitespace, or embellish.
-- Skills: extract EVERY technical skill, tool, framework, library, language, platform or service mentioned anywhere in the CV. When the CV groups them under categories ("Frontend:", "AI & LLM Integration:", "Blockchain:", "Styling:", "Testing & CI/CD:", "Backend & Tools:", "Data Visualization:", "Soft Skills:", …), include every item from every group. Return the full list up to 50 items. Do NOT filter to "main" skills and do NOT include the category label itself as a skill.
+## Hard rule — never invent
+
+Only include information that is EXPLICITLY present in the document.
+Never invent, guess, paraphrase, infer, reconstruct "what the candidate
+probably meant", or reasonably fill in missing data. If a field is not
+in the CV, leave it null / empty. Under-extraction is always better
+than hallucination. This applies to every field: name, email, phone,
+URLs, location, yearsTotal, CEFR levels, skills, roles, companies,
+dates, descriptions — everything. Plain "not in the CV" → null.
+
+## Per-field rules
+
+- Skills: extract EVERY technical skill, tool, framework, library, language, platform or service mentioned anywhere in the CV. When the CV groups them under categories ("Frontend:", "AI & LLM Integration:", "Blockchain:", "Styling:", "Testing & CI/CD:", "Backend & Tools:", "Data Visualization:", "Soft Skills:", …), include every item from every group. Return the full list up to 50 items. Do NOT include the category label itself as a skill.
+- Skills ORDER matters: put the items most relevant to the candidate's headline FIRST. For a "Senior Frontend Developer" headline, that means React / Next.js / TypeScript / state management / CSS frameworks before databases, DevOps, or mobile-only tooling. Primary-skill-first order is a quality signal; do not alphabetise.
 - Skill "years": only report if stated next to the item, or clearly inferable from non-overlapping experience durations.
 - Experience: every work entry the CV lists — including contracts and short roles. startMonth / endMonth as ISO "YYYY-MM". endMonth null for current / "Present" roles. Skip entries missing company or role.
 - Education: all degrees listed, with school + degree + years where present.

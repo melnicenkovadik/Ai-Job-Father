@@ -74,23 +74,65 @@ export function SkillsSection({ draft, patch }: SkillsSectionProps) {
       {draft.skills.length === 0 ? (
         <p className="text-xs opacity-60 [overflow-wrap:anywhere]">{t('empty.noSkills')}</p>
       ) : (
-        <div className="flex min-w-0 flex-wrap gap-2">
-          {draft.skills.map((skill) =>
-            expandedId === skill.id ? (
-              <SkillEditor
-                key={skill.id}
-                skill={skill}
-                onChange={(next) => updateSkill(skill.id, next)}
-                onRemove={() => removeSkill(skill.id)}
-                onClose={() => setExpandedId(null)}
-              />
-            ) : (
-              <SkillChip key={skill.id} skill={skill} onClick={() => setExpandedId(skill.id)} />
-            ),
-          )}
-        </div>
+        <SkillChipGrid
+          skills={draft.skills}
+          expandedId={expandedId}
+          onExpand={setExpandedId}
+          onUpdate={updateSkill}
+          onRemove={removeSkill}
+        />
       )}
     </Section>
+  );
+}
+
+const PRIMARY_SKILLS_LIMIT = 12;
+
+function SkillChipGrid({
+  skills,
+  expandedId,
+  onExpand,
+  onUpdate,
+  onRemove,
+}: {
+  skills: readonly SkillDraft[];
+  expandedId: string | null;
+  onExpand(id: string | null): void;
+  onUpdate(id: string, next: Partial<SkillDraft>): void;
+  onRemove(id: string): void;
+}) {
+  const t = useTranslations('profile');
+  const primary = skills.slice(0, PRIMARY_SKILLS_LIMIT);
+  const extra = skills.slice(PRIMARY_SKILLS_LIMIT);
+
+  function renderChips(list: readonly SkillDraft[]) {
+    return list.map((skill) =>
+      expandedId === skill.id ? (
+        <SkillEditor
+          key={skill.id}
+          skill={skill}
+          onChange={(next) => onUpdate(skill.id, next)}
+          onRemove={() => onRemove(skill.id)}
+          onClose={() => onExpand(null)}
+        />
+      ) : (
+        <SkillChip key={skill.id} skill={skill} onClick={() => onExpand(skill.id)} />
+      ),
+    );
+  }
+
+  return (
+    <>
+      <div className="flex min-w-0 flex-wrap gap-2">{renderChips(primary)}</div>
+      {extra.length > 0 && (
+        <details className="mt-1">
+          <summary className="cursor-pointer text-xs opacity-70 [overflow-wrap:anywhere]">
+            {t('actions.moreSkills', { count: extra.length })}
+          </summary>
+          <div className="mt-2 flex min-w-0 flex-wrap gap-2">{renderChips(extra)}</div>
+        </details>
+      )}
+    </>
   );
 }
 

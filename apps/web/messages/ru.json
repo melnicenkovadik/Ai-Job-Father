@@ -94,7 +94,8 @@
       "addSkill": "[RU] Add skill",
       "addLanguage": "[RU] Add language",
       "addExperience": "[RU] Add experience",
-      "addEducation": "[RU] Add education"
+      "addEducation": "[RU] Add education",
+      "moreSkills": "[RU] + {count} more skills"
     },
     "empty": {
       "noSkills": "[RU] No skills yet. Type one above to add.",

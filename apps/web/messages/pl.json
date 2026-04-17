@@ -94,7 +94,8 @@
       "addSkill": "[PL] Add skill",
       "addLanguage": "[PL] Add language",
       "addExperience": "[PL] Add experience",
-      "addEducation": "[PL] Add education"
+      "addEducation": "[PL] Add education",
+      "moreSkills": "[PL] + {count} more skills"
     },
     "empty": {
       "noSkills": "[PL] No skills yet. Type one above to add.",

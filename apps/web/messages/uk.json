@@ -94,7 +94,8 @@
       "addSkill": "[UK] Add skill",
       "addLanguage": "[UK] Add language",
       "addExperience": "[UK] Add experience",
-      "addEducation": "[UK] Add education"
+      "addEducation": "[UK] Add education",
+      "moreSkills": "[UK] + {count} more skills"
     },
     "empty": {
       "noSkills": "[UK] No skills yet. Type one above to add.",
