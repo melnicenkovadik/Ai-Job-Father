@@ -213,11 +213,48 @@ These three tasks require Vadym's phone / BotFather / Vercel UI:
 
 Once §9.3 passes, Phase 1 closes.
 
-## 10. Real-device evidence
+## 10. Real-device evidence — 2026-04-17 08:03 UTC
 
-_Pending user checkpoint §9._
+User opened `@AiJobFatherBot` on device, tapped the BotFather-configured
+menu-button pointing at `https://ai-job-father-web.vercel.app/`, and hit
+`/start`. Observed:
 
-(placeholder — paste screenshots here after completing §9.1-§9.3)
+- Bot replies in chat with `Welcome! Tap to open the app.` + inline
+  `Open App` button (screenshot in session).
+- Tapping `Open App` loads the Mini App WebView. Telegram's
+  `telegram-web-app.js` runtime (added to root layout in commit
+  `caaea1c`) populates `window.Telegram.WebApp.initData` before React
+  hydration; AuthGate POSTs to `/api/auth/session`; `/(app)/page.tsx`
+  renders the greeting.
+- Mini App shows (RU locale auto-detected):
+  `[RU] Hi, Vadym!` + `[RU] AI Job Bot helps you find the right role...`
+  + `[RU] Phase 1 skeleton. Profile, campaign wizard and payments land
+  in the next phases.` ([RU] prefix is intentional — real translations
+  land in Phase 6 per D1.9).
+
+Supabase Cloud write (verified 08:04 UTC via psql against pooler):
+
+```
+                  id                  | telegram_id |    username    | first_name |  last_name  | locale | is_premium |          created_at
+--------------------------------------+-------------+----------------+------------+-------------+--------+------------+-------------------------------
+ 597cbe39-2607-4ef5-abc3-b5647b0ebe2b |   616247230 | melnychenkovad | Vadym      | Melnychenko | ru     | f          | 2026-04-17 08:03:55.980841+00
+(1 row)
+```
+
+The single row proves the full pipeline:
+`Open App → window.Telegram.WebApp.initData → HMAC verify
+→ upsertUser → SupabaseUserRepo.upsert → RLS row → Supabase JWT
+→ browser session → greeting render`.
+
+Phase 1's observable outcome (`/start` → `users` row upserted + Mini App
+greeting in locale) is confirmed end-to-end against production Vercel +
+Supabase Cloud. Phase 1 closed.
+
+Open user-gated follow-ups deferred into Phase 2+:
+- Playwright visual baselines on `/` + `/ui-contract` (Wave H) — held
+  until user signs off on greeting typography.
+- Real UK/RU/IT/PL translations (Phase 6).
+- `/status` command real data + notifications outbox (Phase 5).
 
 ## 11. Ritual checklist (R-15)
 
