@@ -54,31 +54,23 @@ export const POST = requireAuth(async (req, { user }) => {
   }
 
   const bytes = new Uint8Array(await file.arrayBuffer());
-  const parser = createHeuristicResumeParser();
 
   try {
-    const parsed = await parser.parse({
-      pdfBytes: bytes,
-      userId: user.id.value,
-      filename: file.name,
+    // Inline extract so we can include a raw-text preview in the response
+    // (temporary diagnostic; see ADR 0007 follow-up).
+    const { text } = await extractText(bytes, { mergePages: true });
+    const trimmed = text.trim();
+    if (trimmed.length < 200) {
+      throw new ResumeFormatError(
+        `Extracted only ${trimmed.length} chars — likely a scanned PDF. Upload a text-based CV.`,
+      );
+    }
+    const parsed = parseResumeText(trimmed);
+    return Response.json({
+      ...parsed,
+      _rawTextLength: trimmed.length,
+      _rawTextHead: trimmed.slice(0, 3000),
     });
-    // Temporary: log extraction stats on the server so we can correlate
-    // "2 fields filled" reports with what the parser actually saw.
-    // eslint-disable-next-line no-console
-    console.log('parse-resume:', {
-      user: user.id.value,
-      fileName: file.name,
-      fileSize: file.size,
-      fullName: parsed.fullName ?? null,
-      email: parsed.email ?? null,
-      headline: parsed.headline ?? null,
-      summaryChars: parsed.summary?.length ?? 0,
-      skills: parsed.skills.length,
-      experience: parsed.experience.length,
-      education: parsed.education.length,
-      languages: parsed.languages.length,
-    });
-    return Response.json(parsed);
   } catch (err) {
     if (err instanceof ResumeFormatError) {
       return Response.json({ error: 'format', message: err.message }, { status: 415 });
