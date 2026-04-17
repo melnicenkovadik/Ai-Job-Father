@@ -1,7 +1,7 @@
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-import { resolveSession } from '@/lib/telegram/session';
+import { resolveSession, TelegramEnvMissingError } from '@/lib/telegram/session';
 import {
   InvalidInitDataSignatureError,
   MalformedInitDataError,
@@ -38,6 +38,12 @@ export async function POST(req: Request): Promise<Response> {
     }
     if (err instanceof MalformedInitDataError) {
       return Response.json({ error: 'malformed_init_data' }, { status: 400 });
+    }
+    if (err instanceof TelegramEnvMissingError) {
+      return Response.json(
+        { error: 'telegram_env_missing', message: err.message },
+        { status: 503 },
+      );
     }
     console.error('resolveSession error', err);
     return Response.json({ error: 'internal' }, { status: 500 });
