@@ -1,9 +1,9 @@
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-import { webhookCallback } from 'grammy';
 import { env } from '@/lib/env';
-import { getBot, TelegramEnvMissingError } from '@/lib/telegram/bot';
+import { TelegramEnvMissingError, getBot } from '@/lib/telegram/bot';
+import { webhookCallback } from 'grammy';
 
 /**
  * Telegram bot webhook.

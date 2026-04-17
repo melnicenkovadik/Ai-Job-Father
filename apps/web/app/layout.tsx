@@ -18,10 +18,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
          * AuthGate renders its "open from Telegram" error state. `beforeInteractive`
          * guarantees execution before React hydration.
          */}
-        <Script
-          src="https://telegram.org/js/telegram-web-app.js"
-          strategy="beforeInteractive"
-        />
+        <Script src="https://telegram.org/js/telegram-web-app.js" strategy="beforeInteractive" />
       </head>
       <body>{children}</body>
     </html>

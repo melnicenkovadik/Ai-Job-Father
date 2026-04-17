@@ -1,7 +1,7 @@
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-import { resolveSession, TelegramEnvMissingError } from '@/lib/telegram/session';
+import { TelegramEnvMissingError, resolveSession } from '@/lib/telegram/session';
 import {
   InvalidInitDataSignatureError,
   MalformedInitDataError,
