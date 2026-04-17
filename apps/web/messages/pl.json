@@ -22,6 +22,92 @@
   "common": {
     "loading": "[PL] Loading...",
     "error": "[PL] Something went wrong",
-    "retry": "[PL] Retry"
+    "retry": "[PL] Retry",
+    "save": "[PL] Save",
+    "cancel": "[PL] Cancel",
+    "remove": "[PL] Remove",
+    "add": "[PL] Add"
+  },
+  "profile": {
+    "title": "[PL] Profile",
+    "defaultName": "[PL] Default profile",
+    "loading": "[PL] Loading profile...",
+    "upload": {
+      "label": "[PL] Upload CV (auto-fill)",
+      "parsing": "[PL] Parsing CV...",
+      "success": "[PL] Done · {filled} / {total} fields filled",
+      "error": {
+        "format": "[PL] Couldn't read the PDF. Try another file or fill the form manually.",
+        "file_too_large": "[PL] File is over 10 MB. Please upload a smaller one.",
+        "invalid_mime": "[PL] Please upload a PDF file.",
+        "missing_file": "[PL] No file selected.",
+        "empty_file": "[PL] The file is empty.",
+        "rate_limit": "[PL] Too many uploads — try again in a moment.",
+        "unavailable": "[PL] Parser temporarily unavailable.",
+        "internal": "[PL] Parse failed. Please try again."
+      }
+    },
+    "section": {
+      "identity": "[PL] Identity",
+      "experience": "[PL] Experience & Education",
+      "experienceInner": "[PL] Work experience",
+      "educationInner": "[PL] Education",
+      "skillsLangs": "[PL] Skills & Languages",
+      "skills": "[PL] Skills",
+      "languages": "[PL] Languages",
+      "links": "[PL] Contacts & Links"
+    },
+    "field": {
+      "name": "[PL] Profile name",
+      "fullName": "[PL] Full name",
+      "headline": "[PL] Headline",
+      "headlineHint": "[PL] Short role description",
+      "summary": "[PL] Summary",
+      "location": "[PL] Location",
+      "timezone": "[PL] Timezone",
+      "yearsTotal": "[PL] Years of experience",
+      "englishLevel": "[PL] English level",
+      "email": "[PL] Email",
+      "phone": "[PL] Phone",
+      "linkedin": "[PL] LinkedIn",
+      "github": "[PL] GitHub",
+      "portfolio": "[PL] Portfolio URL",
+      "company": "[PL] Company",
+      "role": "[PL] Role",
+      "startMonth": "[PL] Start",
+      "endMonth": "[PL] End",
+      "description": "[PL] Description",
+      "stack": "[PL] Stack",
+      "school": "[PL] School",
+      "degree": "[PL] Degree",
+      "skillName": "[PL] Skill",
+      "years": "[PL] Years",
+      "language": "[PL] Language",
+      "level": "[PL] Level",
+      "present": "[PL] Current"
+    },
+    "actions": {
+      "save": "[PL] Save profile",
+      "saving": "[PL] Saving...",
+      "saved": "[PL] Saved ✓",
+      "discard": "[PL] Discard changes",
+      "addSkill": "[PL] Add skill",
+      "addLanguage": "[PL] Add language",
+      "addExperience": "[PL] Add experience",
+      "addEducation": "[PL] Add education"
+    },
+    "empty": {
+      "noSkills": "[PL] No skills yet. Type one above to add.",
+      "noLanguages": "[PL] No languages yet. Type one above to add.",
+      "noExperience": "[PL] No work experience yet.",
+      "noEducation": "[PL] No education yet."
+    },
+    "validation": {
+      "nameRequired": "[PL] Profile name is required."
+    },
+    "save": {
+      "success": "[PL] Profile saved.",
+      "error": "[PL] Couldn't save profile. Please try again."
+    }
   }
 }

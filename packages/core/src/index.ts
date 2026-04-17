@@ -6,7 +6,9 @@ export * from './domain/profile';
 export * from './domain/job-category';
 export * from './domain/pricing';
 export * from './domain/volume-estimate';
-export * from './domain/dedup';
+// `./domain/dedup` is server-only (uses node:crypto). Import directly as
+// `@ai-job-bot/core/domain/dedup` from Node runtimes — never from the client
+// bundle.
 export * from './domain/category-fields';
 export * from './domain/snapshot';
 export * from './domain/resume-heuristics';

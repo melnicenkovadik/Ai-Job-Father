@@ -22,6 +22,92 @@
   "common": {
     "loading": "[RU] Loading...",
     "error": "[RU] Something went wrong",
-    "retry": "[RU] Retry"
+    "retry": "[RU] Retry",
+    "save": "[RU] Save",
+    "cancel": "[RU] Cancel",
+    "remove": "[RU] Remove",
+    "add": "[RU] Add"
+  },
+  "profile": {
+    "title": "[RU] Profile",
+    "defaultName": "[RU] Default profile",
+    "loading": "[RU] Loading profile...",
+    "upload": {
+      "label": "[RU] Upload CV (auto-fill)",
+      "parsing": "[RU] Parsing CV...",
+      "success": "[RU] Done · {filled} / {total} fields filled",
+      "error": {
+        "format": "[RU] Couldn't read the PDF. Try another file or fill the form manually.",
+        "file_too_large": "[RU] File is over 10 MB. Please upload a smaller one.",
+        "invalid_mime": "[RU] Please upload a PDF file.",
+        "missing_file": "[RU] No file selected.",
+        "empty_file": "[RU] The file is empty.",
+        "rate_limit": "[RU] Too many uploads — try again in a moment.",
+        "unavailable": "[RU] Parser temporarily unavailable.",
+        "internal": "[RU] Parse failed. Please try again."
+      }
+    },
+    "section": {
+      "identity": "[RU] Identity",
+      "experience": "[RU] Experience & Education",
+      "experienceInner": "[RU] Work experience",
+      "educationInner": "[RU] Education",
+      "skillsLangs": "[RU] Skills & Languages",
+      "skills": "[RU] Skills",
+      "languages": "[RU] Languages",
+      "links": "[RU] Contacts & Links"
+    },
+    "field": {
+      "name": "[RU] Profile name",
+      "fullName": "[RU] Full name",
+      "headline": "[RU] Headline",
+      "headlineHint": "[RU] Short role description",
+      "summary": "[RU] Summary",
+      "location": "[RU] Location",
+      "timezone": "[RU] Timezone",
+      "yearsTotal": "[RU] Years of experience",
+      "englishLevel": "[RU] English level",
+      "email": "[RU] Email",
+      "phone": "[RU] Phone",
+      "linkedin": "[RU] LinkedIn",
+      "github": "[RU] GitHub",
+      "portfolio": "[RU] Portfolio URL",
+      "company": "[RU] Company",
+      "role": "[RU] Role",
+      "startMonth": "[RU] Start",
+      "endMonth": "[RU] End",
+      "description": "[RU] Description",
+      "stack": "[RU] Stack",
+      "school": "[RU] School",
+      "degree": "[RU] Degree",
+      "skillName": "[RU] Skill",
+      "years": "[RU] Years",
+      "language": "[RU] Language",
+      "level": "[RU] Level",
+      "present": "[RU] Current"
+    },
+    "actions": {
+      "save": "[RU] Save profile",
+      "saving": "[RU] Saving...",
+      "saved": "[RU] Saved ✓",
+      "discard": "[RU] Discard changes",
+      "addSkill": "[RU] Add skill",
+      "addLanguage": "[RU] Add language",
+      "addExperience": "[RU] Add experience",
+      "addEducation": "[RU] Add education"
+    },
+    "empty": {
+      "noSkills": "[RU] No skills yet. Type one above to add.",
+      "noLanguages": "[RU] No languages yet. Type one above to add.",
+      "noExperience": "[RU] No work experience yet.",
+      "noEducation": "[RU] No education yet."
+    },
+    "validation": {
+      "nameRequired": "[RU] Profile name is required."
+    },
+    "save": {
+      "success": "[RU] Profile saved.",
+      "error": "[RU] Couldn't save profile. Please try again."
+    }
   }
 }

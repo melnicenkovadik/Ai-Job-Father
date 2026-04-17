@@ -22,6 +22,92 @@
   "common": {
     "loading": "[UK] Loading...",
     "error": "[UK] Something went wrong",
-    "retry": "[UK] Retry"
+    "retry": "[UK] Retry",
+    "save": "[UK] Save",
+    "cancel": "[UK] Cancel",
+    "remove": "[UK] Remove",
+    "add": "[UK] Add"
+  },
+  "profile": {
+    "title": "[UK] Profile",
+    "defaultName": "[UK] Default profile",
+    "loading": "[UK] Loading profile...",
+    "upload": {
+      "label": "[UK] Upload CV (auto-fill)",
+      "parsing": "[UK] Parsing CV...",
+      "success": "[UK] Done · {filled} / {total} fields filled",
+      "error": {
+        "format": "[UK] Couldn't read the PDF. Try another file or fill the form manually.",
+        "file_too_large": "[UK] File is over 10 MB. Please upload a smaller one.",
+        "invalid_mime": "[UK] Please upload a PDF file.",
+        "missing_file": "[UK] No file selected.",
+        "empty_file": "[UK] The file is empty.",
+        "rate_limit": "[UK] Too many uploads — try again in a moment.",
+        "unavailable": "[UK] Parser temporarily unavailable.",
+        "internal": "[UK] Parse failed. Please try again."
+      }
+    },
+    "section": {
+      "identity": "[UK] Identity",
+      "experience": "[UK] Experience & Education",
+      "experienceInner": "[UK] Work experience",
+      "educationInner": "[UK] Education",
+      "skillsLangs": "[UK] Skills & Languages",
+      "skills": "[UK] Skills",
+      "languages": "[UK] Languages",
+      "links": "[UK] Contacts & Links"
+    },
+    "field": {
+      "name": "[UK] Profile name",
+      "fullName": "[UK] Full name",
+      "headline": "[UK] Headline",
+      "headlineHint": "[UK] Short role description",
+      "summary": "[UK] Summary",
+      "location": "[UK] Location",
+      "timezone": "[UK] Timezone",
+      "yearsTotal": "[UK] Years of experience",
+      "englishLevel": "[UK] English level",
+      "email": "[UK] Email",
+      "phone": "[UK] Phone",
+      "linkedin": "[UK] LinkedIn",
+      "github": "[UK] GitHub",
+      "portfolio": "[UK] Portfolio URL",
+      "company": "[UK] Company",
+      "role": "[UK] Role",
+      "startMonth": "[UK] Start",
+      "endMonth": "[UK] End",
+      "description": "[UK] Description",
+      "stack": "[UK] Stack",
+      "school": "[UK] School",
+      "degree": "[UK] Degree",
+      "skillName": "[UK] Skill",
+      "years": "[UK] Years",
+      "language": "[UK] Language",
+      "level": "[UK] Level",
+      "present": "[UK] Current"
+    },
+    "actions": {
+      "save": "[UK] Save profile",
+      "saving": "[UK] Saving...",
+      "saved": "[UK] Saved ✓",
+      "discard": "[UK] Discard changes",
+      "addSkill": "[UK] Add skill",
+      "addLanguage": "[UK] Add language",
+      "addExperience": "[UK] Add experience",
+      "addEducation": "[UK] Add education"
+    },
+    "empty": {
+      "noSkills": "[UK] No skills yet. Type one above to add.",
+      "noLanguages": "[UK] No languages yet. Type one above to add.",
+      "noExperience": "[UK] No work experience yet.",
+      "noEducation": "[UK] No education yet."
+    },
+    "validation": {
+      "nameRequired": "[UK] Profile name is required."
+    },
+    "save": {
+      "success": "[UK] Profile saved.",
+      "error": "[UK] Couldn't save profile. Please try again."
+    }
   }
 }

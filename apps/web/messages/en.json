@@ -22,6 +22,92 @@
   "common": {
     "loading": "Loading...",
     "error": "Something went wrong",
-    "retry": "Retry"
+    "retry": "Retry",
+    "save": "Save",
+    "cancel": "Cancel",
+    "remove": "Remove",
+    "add": "Add"
+  },
+  "profile": {
+    "title": "Profile",
+    "defaultName": "Default profile",
+    "loading": "Loading profile...",
+    "upload": {
+      "label": "Upload CV (auto-fill)",
+      "parsing": "Parsing CV...",
+      "success": "Done · {filled} / {total} fields filled",
+      "error": {
+        "format": "Couldn't read the PDF. Try another file or fill the form manually.",
+        "file_too_large": "File is over 10 MB. Please upload a smaller one.",
+        "invalid_mime": "Please upload a PDF file.",
+        "missing_file": "No file selected.",
+        "empty_file": "The file is empty.",
+        "rate_limit": "Too many uploads — try again in a moment.",
+        "unavailable": "Parser temporarily unavailable.",
+        "internal": "Parse failed. Please try again."
+      }
+    },
+    "section": {
+      "identity": "Identity",
+      "experience": "Experience & Education",
+      "experienceInner": "Work experience",
+      "educationInner": "Education",
+      "skillsLangs": "Skills & Languages",
+      "skills": "Skills",
+      "languages": "Languages",
+      "links": "Contacts & Links"
+    },
+    "field": {
+      "name": "Profile name",
+      "fullName": "Full name",
+      "headline": "Headline",
+      "headlineHint": "Short role description",
+      "summary": "Summary",
+      "location": "Location",
+      "timezone": "Timezone",
+      "yearsTotal": "Years of experience",
+      "englishLevel": "English level",
+      "email": "Email",
+      "phone": "Phone",
+      "linkedin": "LinkedIn",
+      "github": "GitHub",
+      "portfolio": "Portfolio URL",
+      "company": "Company",
+      "role": "Role",
+      "startMonth": "Start",
+      "endMonth": "End",
+      "description": "Description",
+      "stack": "Stack",
+      "school": "School",
+      "degree": "Degree",
+      "skillName": "Skill",
+      "years": "Years",
+      "language": "Language",
+      "level": "Level",
+      "present": "Current"
+    },
+    "actions": {
+      "save": "Save profile",
+      "saving": "Saving...",
+      "saved": "Saved ✓",
+      "discard": "Discard changes",
+      "addSkill": "Add skill",
+      "addLanguage": "Add language",
+      "addExperience": "Add experience",
+      "addEducation": "Add education"
+    },
+    "empty": {
+      "noSkills": "No skills yet. Type one above to add.",
+      "noLanguages": "No languages yet. Type one above to add.",
+      "noExperience": "No work experience yet.",
+      "noEducation": "No education yet."
+    },
+    "validation": {
+      "nameRequired": "Profile name is required."
+    },
+    "save": {
+      "success": "Profile saved.",
+      "error": "Couldn't save profile. Please try again."
+    }
   }
 }
