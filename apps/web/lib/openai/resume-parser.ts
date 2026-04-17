@@ -110,7 +110,7 @@ dates, descriptions — everything. Plain "not in the CV" → null.
 - Skills: extract EVERY technical skill, tool, framework, library, language, platform or service mentioned anywhere in the CV. When the CV groups them under categories ("Frontend:", "AI & LLM Integration:", "Blockchain:", "Styling:", "Testing & CI/CD:", "Backend & Tools:", "Data Visualization:", "Soft Skills:", …), include every item from every group. Return the full list up to 50 items. Do NOT include the category label itself as a skill.
 - Skills ORDER matters: put the items most relevant to the candidate's headline FIRST. For a "Senior Frontend Developer" headline, that means React / Next.js / TypeScript / state management / CSS frameworks before databases, DevOps, or mobile-only tooling. Primary-skill-first order is a quality signal; do not alphabetise.
 - Skill "years": only report if stated next to the item, or clearly inferable from non-overlapping experience durations.
-- Experience: every work entry the CV lists — including contracts and short roles. startMonth / endMonth as ISO "YYYY-MM". endMonth null for current / "Present" roles. Skip entries missing company or role.
+- Experience: every work entry the CV lists — including contracts and short roles. startMonth / endMonth MUST be ISO "YYYY-MM". If the CV writes "Jan 2024" output "2024-01"; if it writes "2024" output "2024-01"; never output "May 2025" or "Present" or any word variant. For currently-held roles use null for endMonth. Skip entries missing company or role.
 - Education: all degrees listed, with school + degree + years where present.
 - Languages: spoken languages with CEFR levels A1..C2. Native markers → C2. Language codes are ISO-639-1 two-letter lowercase ("en", "uk", "ru", "it", "pl", "de", "fr", "es"…).
 - English level (top-level field): mirror the English entry's CEFR level from the languages array if present.
@@ -244,19 +244,25 @@ function toParsedResume(raw: RawParsedResume, model: string): ParsedResume {
       years: s.years ?? undefined,
       level: s.level ?? undefined,
     })),
-    experience: raw.experience.map<ExperienceEntry>((e) => ({
-      company: e.company,
-      role: e.role,
-      startMonth: e.startMonth,
-      endMonth: e.endMonth,
-      description: e.description ?? undefined,
-      stack: e.stack ?? undefined,
-    })),
+    experience: raw.experience
+      .map<ExperienceEntry | null>((e) => {
+        const start = normalizeMonth(e.startMonth);
+        if (!start) return null;
+        return {
+          company: e.company,
+          role: e.role,
+          startMonth: start,
+          endMonth: normalizeMonth(e.endMonth),
+          description: e.description ?? undefined,
+          stack: e.stack ?? undefined,
+        };
+      })
+      .filter((e): e is ExperienceEntry => e !== null),
     education: raw.education.map<EducationEntry>((e) => ({
       school: e.school,
       degree: e.degree ?? undefined,
-      startMonth: e.startMonth ?? undefined,
-      endMonth: e.endMonth ?? undefined,
+      startMonth: normalizeMonth(e.startMonth) ?? undefined,
+      endMonth: normalizeMonth(e.endMonth) ?? undefined,
     })),
     languages: raw.languages.map<LanguageEntry>((l) => ({ code: l.code, level: l.level })),
     model,
@@ -266,3 +272,107 @@ function toParsedResume(raw: RawParsedResume, model: string): ParsedResume {
 function nullToUndefined<T>(value: T | null): T | undefined {
   return value === null ? undefined : value;
 }
+
+/**
+ * Normalise any month-ish value gpt-5.1 might produce into strict `YYYY-MM`
+ * or `null`. The model is instructed to emit ISO already, but we refuse to
+ * trust it — production has seen "May 2025", "Present", bare "2024",
+ * "2025-05-15" and the occasional "2024/5". Anything unparseable becomes
+ * `null` rather than bubbling a 400 up to the user.
+ */
+function normalizeMonth(raw: string | null | undefined): string | null {
+  if (raw === null || raw === undefined) return null;
+  const trimmed = raw.trim();
+  if (trimmed.length === 0) return null;
+  if (PRESENT_WORDS_RE.test(trimmed)) return null;
+  if (/^\d{4}-(0[1-9]|1[0-2])$/.test(trimmed)) return trimmed;
+  if (/^\d{4}$/.test(trimmed)) return `${trimmed}-01`;
+  const iso = /^(\d{4})[-/.](\d{1,2})(?:[-/.]\d{1,2})?$/.exec(trimmed);
+  if (iso?.[1] && iso[2]) {
+    const mm = Number.parseInt(iso[2], 10);
+    if (mm >= 1 && mm <= 12) return `${iso[1]}-${String(mm).padStart(2, '0')}`;
+  }
+  const monthYear = /^([A-Za-zА-Яа-яІіЇїЄєҐґ.]+)\s+(\d{4})$/u.exec(trimmed);
+  if (monthYear?.[1] && monthYear[2]) {
+    const mm = MONTH_NAMES[monthYear[1].toLowerCase().replace(/\.$/, '')];
+    if (mm !== undefined) return `${monthYear[2]}-${String(mm).padStart(2, '0')}`;
+  }
+  return null;
+}
+
+const PRESENT_WORDS_RE =
+  /^(present|now|current|currently|ongoing|нині|зараз|настоящее|attuale|obecnie|oggi|teraz)$/iu;
+
+const MONTH_NAMES: Readonly<Record<string, number>> = {
+  jan: 1,
+  january: 1,
+  feb: 2,
+  february: 2,
+  mar: 3,
+  march: 3,
+  apr: 4,
+  april: 4,
+  may: 5,
+  jun: 6,
+  june: 6,
+  jul: 7,
+  july: 7,
+  aug: 8,
+  august: 8,
+  sep: 9,
+  sept: 9,
+  september: 9,
+  oct: 10,
+  october: 10,
+  nov: 11,
+  november: 11,
+  dec: 12,
+  december: 12,
+  // Russian / Ukrainian shortforms that occasionally leak out of bilingual CVs
+  янв: 1,
+  январь: 1,
+  січ: 1,
+  січень: 1,
+  фев: 2,
+  февраль: 2,
+  лют: 2,
+  лютий: 2,
+  мар: 3,
+  март: 3,
+  бер: 3,
+  березень: 3,
+  апр: 4,
+  апрель: 4,
+  кві: 4,
+  квітень: 4,
+  май: 5,
+  травень: 5,
+  июн: 6,
+  июнь: 6,
+  чер: 6,
+  червень: 6,
+  июл: 7,
+  июль: 7,
+  лип: 7,
+  липень: 7,
+  авг: 8,
+  август: 8,
+  сер: 8,
+  серпень: 8,
+  сен: 9,
+  сентябрь: 9,
+  вер: 9,
+  вересень: 9,
+  окт: 10,
+  октябрь: 10,
+  жов: 10,
+  жовтень: 10,
+  ноя: 11,
+  ноябрь: 11,
+  лис: 11,
+  листопад: 11,
+  дек: 12,
+  декабрь: 12,
+  гру: 12,
+  грудень: 12,
+};
