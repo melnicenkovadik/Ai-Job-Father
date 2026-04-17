@@ -22,35 +22,74 @@ const optionalString = (min = 0, max = 200) =>
 
 const cefrLevel = z.enum(CEFR_LEVELS);
 
+const PRESENT_WORDS =
+  /^(present|now|current|currently|ongoing|нині|зараз|настоящее|attuale|obecnie|oggi|teraz)$/iu;
+
+/**
+ * Coerce a month string into strict `YYYY-MM` form.
+ * Accepts `YYYY`, `YYYY-MM`, `YYYY-MM-DD`, `YYYY/MM`, `YYYY.MM`. Rejects
+ * anything else with the standard Zod "YYYY-MM" message so the client UX
+ * can highlight the offending row.
+ */
+const monthSchema = z.string().transform((raw, ctx) => {
+  const trimmed = raw.trim();
+  if (/^\d{4}-(0[1-9]|1[0-2])$/.test(trimmed)) return trimmed;
+  if (/^\d{4}$/.test(trimmed)) return `${trimmed}-01`;
+  const m = /^(\d{4})[-/.](\d{1,2})(?:[-/.]\d{1,2})?$/.exec(trimmed);
+  if (m?.[1] && m[2]) {
+    const month = Number.parseInt(m[2], 10);
+    if (month >= 1 && month <= 12) return `${m[1]}-${String(month).padStart(2, '0')}`;
+  }
+  ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'YYYY-MM' });
+  return z.NEVER;
+});
+
+/**
+ * Like `monthSchema`, but `null` + "present"-style strings also collapse to
+ * `null`. Used for `experience[*].endMonth` where "currently working".
+ */
+const endMonthSchema = z
+  .union([z.string(), z.null()])
+  .transform((raw, ctx) => {
+    if (raw === null) return null;
+    const trimmed = raw.trim();
+    if (trimmed.length === 0) return null;
+    if (PRESENT_WORDS.test(trimmed)) return null;
+    if (/^\d{4}-(0[1-9]|1[0-2])$/.test(trimmed)) return trimmed;
+    if (/^\d{4}$/.test(trimmed)) return `${trimmed}-01`;
+    const m = /^(\d{4})[-/.](\d{1,2})(?:[-/.]\d{1,2})?$/.exec(trimmed);
+    if (m?.[1] && m[2]) {
+      const month = Number.parseInt(m[2], 10);
+      if (month >= 1 && month <= 12) return `${m[1]}-${String(month).padStart(2, '0')}`;
+    }
+    ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'YYYY-MM or null' });
+    return z.NEVER;
+  });
+
 const skill = z.object({
-  name: z.string().min(1).max(40),
+  name: z
+    .string()
+    .trim()
+    .min(1)
+    .transform((s) => s.slice(0, 80)),
   years: z.number().int().min(0).max(30).optional(),
   level: cefrLevel.optional(),
 });
 
 const experienceEntry = z.object({
-  company: z.string().min(1).max(120),
-  role: z.string().min(1).max(120),
-  startMonth: z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/, 'YYYY-MM'),
-  endMonth: z
-    .string()
-    .regex(/^\d{4}-(0[1-9]|1[0-2])$/, 'YYYY-MM')
-    .nullable(),
-  description: z.string().max(2000).optional(),
-  stack: z.array(z.string().min(1).max(40)).max(30).optional(),
+  company: z.string().trim().min(1).max(120),
+  role: z.string().trim().min(1).max(120),
+  startMonth: monthSchema,
+  endMonth: endMonthSchema,
+  description: z.string().max(4000).optional(),
+  stack: z.array(z.string().trim().min(1).max(80)).max(50).optional(),
 });
 
 const educationEntry = z.object({
-  school: z.string().min(1).max(120),
-  degree: z.string().max(120).optional(),
-  startMonth: z
-    .string()
-    .regex(/^\d{4}-(0[1-9]|1[0-2])$/, 'YYYY-MM')
-    .optional(),
-  endMonth: z
-    .string()
-    .regex(/^\d{4}-(0[1-9]|1[0-2])$/, 'YYYY-MM')
-    .optional(),
+  school: z.string().trim().min(1).max(160),
+  degree: z.string().trim().max(200).optional(),
+  startMonth: monthSchema.optional(),
+  endMonth: monthSchema.optional(),
 });
 
 const languageEntry = z.object({
@@ -88,7 +127,7 @@ export const profileDraftSchema = z.object({
     .or(z.literal('').transform(() => undefined)),
   yearsTotal: z.number().int().min(0).max(80).optional(),
   englishLevel: cefrLevel.optional(),
-  skills: z.array(skill).max(80).default([]),
+  skills: z.array(skill).max(100).default([]),
   experience: z.array(experienceEntry).max(30).default([]),
   education: z.array(educationEntry).max(20).default([]),
   languages: z.array(languageEntry).max(20).default([]),
