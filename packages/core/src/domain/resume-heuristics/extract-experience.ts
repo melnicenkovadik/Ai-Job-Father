@@ -166,7 +166,12 @@ const DATE_RANGE_RE = new RegExp(
 );
 const SINGLE_YEAR_RE = /\b(\d{4})\b/;
 
-const COMPANY_ROLE_SEPS = /\s*[—–]\s*|\s+at\s+|\s+в\s+|\s+у\s+|\s+@\s+|\s+,\s+/u;
+/**
+ * Recognised separators between company and role on the header line.
+ * Order of alternation matters — the widest-match seps come first so `|`
+ * (the most common in modern CV templates) wins over the rest.
+ */
+const COMPANY_ROLE_SEPS = /\s*\|\s*|\s*[—–]\s*|\s+at\s+|\s+в\s+|\s+у\s+|\s+@\s+/u;
 
 interface DateRange {
   readonly start: string;

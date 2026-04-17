@@ -30,15 +30,33 @@ export function extractEducation(educationBody: string): readonly EducationEntry
   return out;
 }
 
+const DEGREE_KEYWORDS =
+  /\b(master'?s?|bachelor'?s?|phd|doctorate|doctor|diploma|bsc|msc|mba|ba|ma|степінь|ступінь|ступень|степень|магістр|магистр|бакалавр|laurea|magistrale|licenciatura|licencjat|magister|inżynier)\b/iu;
+
 function parseEducationEntry(chunk: string): EducationEntry | null {
   const { startMonth, endMonth, text } = stripDates(chunk);
-  const lines = text
-    .split(/\n|\s*[—–|]\s*/)
+  const fragments = text
+    .split(/\n|\s*[—–|]\s*|\s*,\s*/)
     .map((l) => l.replace(/^[\s,;:]+|[\s,;:]+$/g, '').trim())
-    .filter(Boolean);
-  const school = lines[0];
-  if (!school || school.length > 120) return null;
-  const degree = lines[1]?.length && lines[1].length <= 120 ? lines[1] : undefined;
+    .filter((l) => l.length > 0 && l.length <= 120);
+  if (fragments.length === 0) return null;
+
+  // Heuristic: if the first fragment looks like a degree ("Master's in …",
+  // "BSc", "Бакалавр") and the second looks like a place, swap them so
+  // `school` always carries the institution.
+  let school: string | undefined;
+  let degree: string | undefined;
+  const first = fragments[0];
+  const second = fragments[1];
+  if (first && second && DEGREE_KEYWORDS.test(first) && !DEGREE_KEYWORDS.test(second)) {
+    degree = first;
+    school = second;
+  } else {
+    school = first;
+    degree = second;
+  }
+
+  if (!school) return null;
   return {
     school,
     ...(degree !== undefined ? { degree } : {}),

@@ -36,10 +36,16 @@ export interface Section {
 const HEADING_MAP: ReadonlyMap<string, SectionKey> = new Map([
   // ---- summary ----
   ['summary', 'summary'],
+  ['professional summary', 'summary'],
+  ['personal summary', 'summary'],
+  ['career summary', 'summary'],
   ['profile', 'summary'],
+  ['professional profile', 'summary'],
   ['about', 'summary'],
   ['about me', 'summary'],
   ['objective', 'summary'],
+  ['career objective', 'summary'],
+  ['bio', 'summary'],
   ['про себе', 'summary'],
   ['профіль', 'summary'],
   ['короткий опис', 'summary'],
