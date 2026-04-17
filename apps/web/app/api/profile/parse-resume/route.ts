@@ -1,14 +1,15 @@
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-import { createHeuristicResumeParser } from '@/lib/resume/heuristic-parser';
 import { requireAuth } from '@/lib/telegram/auth-middleware';
 import {
   ResumeFormatError,
   ResumeParseError,
   ResumeParserUnavailableError,
   ResumeRateLimitError,
+  parseResumeText,
 } from '@ai-job-bot/core';
+import { extractText } from 'unpdf';
 
 /**
  * Free-tier resume parse endpoint.
