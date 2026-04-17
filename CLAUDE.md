@@ -54,9 +54,13 @@ Any violation of these rules is a lint error. Don't suppress; restructure.
 
 - No bare user-facing strings. Every string is `t('key.path')`.
 - Five locales: `en | uk | ru | it | pl`. Default `en`, auto-detected from
-  `initData.user.language_code`.
-- Real translations land in Phase 6. Phase 1-5: EN + stubbed keys for others.
-- Biome i18n rule activates in Phase 1 when `next-intl` is wired.
+  `initData.user.language_code`; user override via Settings cookie (Phase 5).
+- Real translations land in Phase 6. Phase 1-5: EN + `[LOCALE] ...` prefixed stubs for
+  others — missing translations stay visually obvious during dev.
+- `apps/web/messages/messages-parity.test.ts` blocks PRs that add a key to one locale
+  without adding it to the other four.
+- "No bare strings" is **manually reviewed** in Phase 1-5 (D1.10). Custom Biome plugin /
+  codemod lands in Phase 6 alongside real translations.
 
 ## 7. Telegram Auth Rule
 
@@ -65,8 +69,12 @@ Any violation of these rules is a lint error. Don't suppress; restructure.
 - **Never** trust `window.Telegram.WebApp.initDataUnsafe`.
 - `initData.auth_date` freshness: ≤ 24h for reads, ≤ 1h for payment endpoints.
 - Bot webhook verifies `X-Telegram-Bot-Api-Secret-Token` header (different trust path).
+- `scripts/set-webhook.ts` always passes `secret_token` to Telegram's `setWebhook` API;
+  re-run after every `ngrok` session (free tier rotates subdomain per run).
+- Supabase JWT TTL is 15 minutes. Browser silently re-posts `initData` on 401.
 - Any module importing `SUPABASE_SERVICE_ROLE_KEY` or `SUPABASE_JWT_SECRET` MUST also import
-  `server-only` (Biome rule activates in Phase 1).
+  `server-only`. Biome `noRestrictedImports` enforcement on missing `server-only` is a
+  Phase 7 hardening task (manual review until then).
 
 ## 8. Payment Idempotency
 
@@ -168,10 +176,10 @@ Explicitly deferred to post-MVP:
 
 | Phase | Status | Outcome |
 |---|---|---|
-| 0 — Bootstrap & scaffolding | in progress | `pnpm dev` boots, `/api/health` returns 200 |
-| 1 — Bot + Mini App skeleton + auth | pending | `/start` → users row, UI contract shipped |
+| 0 — Bootstrap & scaffolding | **shipped** 2026-04-16 | `pnpm dev` boots, `/api/health` returns 200 |
+| 1 — Bot + Mini App skeleton + auth | **shipped** 2026-04-17 | `/start` → users row, UI contract shipped, greeting renders |
 | 2 — Profile + AI resume parse | pending | PDF → AI parse → profile saved |
-| 3 — Campaign wizard | pending | 8-step wizard → draft campaign |
+| 3 — Campaign wizard | pending | **3-screen** wizard (per `~/.claude/plans/lucky-noodling-pike.md`) → draft campaign |
 | 4 — Payments (Stars + TON) | pending | paid → snapshot frozen |
 | 5 — Dashboard & notifications | pending | returning user sees dashboard + pushes |
 | 6 — i18n + a11y + theme polish | pending | 5 locales, WCAG AA |
@@ -182,5 +190,30 @@ Explicitly deferred to post-MVP:
 - **Adding a port?** `packages/core/src/application/ports/<name>.ts` — interface only.
 - **Adding an adapter?** `apps/web/lib/<provider>/<name>.ts` — imports port, implements it.
 - **Adding a UI feature?** `apps/web/features/<feature>/` — consumes use cases only.
+- **Building a screen?** Compose `<Screen>` + `<Scroll>` + `<Stack>` / `<Row>` /
+  `<Section>` / `<FieldGroup>` / `<HScroll>` / `<Clamp>` from `@/components/ui/layout`.
+  Never write raw `<div className="flex ...">` — the primitives carry the
+  min-w-0 / overflow-wrap / safe-area / touch-target invariants.
 - **Writing a migration?** `packages/db/supabase/migrations/YYYYMMDDHHMMSS_<slug>.sql`.
 - **Need a new env var?** Add to `.env.example` + `apps/web/lib/env.ts` + note its phase.
+
+## 20. Responsive UI Contract (enforced from Phase 1)
+
+See `docs/features/ui-contract.md` for the full spec. Core rules:
+
+- **One primitive per layout job.** `<Screen>` roots, `<Scroll>` is the sole owner of
+  `overflow-y`, `<HScroll>` is the sole owner of `overflow-x`. Body never scrolls.
+- **`min-w-0` on every text-carrying flex child.** Built into the primitives; don't fight it.
+- **No `100vh`.** Use `min-h-[var(--tg-viewport-height,100vh)]` via `<Screen>`.
+- **No fixed pixel widths** in feature code (`w-[Npx]`). Primitives are allowed; features
+  are not. Enforcement is code review in Phase 1-5; custom Biome plugin in Phase 6.
+- **Any `fixed|absolute|translate|sticky`** in feature code requires a
+  `/* layout-safe: <rationale> */` comment on the same line.
+- **Touch targets ≥ 44×44 px** via `min-h-[2.75rem]` on interactive elements.
+- **Telegram MainButton reserve** — `<Screen>` defaults `reserveMainButton={true}` which
+  adds 96px bottom padding. Only disable on dev fixtures.
+- **Theme comes from CSS variables** set by `<ThemeBridge>` from `Telegram.WebApp.themeParams`.
+  Automatic light/dark parity; no `dark:` class needed.
+- **Visual regression baselines** live under Playwright; first-run baselines are blessed
+  manually (`--update-snapshots`), subsequent runs compare. Re-bless only when a primitive
+  genuinely changed.
