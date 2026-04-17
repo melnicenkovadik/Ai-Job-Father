@@ -84,7 +84,8 @@
       "years": "[UK] Years",
       "language": "[UK] Language",
       "level": "[UK] Level",
-      "present": "[UK] Current"
+      "present": "[UK] Current",
+      "optional": "[UK] optional"
     },
     "actions": {
       "save": "[UK] Save profile",

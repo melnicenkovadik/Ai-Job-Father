@@ -20,6 +20,30 @@ import { useEffect, useState } from 'react';
 
 const PROFILE_QUERY_KEY = ['profile', 'me'] as const;
 
+class SaveError extends Error {
+  constructor(
+    public readonly status: number,
+    public readonly code: string,
+    public readonly body: { error?: string; issues?: { path: string; message: string }[] },
+  ) {
+    super(`save_${status}_${code}`);
+    this.name = 'SaveError';
+  }
+}
+
+function formatSaveError(err: SaveError): string {
+  const lines: string[] = [`HTTP ${err.status} · ${err.code}`];
+  if (err.body.issues && err.body.issues.length > 0) {
+    for (const issue of err.body.issues.slice(0, 10)) {
+      lines.push(`  ${issue.path}: ${issue.message}`);
+    }
+    if (err.body.issues.length > 10) {
+      lines.push(`  … and ${err.body.issues.length - 10} more`);
+    }
+  }
+  return lines.join('\n');
+}
+
 export default function ProfilePage() {
   const t = useTranslations('profile');
   const queryClient = useQueryClient();
@@ -46,7 +70,8 @@ export default function ProfilePage() {
     }
   }, [query.data]);
 
-  const saveMutation = useMutation<ProfileDto, Error, ProfileDraft>({
+  const [saveErrorDetail, setSaveErrorDetail] = useState<string | null>(null);
+  const saveMutation = useMutation<ProfileDto, SaveError, ProfileDraft>({
     mutationFn: async (draft) => {
       const body = draftToWire(draft);
       const existing = query.data;
@@ -59,7 +84,12 @@ export default function ProfilePage() {
         body: JSON.stringify(body),
       });
       if (!res.ok) {
-        throw new Error(`save_${res.status}`);
+        const errBody = (await res.json().catch(() => ({}))) as {
+          error?: string;
+          issues?: { path: string; message: string }[];
+          message?: string;
+        };
+        throw new SaveError(res.status, errBody.error ?? 'internal', errBody);
       }
       return (await res.json()) as ProfileDto;
     },
@@ -67,8 +97,12 @@ export default function ProfilePage() {
       queryClient.setQueryData(PROFILE_QUERY_KEY, saved);
       draftState.reset(saved);
       setSaveBanner('success');
+      setSaveErrorDetail(null);
     },
-    onError: () => setSaveBanner('error'),
+    onError: (err) => {
+      setSaveBanner('error');
+      setSaveErrorDetail(formatSaveError(err));
+    },
   });
 
   useEffect(() => {
@@ -111,9 +145,14 @@ export default function ProfilePage() {
           )}
           {saveBanner === 'error' && (
             <Section>
-              <p className="rounded-md bg-red-500/10 px-3 py-2 text-sm text-red-700 dark:text-red-300">
-                {t('save.error')}
-              </p>
+              <div className="rounded-md bg-red-500/10 px-3 py-2 text-sm text-red-700 dark:text-red-300">
+                <p>{t('save.error')}</p>
+                {saveErrorDetail && (
+                  <pre className="mt-2 max-h-40 overflow-auto whitespace-pre-wrap text-[11px] opacity-80">
+                    {saveErrorDetail}
+                  </pre>
+                )}
+              </div>
             </Section>
           )}
 

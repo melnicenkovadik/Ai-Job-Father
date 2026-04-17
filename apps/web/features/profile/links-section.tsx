@@ -15,6 +15,7 @@ const INPUT_CLASS =
 
 export function LinksSection({ draft, patch }: LinksSectionProps) {
   const t = useTranslations('profile');
+  const optionalTag = t('field.optional');
   const emailId = useId();
   const phoneId = useId();
   const liId = useId();
@@ -23,7 +24,7 @@ export function LinksSection({ draft, patch }: LinksSectionProps) {
 
   return (
     <Section title={`🔗 ${t('section.links')}`}>
-      <FieldGroup id={emailId} label={t('field.email')}>
+      <FieldGroup id={emailId} label={`${t('field.email')} (${optionalTag})`}>
         <input
           id={emailId}
           type="email"
@@ -36,7 +37,7 @@ export function LinksSection({ draft, patch }: LinksSectionProps) {
         />
       </FieldGroup>
 
-      <FieldGroup id={phoneId} label={t('field.phone')}>
+      <FieldGroup id={phoneId} label={`${t('field.phone')} (${optionalTag})`}>
         <input
           id={phoneId}
           type="tel"
@@ -49,7 +50,7 @@ export function LinksSection({ draft, patch }: LinksSectionProps) {
         />
       </FieldGroup>
 
-      <FieldGroup id={liId} label={t('field.linkedin')}>
+      <FieldGroup id={liId} label={`${t('field.linkedin')} (${optionalTag})`}>
         <input
           id={liId}
           type="url"
@@ -62,7 +63,7 @@ export function LinksSection({ draft, patch }: LinksSectionProps) {
         />
       </FieldGroup>
 
-      <FieldGroup id={ghId} label={t('field.github')}>
+      <FieldGroup id={ghId} label={`${t('field.github')} (${optionalTag})`}>
         <input
           id={ghId}
           type="url"
@@ -75,7 +76,7 @@ export function LinksSection({ draft, patch }: LinksSectionProps) {
         />
       </FieldGroup>
 
-      <FieldGroup id={portfolioId} label={t('field.portfolio')}>
+      <FieldGroup id={portfolioId} label={`${t('field.portfolio')} (${optionalTag})`}>
         <input
           id={portfolioId}
           type="url"

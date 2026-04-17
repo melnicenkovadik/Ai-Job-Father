@@ -84,7 +84,8 @@
       "years": "[RU] Years",
       "language": "[RU] Language",
       "level": "[RU] Level",
-      "present": "[RU] Current"
+      "present": "[RU] Current",
+      "optional": "[RU] optional"
     },
     "actions": {
       "save": "[RU] Save profile",

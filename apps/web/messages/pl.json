@@ -84,7 +84,8 @@
       "years": "[PL] Years",
       "language": "[PL] Language",
       "level": "[PL] Level",
-      "present": "[PL] Current"
+      "present": "[PL] Current",
+      "optional": "[PL] optional"
     },
     "actions": {
       "save": "[PL] Save profile",

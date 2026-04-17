@@ -15,7 +15,16 @@ interface IdentitySectionProps {
 const INPUT_CLASS =
   'min-h-[2.75rem] w-full min-w-0 rounded-md border border-[color:var(--color-hint,#999)]/30 bg-[var(--color-bg)] px-3 text-sm text-[var(--color-text)] outline-none focus:border-[var(--color-link,#2481CC)]';
 
+const INPUT_ERROR_CLASS =
+  'min-h-[2.75rem] w-full min-w-0 rounded-md border border-red-500 bg-[var(--color-bg)] px-3 text-sm text-[var(--color-text)] outline-none focus:border-red-600';
+
 const TEXTAREA_CLASS = `${INPUT_CLASS} min-h-[5.5rem] py-2`;
+
+type Translator = ReturnType<typeof useTranslations<'profile'>>;
+
+function labelOptional(label: string, t: Translator): string {
+  return `${label} (${t('field.optional')})`;
+}
 
 export function IdentitySection({ draft, patch, nameError }: IdentitySectionProps) {
   const t = useTranslations('profile');
@@ -29,7 +38,7 @@ export function IdentitySection({ draft, patch, nameError }: IdentitySectionProp
 
   return (
     <Section title={`👤 ${t('section.identity')}`}>
-      <FieldGroup id={nameId} label={`${t('field.name')} *`} error={nameError}>
+      <FieldGroup id={nameId} label={t('field.name')} error={nameError}>
         <input
           id={nameId}
           type="text"
@@ -37,11 +46,12 @@ export function IdentitySection({ draft, patch, nameError }: IdentitySectionProp
           onChange={(e) => patch('name', e.currentTarget.value.slice(0, 40))}
           maxLength={40}
           required
-          className={INPUT_CLASS}
+          className={nameError ? INPUT_ERROR_CLASS : INPUT_CLASS}
+          aria-invalid={nameError !== undefined}
         />
       </FieldGroup>
 
-      <FieldGroup id={fullNameId} label={t('field.fullName')}>
+      <FieldGroup id={fullNameId} label={labelOptional(t('field.fullName'), t)}>
         <input
           id={fullNameId}
           type="text"
@@ -52,7 +62,11 @@ export function IdentitySection({ draft, patch, nameError }: IdentitySectionProp
         />
       </FieldGroup>
 
-      <FieldGroup id={headlineId} label={t('field.headline')} hint={t('field.headlineHint')}>
+      <FieldGroup
+        id={headlineId}
+        label={labelOptional(t('field.headline'), t)}
+        hint={t('field.headlineHint')}
+      >
         <input
           id={headlineId}
           type="text"
@@ -63,7 +77,7 @@ export function IdentitySection({ draft, patch, nameError }: IdentitySectionProp
         />
       </FieldGroup>
 
-      <FieldGroup id={summaryId} label={t('field.summary')}>
+      <FieldGroup id={summaryId} label={labelOptional(t('field.summary'), t)}>
         <textarea
           id={summaryId}
           value={draft.summary}
@@ -75,7 +89,11 @@ export function IdentitySection({ draft, patch, nameError }: IdentitySectionProp
       </FieldGroup>
 
       <Row gap={2}>
-        <FieldGroup id={locationId} label={t('field.location')} className="flex-1">
+        <FieldGroup
+          id={locationId}
+          label={labelOptional(t('field.location'), t)}
+          className="flex-1"
+        >
           <input
             id={locationId}
             type="text"
@@ -85,7 +103,11 @@ export function IdentitySection({ draft, patch, nameError }: IdentitySectionProp
             className={INPUT_CLASS}
           />
         </FieldGroup>
-        <FieldGroup id={timezoneId} label={t('field.timezone')} className="flex-1">
+        <FieldGroup
+          id={timezoneId}
+          label={labelOptional(t('field.timezone'), t)}
+          className="flex-1"
+        >
           <input
             id={timezoneId}
             type="text"
@@ -98,7 +120,7 @@ export function IdentitySection({ draft, patch, nameError }: IdentitySectionProp
         </FieldGroup>
       </Row>
 
-      <FieldGroup id={yearsId} label={t('field.yearsTotal')}>
+      <FieldGroup id={yearsId} label={labelOptional(t('field.yearsTotal'), t)}>
         <input
           id={yearsId}
           type="number"
@@ -119,7 +141,7 @@ export function IdentitySection({ draft, patch, nameError }: IdentitySectionProp
         />
       </FieldGroup>
 
-      <FieldGroup label={t('field.englishLevel')}>
+      <FieldGroup label={labelOptional(t('field.englishLevel'), t)}>
         <Row gap={1} wrap>
           {CEFR_LEVELS.map((level) => (
             <LevelChip
