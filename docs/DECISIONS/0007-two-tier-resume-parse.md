@@ -1,10 +1,41 @@
 # ADR 0007 — Two-tier resume parsing: heuristic free-tier + OpenAI paid-tier
 
-- **Status:** Accepted
+- **Status:** Accepted (schedule-amended 2026-04-17 evening)
 - **Date:** 2026-04-17
 - **Supersedes in part:** ADR 0006 (single-provider OpenAI adapter as the
   only implementation). OpenAI remains the paid-tier adapter; heuristics
   take over the default path.
+
+## 2026-04-17 schedule amendment
+
+Live test on a real 3-page technical CV ("Company | Role" headers,
+"Professional Summary" block, colon-prefixed skill categories) filled
+only **2 of 12 fields** via the heuristic pipeline. Root cause:
+`unpdf` collapses the layout enough that the section-split dictionary
+mostly misses, and the contact regex is the only thing that survives.
+
+We want users to hit a profile draft that's 70-80 % populated from the
+first upload, not 15 %. So until the Phase-4 Stars paywall ships, the
+**primary parser in production is OpenAI gpt-5.1** — free of charge,
+driven by the `OPENAI_API_KEY` that's already deployed.
+
+What doesn't change:
+- Both adapters remain behind the same `ResumeParser` port.
+- Heuristic pipeline stays in-repo and runs as the automatic fallback
+  when the OpenAI call returns `ResumeParserUnavailableError`
+  (missing key / 401 / 403).
+- Phase 4 still introduces the Stars gate: the AI-tier endpoint will
+  require a paid receipt; free-tier users fall back to the heuristic
+  parser (which will keep getting hardened with every real-world layout
+  we collect).
+
+What does change:
+- The original plan ("free heuristic from day one, AI paid from Phase 4")
+  becomes **"AI free until Phase 4, then paid; heuristic is the fallback
+  until its quality matches"**.
+- Unit-economics impact: one OpenAI call per upload × MVP traffic.
+  At ~$0.015 per resume and the expected Phase-2 volume, the cost is
+  negligible compared to the conversion improvement.
 
 ## Context
 

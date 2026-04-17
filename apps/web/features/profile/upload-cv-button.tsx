@@ -15,7 +15,6 @@ interface SuccessBanner {
   readonly kind: 'success';
   readonly filled: number;
   readonly total: number;
-  readonly parsed: ParsedResume;
 }
 interface ErrorBanner {
   readonly kind: 'error';
@@ -69,7 +68,7 @@ export function UploadCvButton({ onParsed }: UploadCvButtonProps) {
     onSuccess: (parsed) => {
       onParsed(parsed);
       const filled = countFilledFromParsed(parsed);
-      setBanner({ kind: 'success', filled, total: 12, parsed });
+      setBanner({ kind: 'success', filled, total: 12 });
     },
     onError: (err) => {
       setBanner({ kind: 'error', code: err.code });
@@ -106,12 +105,6 @@ export function UploadCvButton({ onParsed }: UploadCvButtonProps) {
       {banner?.kind === 'success' && (
         <output className="block rounded-md bg-green-500/10 px-3 py-2 text-sm text-green-700 dark:text-green-300 [overflow-wrap:anywhere]">
           ✓ {t('success', { filled: banner.filled, total: banner.total })}
-          <details className="mt-2 text-xs opacity-80">
-            <summary className="cursor-pointer">debug · what the parser returned</summary>
-            <pre className="mt-1 max-h-64 overflow-auto whitespace-pre-wrap rounded bg-black/10 p-2 text-[11px] leading-snug">
-              {JSON.stringify(banner.parsed, null, 2)}
-            </pre>
-          </details>
         </output>
       )}
       {banner?.kind === 'error' && (

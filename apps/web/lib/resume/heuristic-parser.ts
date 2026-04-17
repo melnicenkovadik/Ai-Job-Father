@@ -39,13 +39,6 @@ async function extractPdfText(bytes: Uint8Array): Promise<string> {
   try {
     const { text } = await extractText(bytes, { mergePages: true });
     const trimmed = text.trim();
-    // Temporary diagnostic: see what unpdf actually got out of the file.
-    // eslint-disable-next-line no-console
-    console.log('unpdf-extract:', {
-      bytes: bytes.length,
-      chars: trimmed.length,
-      head: trimmed.slice(0, 400).replace(/\n/g, '\\n'),
-    });
     if (trimmed.length < 200) {
       throw new ResumeFormatError(
         `Extracted only ${trimmed.length} chars — likely a scanned PDF. Upload a text-based CV or enable AI parse (Stars).`,
