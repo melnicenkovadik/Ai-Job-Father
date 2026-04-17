@@ -1,5 +1,6 @@
 'use client';
 
+import { useTelegramBackButton } from '@/components/telegram/use-back-button';
 import { Screen, Scroll, Section, Stack } from '@/components/ui/layout';
 import { EducationSection } from '@/features/profile/education-section';
 import { ExperienceSection } from '@/features/profile/experience-section';
@@ -16,6 +17,7 @@ import type { ProfileDto } from '@/lib/profile/schema';
 import type { ParsedResume } from '@ai-job-bot/core';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 const PROFILE_QUERY_KEY = ['profile', 'me'] as const;
@@ -46,8 +48,10 @@ function formatSaveError(err: SaveError): string {
 
 export default function ProfilePage() {
   const t = useTranslations('profile');
+  const router = useRouter();
   const queryClient = useQueryClient();
   const [saveBanner, setSaveBanner] = useState<'success' | 'error' | null>(null);
+  useTelegramBackButton('/');
 
   const query = useQuery<ProfileDto | null>({
     queryKey: PROFILE_QUERY_KEY,
@@ -98,6 +102,9 @@ export default function ProfilePage() {
       draftState.reset(saved);
       setSaveBanner('success');
       setSaveErrorDetail(null);
+      // Auto-return to home so the user doesn't feel stuck on a "saved"
+      // screen with no exit. Brief delay keeps the green confirmation visible.
+      setTimeout(() => router.push('/'), 1500);
     },
     onError: (err) => {
       setSaveBanner('error');
