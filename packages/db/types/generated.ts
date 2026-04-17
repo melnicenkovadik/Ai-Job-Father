@@ -7,33 +7,118 @@ export type Json =
   | Json[]
 
 export type Database = {
-  graphql_public: {
-    Tables: {
-      [_ in never]: never
-    }
-    Views: {
-      [_ in never]: never
-    }
-    Functions: {
-      graphql: {
-        Args: {
-          extensions?: Json
-          operationName?: string
-          query?: string
-          variables?: Json
-        }
-        Returns: Json
-      }
-    }
-    Enums: {
-      [_ in never]: never
-    }
-    CompositeTypes: {
-      [_ in never]: never
-    }
-  }
   public: {
     Tables: {
+      profiles: {
+        Row: {
+          address: string | null
+          category_fields: Json
+          created_at: string
+          education: Json
+          email: string | null
+          english_level: string | null
+          experience: Json
+          full_name: string | null
+          github_url: string | null
+          headline: string | null
+          id: string
+          is_default: boolean
+          languages: Json
+          linkedin_url: string | null
+          location: string | null
+          name: string
+          phone: string | null
+          portfolio_url: string | null
+          preferred_categories: Database["public"]["Enums"]["job_category"][]
+          resume_file_hash: string | null
+          resume_parse_model: string | null
+          resume_parsed_at: string | null
+          resume_storage_path: string | null
+          skills: Json
+          summary: string | null
+          telegram_url: string | null
+          timezone: string | null
+          twitter_url: string | null
+          updated_at: string
+          user_id: string
+          years_total: number | null
+        }
+        Insert: {
+          address?: string | null
+          category_fields?: Json
+          created_at?: string
+          education?: Json
+          email?: string | null
+          english_level?: string | null
+          experience?: Json
+          full_name?: string | null
+          github_url?: string | null
+          headline?: string | null
+          id?: string
+          is_default?: boolean
+          languages?: Json
+          linkedin_url?: string | null
+          location?: string | null
+          name: string
+          phone?: string | null
+          portfolio_url?: string | null
+          preferred_categories?: Database["public"]["Enums"]["job_category"][]
+          resume_file_hash?: string | null
+          resume_parse_model?: string | null
+          resume_parsed_at?: string | null
+          resume_storage_path?: string | null
+          skills?: Json
+          summary?: string | null
+          telegram_url?: string | null
+          timezone?: string | null
+          twitter_url?: string | null
+          updated_at?: string
+          user_id: string
+          years_total?: number | null
+        }
+        Update: {
+          address?: string | null
+          category_fields?: Json
+          created_at?: string
+          education?: Json
+          email?: string | null
+          english_level?: string | null
+          experience?: Json
+          full_name?: string | null
+          github_url?: string | null
+          headline?: string | null
+          id?: string
+          is_default?: boolean
+          languages?: Json
+          linkedin_url?: string | null
+          location?: string | null
+          name?: string
+          phone?: string | null
+          portfolio_url?: string | null
+          preferred_categories?: Database["public"]["Enums"]["job_category"][]
+          resume_file_hash?: string | null
+          resume_parse_model?: string | null
+          resume_parsed_at?: string | null
+          resume_storage_path?: string | null
+          skills?: Json
+          summary?: string | null
+          telegram_url?: string | null
+          timezone?: string | null
+          twitter_url?: string | null
+          updated_at?: string
+          user_id?: string
+          years_total?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profiles_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       users: {
         Row: {
           created_at: string
@@ -82,7 +167,19 @@ export type Database = {
       show_trgm: { Args: { "": string }; Returns: string[] }
     }
     Enums: {
-      [_ in never]: never
+      job_category:
+        | "tech"
+        | "design"
+        | "marketing"
+        | "sales"
+        | "product"
+        | "finance"
+        | "hr"
+        | "support"
+        | "content"
+        | "ops"
+        | "data"
+        | "web3"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -208,11 +305,23 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
-  graphql_public: {
-    Enums: {},
-  },
   public: {
-    Enums: {},
+    Enums: {
+      job_category: [
+        "tech",
+        "design",
+        "marketing",
+        "sales",
+        "product",
+        "finance",
+        "hr",
+        "support",
+        "content",
+        "ops",
+        "data",
+        "web3",
+      ],
+    },
   },
 } as const
 
