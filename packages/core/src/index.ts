@@ -12,5 +12,7 @@ export * from './domain/snapshot';
 export * from './application/ports/clock';
 export * from './application/ports/user-repo';
 export * from './application/ports/profile-repo';
+export * from './application/ports/resume-parser';
 export * from './application/upsert-user';
 export * from './application/save-profile';
+export * from './application/parse-resume';
