@@ -90,7 +90,7 @@ export function UploadCvButton({ onParsed }: UploadCvButtonProps) {
         disabled={mutation.isPending}
         className="inline-flex min-h-[2.75rem] w-full items-center justify-center rounded-lg bg-[var(--color-button,#2481CC)] px-4 text-sm font-medium text-[var(--color-button-text,#ffffff)] disabled:opacity-60"
       >
-        {mutation.isPending ? `⏳ ${t('parsing')}` : `📎 ${t('label')}`}
+        {mutation.isPending ? `⏳ ${t('parsing')}` : t('label')}
       </button>
       <input
         ref={inputRef}

@@ -33,8 +33,8 @@
     "defaultName": "[RU] Default profile",
     "loading": "[RU] Loading profile...",
     "upload": {
-      "label": "[RU] Upload CV (auto-fill)",
-      "parsing": "[RU] Parsing CV...",
+      "label": "[RU] ✨ AI-fill from CV",
+      "parsing": "[RU] AI is reading your CV...",
       "success": "[RU] Done · {filled} / {total} fields filled",
       "error": {
         "format": "[RU] Couldn't read the PDF. Try another file or fill the form manually.",

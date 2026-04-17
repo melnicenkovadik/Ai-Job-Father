@@ -1,28 +1,28 @@
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
+import { env } from '@/lib/env';
+import { createOpenAIResumeParser } from '@/lib/openai/resume-parser';
+import { createHeuristicResumeParser } from '@/lib/resume/heuristic-parser';
 import { requireAuth } from '@/lib/telegram/auth-middleware';
 import {
   ResumeFormatError,
   ResumeParseError,
   ResumeParserUnavailableError,
   ResumeRateLimitError,
-  parseResumeText,
 } from '@ai-job-bot/core';
-import { extractText } from 'unpdf';
 
 /**
- * Free-tier resume parse endpoint.
+ * Resume parse endpoint.
+ *
+ * Primary tier: OpenAI gpt-5.1 via the adapter from ADR 0006 (paid with
+ * Stars in Phase 4 — currently free because the payment wall isn't wired
+ * yet). If `OPENAI_API_KEY` is missing or the AI call fails with a
+ * "parser unavailable" error, we fall back to the in-house heuristic
+ * parser (ADR 0007) so the UX never dead-ends.
  *
  * multipart/form-data with `file` (PDF, ≤ 10 MB).
  * Auth'd via the existing initData header flow.
- *
- * Returns a `ParsedResume` JSON on success. Errors map to the four
- * `ResumeParseError` subclasses — the client branches on status code to pick
- * the right inline banner copy (see Profile UI spec §7).
- *
- * The AI-tier parser (OpenAI gpt-5.1, ADR 0006) is NOT wired here — it will
- * live behind a Stars payment gate on a separate route in Phase 4.
  */
 
 const MAX_PDF_BYTES = 10 * 1024 * 1024;
@@ -48,44 +48,50 @@ export const POST = requireAuth(async (req, { user }) => {
       { status: 413 },
     );
   }
-  // Trust client-declared MIME only as a fast-fail; `unpdf` will reject
-  // non-PDFs properly even if the mime says otherwise.
   if (file.type && file.type !== 'application/pdf') {
     return Response.json({ error: 'invalid_mime', mime: file.type }, { status: 415 });
   }
 
   const bytes = new Uint8Array(await file.arrayBuffer());
+  const input = {
+    pdfBytes: bytes,
+    userId: user.id.value,
+    filename: file.name,
+  };
+
+  const aiParser = createOpenAIResumeParser(env.OPENAI_API_KEY, env.OPENAI_RESUME_MODEL);
 
   try {
-    // Inline extract so we can include a raw-text preview in the response
-    // (temporary diagnostic; see ADR 0007 follow-up).
-    const { text } = await extractText(bytes, { mergePages: true });
-    const trimmed = text.trim();
-    if (trimmed.length < 200) {
-      throw new ResumeFormatError(
-        `Extracted only ${trimmed.length} chars — likely a scanned PDF. Upload a text-based CV.`,
-      );
+    const parsed = await aiParser.parse(input);
+    return Response.json(parsed);
+  } catch (aiErr) {
+    if (aiErr instanceof ResumeParserUnavailableError) {
+      // OPENAI_API_KEY missing on this deployment — degrade to heuristics.
+      const heuristic = createHeuristicResumeParser();
+      try {
+        const parsed = await heuristic.parse(input);
+        return Response.json(parsed);
+      } catch (hErr) {
+        return mapParserError(hErr);
+      }
     }
-    const parsed = parseResumeText(trimmed);
-    return Response.json({
-      ...parsed,
-      _rawTextLength: trimmed.length,
-      _rawTextHead: trimmed.slice(0, 3000),
-    });
-  } catch (err) {
-    if (err instanceof ResumeFormatError) {
-      return Response.json({ error: 'format', message: err.message }, { status: 415 });
-    }
-    if (err instanceof ResumeRateLimitError) {
-      return Response.json({ error: 'rate_limit', message: err.message }, { status: 429 });
-    }
-    if (err instanceof ResumeParserUnavailableError) {
-      return Response.json({ error: 'unavailable', message: err.message }, { status: 503 });
-    }
-    if (err instanceof ResumeParseError) {
-      return Response.json({ error: 'parse', message: err.message }, { status: 500 });
-    }
-    console.error('parse-resume: unexpected error', err);
-    return Response.json({ error: 'internal' }, { status: 500 });
+    return mapParserError(aiErr);
   }
 });
+
+function mapParserError(err: unknown): Response {
+  if (err instanceof ResumeFormatError) {
+    return Response.json({ error: 'format', message: err.message }, { status: 415 });
+  }
+  if (err instanceof ResumeRateLimitError) {
+    return Response.json({ error: 'rate_limit', message: err.message }, { status: 429 });
+  }
+  if (err instanceof ResumeParserUnavailableError) {
+    return Response.json({ error: 'unavailable', message: err.message }, { status: 503 });
+  }
+  if (err instanceof ResumeParseError) {
+    return Response.json({ error: 'parse', message: err.message }, { status: 500 });
+  }
+  console.error('parse-resume: unexpected error', err);
+  return Response.json({ error: 'internal' }, { status: 500 });
+}

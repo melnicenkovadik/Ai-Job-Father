@@ -33,8 +33,8 @@
     "defaultName": "[PL] Default profile",
     "loading": "[PL] Loading profile...",
     "upload": {
-      "label": "[PL] Upload CV (auto-fill)",
-      "parsing": "[PL] Parsing CV...",
+      "label": "[PL] ✨ AI-fill from CV",
+      "parsing": "[PL] AI is reading your CV...",
       "success": "[PL] Done · {filled} / {total} fields filled",
       "error": {
         "format": "[PL] Couldn't read the PDF. Try another file or fill the form manually.",
