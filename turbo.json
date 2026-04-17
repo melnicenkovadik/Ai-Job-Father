@@ -1,11 +1,42 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalEnv": ["NODE_ENV"],
+  "globalEnv": [
+    "NODE_ENV",
+    "SKIP_ENV_VALIDATION",
+    "VERCEL",
+    "VERCEL_ENV",
+    "VERCEL_URL",
+    "VERCEL_GIT_COMMIT_SHA",
+    "VERCEL_PROJECT_PRODUCTION_URL"
+  ],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
       "outputs": [".next/**", "!.next/cache/**", "dist/**"],
-      "env": ["SKIP_ENV_VALIDATION"]
+      "env": [
+        "SKIP_ENV_VALIDATION",
+        "SUPABASE_URL",
+        "SUPABASE_ANON_KEY",
+        "SUPABASE_SERVICE_ROLE_KEY",
+        "SUPABASE_JWT_SECRET",
+        "NEXT_PUBLIC_SUPABASE_URL",
+        "NEXT_PUBLIC_SUPABASE_ANON_KEY",
+        "TELEGRAM_BOT_TOKEN",
+        "TELEGRAM_WEBHOOK_SECRET_TOKEN",
+        "NEXT_PUBLIC_APP_URL",
+        "NEXT_PUBLIC_MINI_APP_URL",
+        "ANTHROPIC_API_KEY",
+        "ANTHROPIC_MODEL",
+        "ESCO_API_BASE",
+        "TON_API_KEY",
+        "TON_NETWORK",
+        "TON_MANIFEST_URL",
+        "TON_PAYMENT_RECIPIENT_ADDRESS",
+        "NEXT_PUBLIC_TONCONNECT_MANIFEST_URL",
+        "SENTRY_DSN",
+        "NEXT_PUBLIC_SENTRY_DSN",
+        "SENTRY_AUTH_TOKEN"
+      ]
     },
     "dev": {
       "cache": false,

@@ -9,9 +9,11 @@ export const env = createEnv({
     SUPABASE_ANON_KEY: z.string().min(1),
     SUPABASE_SERVICE_ROLE_KEY: z.string().min(1),
     SUPABASE_JWT_SECRET: z.string().min(1),
-    // Phase 1 — Telegram
-    TELEGRAM_BOT_TOKEN: z.string().min(1),
-    TELEGRAM_WEBHOOK_SECRET_TOKEN: z.string().min(1),
+    // Phase 1 — Telegram. Optional so Vercel preview builds succeed before the user
+    // adds Bot credentials via Project Settings → Environment Variables. At runtime,
+    // consumers throw a helpful error if the vars are missing.
+    TELEGRAM_BOT_TOKEN: z.string().min(1).optional(),
+    TELEGRAM_WEBHOOK_SECRET_TOKEN: z.string().min(1).optional(),
     // Phase 2 — AI
     ANTHROPIC_API_KEY: z.string().optional(),
     ANTHROPIC_MODEL: z.string().default('claude-sonnet-4-5'),
@@ -28,7 +30,9 @@ export const env = createEnv({
   },
   client: {
     NEXT_PUBLIC_APP_URL: z.string().url().optional(),
-    NEXT_PUBLIC_MINI_APP_URL: z.string().url(),
+    // Optional for the same reason as TELEGRAM_BOT_TOKEN above — unblock Vercel builds
+    // before the user has finalized the production URL. Consumers fall back sensibly.
+    NEXT_PUBLIC_MINI_APP_URL: z.string().url().optional(),
     NEXT_PUBLIC_SUPABASE_URL: z.string().url(),
     NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1),
     NEXT_PUBLIC_SENTRY_DSN: z.string().optional(),

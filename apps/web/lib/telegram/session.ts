@@ -27,13 +27,26 @@ export interface ResolveSessionOptions {
  * Throws `InvalidInitDataSignatureError` | `StaleInitDataError` |
  * `MalformedInitDataError` — callers translate to HTTP status.
  */
+export class TelegramEnvMissingError extends Error {
+  constructor() {
+    super(
+      'TELEGRAM_BOT_TOKEN is not set. Provision it in Vercel Project Settings → Environment Variables before calling the Mini App.',
+    );
+    this.name = 'TelegramEnvMissingError';
+  }
+}
+
 export async function resolveSession(
   rawInitData: string,
   opts: ResolveSessionOptions = {},
 ): Promise<ResolvedSession> {
   const maxAgeSeconds = opts.maxAgeSeconds ?? 60 * 60 * 24;
+  const botToken = env.TELEGRAM_BOT_TOKEN;
+  if (!botToken) {
+    throw new TelegramEnvMissingError();
+  }
   const verified = verifyInitData(rawInitData, {
-    botToken: env.TELEGRAM_BOT_TOKEN,
+    botToken,
     maxAgeSeconds,
   });
 
