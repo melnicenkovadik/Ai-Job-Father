@@ -11,10 +11,11 @@
  * to avoid over-promising.
  */
 
+import type { SeniorityLevel, WorkMode } from './category-fields/base';
 import { type JobCategory, isJobCategory } from './job-category';
 
-export type Seniority = 'junior' | 'mid' | 'senior' | 'lead' | 'principal' | 'director';
-export type WorkMode = 'remote' | 'hybrid' | 'onsite';
+/** Re-exported for backwards compat with earlier call sites. Source of truth in category-fields/base. */
+export type Seniority = SeniorityLevel;
 
 export interface VolumeEstimateInput {
   readonly category: JobCategory;
