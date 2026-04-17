@@ -8,6 +8,7 @@ export * from './domain/pricing';
 export * from './domain/volume-estimate';
 export * from './domain/dedup';
 export * from './domain/category-fields';
+export * from './domain/snapshot';
 export * from './application/ports/clock';
 export * from './application/ports/user-repo';
 export * from './application/ports/profile-repo';
