@@ -20,3 +20,5 @@ next-env.d.ts
 
 # Claude Code scratch (scheduled_tasks.lock, transcripts, etc.) — per-machine state
 .claude/
+
+.superpowers/
