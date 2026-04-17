@@ -14,7 +14,10 @@ export const env = createEnv({
     // consumers throw a helpful error if the vars are missing.
     TELEGRAM_BOT_TOKEN: z.string().min(1).optional(),
     TELEGRAM_WEBHOOK_SECRET_TOKEN: z.string().min(1).optional(),
-    // Phase 2 — AI
+    // Phase 2 — AI resume parse (OpenAI gpt-5.1 per ADR 0006; Anthropic vars kept
+    // optional for potential future fallback / alt-provider use cases).
+    OPENAI_API_KEY: z.string().optional(),
+    OPENAI_RESUME_MODEL: z.string().default('gpt-5.1'),
     ANTHROPIC_API_KEY: z.string().optional(),
     ANTHROPIC_MODEL: z.string().default('claude-sonnet-4-5'),
     // Phase 3 — ESCO
@@ -46,6 +49,8 @@ export const env = createEnv({
     SUPABASE_JWT_SECRET: process.env.SUPABASE_JWT_SECRET,
     TELEGRAM_BOT_TOKEN: process.env.TELEGRAM_BOT_TOKEN,
     TELEGRAM_WEBHOOK_SECRET_TOKEN: process.env.TELEGRAM_WEBHOOK_SECRET_TOKEN,
+    OPENAI_API_KEY: process.env.OPENAI_API_KEY,
+    OPENAI_RESUME_MODEL: process.env.OPENAI_RESUME_MODEL,
     ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY,
     ANTHROPIC_MODEL: process.env.ANTHROPIC_MODEL,
     ESCO_API_BASE: process.env.ESCO_API_BASE,
