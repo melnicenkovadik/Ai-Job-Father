@@ -1,8 +1,34 @@
 # Project State
 
-**Last updated:** 2026-04-17 (evening)
-**Current phase:** Phase 2 in progress — Profile data layer + heuristic parser + UI
-shipped; AI-tier parse gated behind Stars (Phase 4).
+**Last updated:** 2026-04-17 (late evening — resume parse retooled to OpenAI + save
+end-to-end working on real CV)
+**Current phase:** Phase 2 in progress — Profile editor live end-to-end:
+/profile renders the form, 📎 AI-fill from CV calls OpenAI gpt-5.1 via Files
+API, merges into draft, Save pushes through to `public.profiles` in Supabase.
+AI-tier parse is temporarily free (until Phase 4 wires the Stars paywall per
+amended ADR 0007); heuristic parser stays as fallback when OPENAI_API_KEY is
+absent.
+
+### 2026-04-17 evening session additions (on top of earlier Phase 2 work)
+
+- **OpenAI adapter switched to Files API.** `client.files.create({ purpose: 'user_data' })`
+  uploads the raw PDF; chat.completions.parse with a `{ type: 'file' }` content
+  part lets gpt-5.1 read layout + embedded hyperlinks (LinkedIn / GitHub URLs
+  only visible as clickable hotspots in the PDF). System prompt hardened with
+  a top-of-message "never invent, absent field → null" rule.
+- **Skills ordered by headline relevance** + UI overflow fold: primary 12 skills
+  visible, remainder behind `+ N more skills` (`<details>`).
+- **(optional) labels** on Identity + Links fields; `Profile name` gets red
+  border when empty (required, others optional).
+- **Save error surfaces** — `SaveError` subclass extracts HTTP status + Zod
+  issues, renders under the red banner ("skills.19.name: …", "experience.0.endMonth: YYYY-MM").
+- **Server Zod is now tolerant:** skill name trimmed + truncated to 80 chars;
+  month fields accept YYYY / YYYY-MM / YYYY-MM-DD / YYYY/MM / YYYY.MM and
+  normalise to strict YYYY-MM; `endMonth` collapses "present / now / current /
+  нині / зараз / настоящее / attuale / obecnie / oggi / teraz" and empty
+  strings to null.
+- **ADR 0007 amended** with the schedule shift: AI primary until Phase 4
+  because heuristic quality wasn't ready for live CVs.
 **Plan file:** `~/.claude/plans/effervescent-wibbling-breeze.md`
 **Wizard compression addendum:** `~/.claude/plans/lucky-noodling-pike.md` (approved
 2026-04-17 — 8-step wizard → 3 screens via progressive disclosure; data contract unchanged)

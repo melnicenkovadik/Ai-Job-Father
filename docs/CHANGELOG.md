@@ -4,6 +4,33 @@ All notable changes per phase. Append-only. One section per phase.
 
 ## Phase 2 — Profile + resume parse (2026-04-17 → in progress)
 
+### 2026-04-17 evening — AI-first resume parse + save end-to-end
+
+- OpenAI adapter now uploads the PDF via `files.create({ purpose: 'user_data' })`
+  and passes a `{ type: 'file' }` content part to `chat.completions.parse`.
+  gpt-5.1 reads the whole document — layout, categorised skill lists,
+  embedded hyperlinks — not just unpdf's linearised text. System prompt gains
+  a top-of-message "never invent, absent field → null" rule.
+- System prompt ordering rule: primary skills (matching the headline) come
+  first in the returned array. UI renders the first 12 as chips and folds
+  the rest behind `+ N more skills` (`<details>`).
+- `(optional)` tags on every non-required Identity + Links label; `Profile name`
+  input gets red border + aria-invalid while empty.
+- Save flow surfaces server errors inline — `SaveError` subclass captures
+  HTTP status + Zod issue list and renders them under the red banner.
+  Real CV exposed two 400s which are now fixed at the server:
+    - `skill.name` trimmed + truncated to 80 chars (was hard max 40).
+    - `experience/education.startMonth` + `endMonth` go through a tolerant
+      transform: `YYYY` / `YYYY-MM` / `YYYY-MM-DD` / `YYYY/MM` / `YYYY.MM`
+      all normalise to strict `YYYY-MM`; `endMonth` collapses
+      `present / now / current / нині / зараз / настоящее / attuale /
+      obecnie / oggi / teraz` and empty strings to `null`.
+- ADR 0007 amended with a schedule note: AI primary until the Phase-4 Stars
+  paywall lands; heuristic parser keeps running as the fallback for
+  OPENAI_API_KEY-missing deployments.
+
+### Earlier Phase 2 work (2026-04-17)
+
 **Observable outcome:** `/profile` renders a single-scroll editor with 5 labeled
 sections. 📎 Upload CV runs the free-tier heuristic parser (pure TS, 5 locales,
 zero AI) and fills empty fields while preserving user edits. Save persists via
