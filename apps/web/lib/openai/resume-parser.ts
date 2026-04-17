@@ -15,7 +15,6 @@ import {
 } from '@ai-job-bot/core';
 import OpenAI from 'openai';
 import { zodResponseFormat } from 'openai/helpers/zod';
-import { extractText } from 'unpdf';
 import { z } from 'zod';
 
 /**
@@ -91,16 +90,23 @@ const ParsedResumeSchema = z.object({
 
 type RawParsedResume = z.infer<typeof ParsedResumeSchema>;
 
-const SYSTEM_PROMPT = `You extract structured resume data from raw CV text.
+const SYSTEM_PROMPT = `You extract structured resume data from a PDF CV.
+
+The PDF is attached. Read the whole document, including headers, sidebars,
+contact blocks, embedded hyperlinks, and categorised lists.
 
 Rules:
-- Only include information that is explicitly present in the text. Never invent, normalize beyond trimming whitespace, or embellish.
-- Skill "years": only report if stated, or clearly inferable from non-overlapping experience durations.
-- English level (CEFR A1..C2): infer from an explicit statement ("B2 IELTS 6.5", "Advanced / C1", diploma language), otherwise return null.
-- Languages array: all spoken languages the CV mentions. Language codes are ISO-639-1 two-letter lowercase ("en", "uk", "ru", "it", "pl", "de", ...).
-- Experience: startMonth / endMonth as ISO "YYYY-MM". endMonth null for current roles. Skip entries missing company or role.
+- Only include information that is explicitly present in the document. Never invent, normalize beyond trimming whitespace, or embellish.
+- Skills: extract EVERY technical skill, tool, framework, library, language, platform or service mentioned anywhere in the CV. When the CV groups them under categories ("Frontend:", "AI & LLM Integration:", "Blockchain:", "Styling:", "Testing & CI/CD:", "Backend & Tools:", "Data Visualization:", "Soft Skills:", …), include every item from every group. Return the full list up to 50 items. Do NOT filter to "main" skills and do NOT include the category label itself as a skill.
+- Skill "years": only report if stated next to the item, or clearly inferable from non-overlapping experience durations.
+- Experience: every work entry the CV lists — including contracts and short roles. startMonth / endMonth as ISO "YYYY-MM". endMonth null for current / "Present" roles. Skip entries missing company or role.
+- Education: all degrees listed, with school + degree + years where present.
+- Languages: spoken languages with CEFR levels A1..C2. Native markers → C2. Language codes are ISO-639-1 two-letter lowercase ("en", "uk", "ru", "it", "pl", "de", "fr", "es"…).
+- English level (top-level field): mirror the English entry's CEFR level from the languages array if present.
 - yearsTotal: whole years of non-overlapping professional experience, rounded down. Null if < 1 year or unclear.
-- URLs: return verbatim, without prepending "https://".
+- Location: extract city / country / "remote" when the CV shows it in the header, contact block, or a "Based in X" line.
+- Contacts: fullName (usually the top-of-page name), email, phone (keep original formatting), fullName, headline (the role title line right after the name, e.g. "Senior Frontend Developer").
+- URLs: linkedinUrl / githubUrl / portfolioUrl — return the FULL absolute URL. If the PDF shows a clickable hyperlink behind the text (e.g. "LinkedIn" links to https://linkedin.com/in/…), return that hyperlink target. If only a handle is visible ("github.com/foo"), prepend "https://".
 
 Return your result ONLY in the provided JSON schema.`;
 
@@ -111,14 +117,23 @@ export class OpenAIResumeParser implements ResumeParser {
   ) {}
 
   async parse(input: ResumeParserInput): Promise<ParsedResume> {
-    const text = await extractPdfText(input.pdfBytes);
+    // Upload the PDF to OpenAI as a user_data file so the model can read
+    // the full document — text, layout, and embedded hyperlinks — not just
+    // the linearised text unpdf extracts.
+    const uploaded = await this.uploadPdf(input);
 
     try {
       const completion = await this.client.chat.completions.parse({
         model: this.model,
         messages: [
           { role: 'system', content: SYSTEM_PROMPT },
-          { role: 'user', content: buildUserMessage(text, input.languageHint) },
+          {
+            role: 'user',
+            content: [
+              { type: 'file', file: { file_id: uploaded.id } },
+              { type: 'text', text: buildUserMessage(input.languageHint) },
+            ],
+          },
         ],
         response_format: zodResponseFormat(ParsedResumeSchema, 'parsed_resume'),
       });
@@ -144,6 +159,34 @@ export class OpenAIResumeParser implements ResumeParser {
         throw new ResumeParseError(`OpenAI API error ${err.status ?? ''}: ${err.message}`);
       }
       throw new ResumeParseError(`Unexpected error: ${(err as Error).message}`);
+    } finally {
+      // Best-effort cleanup — don't fail the request if file delete errors.
+      this.client.files.delete(uploaded.id).catch(() => undefined);
+    }
+  }
+
+  private async uploadPdf(input: ResumeParserInput): Promise<{ id: string }> {
+    try {
+      const file = new File(
+        [input.pdfBytes as BlobPart],
+        input.filename ?? 'resume.pdf',
+        { type: 'application/pdf' },
+      );
+      const uploaded = await this.client.files.create({ file, purpose: 'user_data' });
+      return { id: uploaded.id };
+    } catch (err) {
+      if (err instanceof OpenAI.APIError) {
+        if (err.status === 401 || err.status === 403) {
+          throw new ResumeParserUnavailableError(`OpenAI auth failed on upload: ${err.message}`);
+        }
+        if (err.status === 413) {
+          throw new ResumeFormatError(`PDF too large for OpenAI upload: ${err.message}`);
+        }
+        if (err.status === 429 || err.status === 529) {
+          throw new ResumeRateLimitError(`OpenAI rate-limited on upload: ${err.message}`);
+        }
+      }
+      throw new ResumeParseError(`PDF upload to OpenAI failed: ${(err as Error).message}`);
     }
   }
 }
@@ -167,25 +210,9 @@ export function createOpenAIResumeParser(apiKey: string | undefined, model: stri
   return new OpenAIResumeParser(client, model);
 }
 
-async function extractPdfText(bytes: Uint8Array): Promise<string> {
-  try {
-    const { text } = await extractText(bytes, { mergePages: true });
-    const trimmed = text.trim();
-    if (trimmed.length < 200) {
-      throw new ResumeFormatError(
-        `Extracted only ${trimmed.length} chars — likely a scanned PDF. Please upload a text-based CV or fill the profile manually.`,
-      );
-    }
-    return trimmed;
-  } catch (err) {
-    if (err instanceof ResumeFormatError) throw err;
-    throw new ResumeFormatError(`PDF text extraction failed: ${(err as Error).message}`);
-  }
-}
-
-function buildUserMessage(text: string, hint?: string | undefined): string {
-  const langLine = hint ? `User language hint: ${hint}.\n\n` : '';
-  return `${langLine}Resume text:\n\n${text}`;
+function buildUserMessage(hint?: string | undefined): string {
+  const langLine = hint ? `User language hint: ${hint}. ` : '';
+  return `${langLine}Extract the full structured profile from the attached PDF CV following the system rules.`;
 }
 
 function toParsedResume(raw: RawParsedResume, model: string): ParsedResume {
