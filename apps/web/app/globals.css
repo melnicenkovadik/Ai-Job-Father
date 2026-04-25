@@ -1,32 +1,117 @@
 @import "tailwindcss";
 
 @theme {
-  /* Telegram themeParams — stubbed defaults.
-     Real runtime binding lands in Phase 1 via TelegramProvider. */
-  --color-bg: var(--tg-theme-bg-color, #ffffff);
-  --color-text: var(--tg-theme-text-color, #000000);
-  --color-hint: var(--tg-theme-hint-color, #707579);
-  --color-link: var(--tg-theme-link-color, #2481cc);
-  --color-button: var(--tg-theme-button-color, #2481cc);
-  --color-button-text: var(--tg-theme-button-text-color, #ffffff);
-  --color-secondary-bg: var(--tg-theme-secondary-bg-color, #f4f4f5);
+  /* Fonts — bound by next/font in app/layout.tsx */
+  --font-sans: var(--font-inter), -apple-system, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), "SF Mono", ui-monospace, monospace;
 
-  /* Viewport binding — wired to WebApp.viewportHeight in Phase 1. */
+  /* Radii (MINIMAL variant) */
+  --radius-sm: 0.5rem; /* 8px */
+  --radius-md: 0.75rem; /* 12px */
+  --radius-lg: 1rem; /* 16px */
+  --radius-xl: 1.25rem; /* 20px */
+  --radius-full: 9999px;
+
+  /* AMBER scale (oklch) — accent across all variants */
+  --color-amber-50: oklch(97% 0.03 70);
+  --color-amber-100: oklch(93% 0.07 70);
+  --color-amber-200: oklch(88% 0.12 70);
+  --color-amber-300: oklch(82% 0.16 70);
+  --color-amber-400: oklch(76% 0.18 65);
+  --color-amber-500: oklch(70% 0.19 60);
+  --color-amber-600: oklch(62% 0.19 55);
+  --color-amber-700: oklch(52% 0.17 50);
+  --color-amber-800: oklch(42% 0.13 48);
+  --color-amber-900: oklch(32% 0.09 45);
+
+  /* Brand */
+  --color-ton-blue: #0098ea;
+  --color-star-gold: oklch(78% 0.17 85);
+
+  /* MINIMAL dark palette — baseline (light overrides via [data-theme="light"]) */
+  --color-bg: #0b0b0e;
+  --color-bg-2: #121218;
+  --color-surface: #17171f;
+  --color-surface-hi: #1e1e27;
+  --color-border: rgba(255, 255, 255, 0.06);
+  --color-border-hi: rgba(255, 255, 255, 0.12);
+  --color-text: #f2f1ec;
+  --color-text-dim: rgba(242, 241, 236, 0.6);
+  --color-text-mute: rgba(242, 241, 236, 0.35);
+  --color-accent: oklch(76% 0.18 65); /* AMBER 400 */
+  --color-accent-bg: rgba(230, 145, 60, 0.1);
+  --color-accent-ink: #1a0f00; /* text on amber bg */
+  --color-success: oklch(76% 0.15 155);
+  --color-warn: oklch(76% 0.18 65);
+  --color-danger: oklch(65% 0.2 22);
+
+  /* Legacy aliases — keep so existing profile editor code keeps working */
+  --color-button: var(--color-accent);
+  --color-button-text: var(--color-accent-ink);
+  --color-hint: var(--color-text-dim);
+  --color-link: var(--color-accent);
+  --color-secondary-bg: var(--color-bg-2);
+
+  /* Telegram viewport — bound by ThemeBridge */
   --tg-viewport-height: 100vh;
   --tg-viewport-stable-height: 100vh;
   --mainbtn-h: 0px;
+
+  /* Animations */
+  --animate-fade-up: fadeUp 0.4s ease-out;
+  --animate-pulse-slow: pulseSlow 1.2s ease-in-out infinite;
 }
 
 @layer base {
+  /* MINIMAL light palette overrides */
+  [data-theme="light"] {
+    --color-bg: #fafaf7;
+    --color-bg-2: #f3f2ee;
+    --color-surface: #ffffff;
+    --color-surface-hi: #ffffff;
+    --color-border: rgba(20, 15, 10, 0.08);
+    --color-border-hi: rgba(20, 15, 10, 0.14);
+    --color-text: #14110c;
+    --color-text-dim: rgba(20, 17, 12, 0.6);
+    --color-text-mute: rgba(20, 17, 12, 0.38);
+    --color-accent: oklch(62% 0.19 55); /* AMBER 600 */
+    --color-accent-bg: oklch(97% 0.03 70); /* AMBER 50 */
+    --color-accent-ink: #ffffff;
+    --color-success: oklch(50% 0.14 155);
+    --color-warn: oklch(62% 0.19 55);
+    --color-danger: oklch(55% 0.2 22);
+  }
+
   html,
   body {
     margin: 0;
     padding: 0;
     background: var(--color-bg);
     color: var(--color-text);
-    font-family: var(--font-inter), -apple-system, system-ui, sans-serif;
+    font-family: var(--font-sans);
   }
   body {
     overflow-x: hidden;
+  }
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulseSlow {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
   }
 }
