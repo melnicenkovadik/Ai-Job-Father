@@ -24,6 +24,7 @@
     padding: 0;
     background: var(--color-bg);
     color: var(--color-text);
+    font-family: var(--font-inter), -apple-system, system-ui, sans-serif;
   }
   body {
     overflow-x: hidden;
