@@ -178,11 +178,9 @@ export class OpenAIResumeParser implements ResumeParser {
 
   private async uploadPdf(input: ResumeParserInput): Promise<{ id: string }> {
     try {
-      const file = new File(
-        [input.pdfBytes as BlobPart],
-        input.filename ?? 'resume.pdf',
-        { type: 'application/pdf' },
-      );
+      const file = new File([input.pdfBytes as BlobPart], input.filename ?? 'resume.pdf', {
+        type: 'application/pdf',
+      });
       const uploaded = await this.client.files.create({ file, purpose: 'user_data' });
       return { id: uploaded.id };
     } catch (err) {

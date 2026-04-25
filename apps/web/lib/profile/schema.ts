@@ -48,23 +48,21 @@ const monthSchema = z.string().transform((raw, ctx) => {
  * Like `monthSchema`, but `null` + "present"-style strings also collapse to
  * `null`. Used for `experience[*].endMonth` where "currently working".
  */
-const endMonthSchema = z
-  .union([z.string(), z.null()])
-  .transform((raw, ctx) => {
-    if (raw === null) return null;
-    const trimmed = raw.trim();
-    if (trimmed.length === 0) return null;
-    if (PRESENT_WORDS.test(trimmed)) return null;
-    if (/^\d{4}-(0[1-9]|1[0-2])$/.test(trimmed)) return trimmed;
-    if (/^\d{4}$/.test(trimmed)) return `${trimmed}-01`;
-    const m = /^(\d{4})[-/.](\d{1,2})(?:[-/.]\d{1,2})?$/.exec(trimmed);
-    if (m?.[1] && m[2]) {
-      const month = Number.parseInt(m[2], 10);
-      if (month >= 1 && month <= 12) return `${m[1]}-${String(month).padStart(2, '0')}`;
-    }
-    ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'YYYY-MM or null' });
-    return z.NEVER;
-  });
+const endMonthSchema = z.union([z.string(), z.null()]).transform((raw, ctx) => {
+  if (raw === null) return null;
+  const trimmed = raw.trim();
+  if (trimmed.length === 0) return null;
+  if (PRESENT_WORDS.test(trimmed)) return null;
+  if (/^\d{4}-(0[1-9]|1[0-2])$/.test(trimmed)) return trimmed;
+  if (/^\d{4}$/.test(trimmed)) return `${trimmed}-01`;
+  const m = /^(\d{4})[-/.](\d{1,2})(?:[-/.]\d{1,2})?$/.exec(trimmed);
+  if (m?.[1] && m[2]) {
+    const month = Number.parseInt(m[2], 10);
+    if (month >= 1 && month <= 12) return `${m[1]}-${String(month).padStart(2, '0')}`;
+  }
+  ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'YYYY-MM or null' });
+  return z.NEVER;
+});
 
 const skill = z.object({
   name: z
