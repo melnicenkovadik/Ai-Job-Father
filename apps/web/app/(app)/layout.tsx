@@ -1,4 +1,5 @@
 import { TelegramProvider } from '@/components/telegram/provider';
+import { MockStoreProvider } from '@/lib/mocks/hydrate';
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale, getMessages } from 'next-intl/server';
 import type { ReactNode } from 'react';
@@ -20,7 +21,9 @@ export default async function AppLayout({
   const [locale, messages] = await Promise.all([getLocale(), getMessages()]);
   return (
     <NextIntlClientProvider locale={locale} messages={messages}>
-      <TelegramProvider>{children}</TelegramProvider>
+      <TelegramProvider>
+        <MockStoreProvider>{children}</MockStoreProvider>
+      </TelegramProvider>
     </NextIntlClientProvider>
   );
 }

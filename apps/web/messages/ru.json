@@ -28,6 +28,276 @@
     "remove": "[RU] Remove",
     "add": "[RU] Add"
   },
+  "screens": {
+    "dashboard": {
+      "greeting": "Доброе утро, {name}",
+      "summary": "{count, plural, one {# кампания} few {# кампании} many {# кампаний} other {# кампании}}",
+      "stats": {
+        "found": "Найдено",
+        "foundHint": "вакансий",
+        "applied": "Откликов",
+        "appliedHint": "отправлено",
+        "responses": "Ответов",
+        "responsesHint": "получено"
+      },
+      "section": {
+        "active": "Активные",
+        "drafts": "Черновики",
+        "completed": "Завершённые"
+      },
+      "empty": {
+        "title": "Пока нет кампаний",
+        "hint": "Нажмите +, чтобы создать первую."
+      },
+      "newCampaign": "Новая кампания"
+    },
+    "onboarding": {
+      "headline": "AI находит\nвакансии.\nВы получаете\nответы.",
+      "description": "Загрузите резюме — мы сами ищем по 12 категориям и сами откликаемся. Вы видите прогресс в реальном времени.",
+      "feature": {
+        "parse": {
+          "title": "AI-парсинг резюме",
+          "subtitle": "PDF или LinkedIn — заполним профиль"
+        },
+        "search": {
+          "title": "Поиск по 12 категориям",
+          "subtitle": "Tech, Design, Product, Finance..."
+        },
+        "pay": {
+          "title": "Оплата ⭐ Stars или TON",
+          "subtitle": "Без карт — нативно в Telegram"
+        }
+      },
+      "start": "Начать"
+    },
+    "settings": {
+      "title": "Настройки",
+      "section": {
+        "language": "Язык",
+        "notifications": "Уведомления",
+        "about": "О приложении"
+      },
+      "notification": {
+        "push": {
+          "label": "Push",
+          "description": "Изменения статусов кампаний"
+        },
+        "email": {
+          "label": "Email",
+          "description": "Еженедельная сводка"
+        },
+        "weeklyDigest": {
+          "label": "Еженедельный дайджест",
+          "description": "Топ вакансий в Telegram"
+        }
+      },
+      "about": {
+        "version": "Версия",
+        "support": "Поддержка"
+      }
+    },
+    "profiles": {
+      "title": "Профили",
+      "default": "По умолчанию",
+      "empty": "Пока нет профилей. Загрузите резюме, чтобы начать.",
+      "addCv": "Добавить резюме",
+      "subtitle": "Разные роли — разные профили. Один по умолчанию.",
+      "newProfile": "Новый профиль",
+      "campaigns": "{count, plural, one {# кампания} few {# кампании} many {# кампаний} other {# кампании}}",
+      "edit": "Править"
+    },
+    "upload": {
+      "title": "Резюме",
+      "subtitle": "Загрузите PDF или вставьте ссылку на LinkedIn. AI заполнит профиль автоматически.",
+      "idle": "Перетащите PDF или выберите файл",
+      "uploading": "Загружаем...",
+      "parsing": "AI читает резюме...",
+      "done": "Готово — проверьте профиль",
+      "errorRetry": "Попробуйте другой файл",
+      "dropzone": "Перетащите CV или нажмите",
+      "fileTypes": "PDF · до 10 МБ",
+      "orSeparator": "или",
+      "linkedinPlaceholder": "linkedin.com/in/...",
+      "mainCta": "Загрузить резюме",
+      "reviewCta": "Открыть профиль",
+      "step": {
+        "upload": "Файл загружен",
+        "extract": "Извлекаем текст",
+        "ai": "AI анализирует",
+        "profile": "Готовим профиль"
+      },
+      "aiHint": "Claude Sonnet 4.5 · извлекает опыт, стек, языки",
+      "sampleFile": "cv.pdf",
+      "sampleSize": "248 КБ",
+      "error": {
+        "format": "Не получилось прочитать PDF. Попробуйте другой файл.",
+        "file_too_large": "Файл больше 10 МБ. Пожалуйста, загрузите меньший.",
+        "invalid_mime": "Пожалуйста, загрузите PDF-файл.",
+        "missing_file": "Файл не выбран.",
+        "empty_file": "Файл пуст.",
+        "rate_limit": "Слишком много загрузок — попробуйте через минуту.",
+        "unavailable": "AI недоступен. Попробуйте через минуту.",
+        "internal": "Что-то пошло не так. Мы разбираемся."
+      }
+    },
+    "wizard": {
+      "title": "Новая кампания",
+      "step": "ШАГ {current} / {total}",
+      "label": {
+        "category": "Категория",
+        "roles": "Роли",
+        "countries": "Страны",
+        "salary": "Зарплата",
+        "stack": "Стек",
+        "languages": "Языки",
+        "quota": "Объём",
+        "checkout": "Чек"
+      },
+      "description": {
+        "category": "Выберите категорию — определит форму и цену",
+        "roles": "ESCO-роли · до 5 штук",
+        "countries": "Где искать · мульти-выбор",
+        "salary": "Минимальная зарплата",
+        "stack": "Обязательный стек",
+        "languages": "Языки собеседования",
+        "quota": "Сколько откликов хотите · прямо влияет на цену",
+        "checkout": "Проверьте и оплатите"
+      },
+      "next": "Далее",
+      "submit": "К оплате · {amount}",
+      "category": {
+        "tech": "IT / Tech",
+        "design": "Design",
+        "marketing": "Marketing",
+        "sales": "Sales",
+        "product": "Product",
+        "finance": "Finance",
+        "hr": "HR",
+        "support": "Support",
+        "content": "Content",
+        "ops": "Operations",
+        "data": "Data",
+        "web3": "Web3"
+      },
+      "roles": {
+        "placeholder": "Введите роль...",
+        "selected": "Выбрано · {count}/5",
+        "suggestions": "Подсказки ESCO",
+        "add": "Добавить",
+        "empty": "Выберите роль из подсказок"
+      },
+      "countries": {
+        "selected": "Выбрано · {count}",
+        "empty": "Укажите хотя бы одну страну"
+      },
+      "salary": {
+        "label": "Минимум, USD / месяц",
+        "min": "$1k",
+        "max": "$15k"
+      },
+      "stack": {
+        "hint": "Касание — отметить как жёсткое требование",
+        "selected": "Выбрано · {count}"
+      },
+      "langs": {
+        "EN": "Английский",
+        "DE": "Немецкий",
+        "FR": "Французский",
+        "ES": "Испанский",
+        "PL": "Польский",
+        "UK": "Украинский",
+        "RU": "Русский",
+        "IT": "Итальянский"
+      },
+      "quota": {
+        "label": "Квота откликов",
+        "hint": "≈ {min}–{max} вакансий просмотрено",
+        "priceNote": "Цена растёт линейно: 200 ⭐ базово + 8 ⭐ за каждый отклик"
+      },
+      "summary": {
+        "title": "Итог",
+        "category": "Категория",
+        "roles": "Роли",
+        "rolesCount": "{count, plural, one {# роль} few {# роли} many {# ролей} other {# ролей}}",
+        "countries": "Страны",
+        "salary": "Зарплата",
+        "salaryFrom": "${amount}+",
+        "stack": "Стек",
+        "languages": "Языки",
+        "quota": "Квота откликов",
+        "basePrice": "Базовая цена",
+        "quotaRow": "Квота × {count}",
+        "countriesRow": "Страны × {count}",
+        "total": "К оплате"
+      }
+    },
+    "checkout": {
+      "title": "Оплата",
+      "campaignSummary": "{title} · {count, plural, one {# отклик} few {# отклика} many {# откликов} other {# откликов}}",
+      "totalLabel": "К оплате",
+      "methodSection": "Способ оплаты",
+      "pay": "Оплатить {amount}",
+      "noteRefund": "После оплаты данные кампании не редактируются. Возврат средств в MVP не предусмотрен.",
+      "method": {
+        "stars": "Telegram Stars",
+        "starsHint": "Нативная оплата · мгновенно",
+        "starsBadge": "Рекомендуем",
+        "ton": "TON Connect",
+        "tonHint": "Оплата через крипто-кошелёк"
+      }
+    },
+    "payment": {
+      "processing": "Ожидаем\nоплату",
+      "processingStars": "Подтвердите в окне Telegram",
+      "processingTon": "Подтвердите транзакцию в кошельке",
+      "processingSecure": "SECURE · {provider}",
+      "success": "Оплачено",
+      "successHint": "Кампания запущена. Первые отклики за 2–6 часов.",
+      "fail": "Оплата не прошла",
+      "failHint": "Деньги не списаны. Попробуйте ещё раз.",
+      "retry": "Попробовать снова",
+      "openCampaign": "Открыть кампанию",
+      "homeCta": "К кампаниям",
+      "rows": {
+        "amount": "Сумма",
+        "transaction": "Транзакция",
+        "when": "Время"
+      }
+    },
+    "detail": {
+      "paidAt": "оплачено {when}",
+      "appliedOf": "{applied} из {quota}",
+      "liveSearch": "живой поиск",
+      "metric": {
+        "found": "Найдено",
+        "foundHint": "вакансий",
+        "responses": "Ответов",
+        "responsesHint": "получено"
+      },
+      "section": {
+        "progress": "Прогресс",
+        "events": "Лента событий",
+        "snapshot": "Снэпшот кампании"
+      },
+      "empty": "Событий пока нет.",
+      "status": {
+        "appliedSent": "Отклики отправлены"
+      }
+    },
+    "error": {
+      "title": "Оплата не\nпрошла",
+      "code": "Код ошибки",
+      "tryAgain": "Попробовать снова",
+      "back": "На главную",
+      "hint": "Средства не списаны. Кампания осталась в черновиках — попробуйте снова.",
+      "defaultTitle": "Что-то пошло не так",
+      "defaultHint": "Не получилось загрузить экран. Попробуйте снова или вернитесь на главную.",
+      "codeLabel": "error",
+      "detail": "wallet did not respond in 60s",
+      "retry": "Попробовать снова",
+      "home": "Вернуться к кампаниям"
+    }
+  },
   "profile": {
     "title": "[RU] Profile",
     "defaultName": "[RU] Default profile",

@@ -28,6 +28,276 @@
     "remove": "[IT] Remove",
     "add": "[IT] Add"
   },
+  "screens": {
+    "dashboard": {
+      "greeting": "[IT] Good morning, {name}",
+      "summary": "[IT] {count, plural, one {# campaign} other {# campaigns}}",
+      "stats": {
+        "found": "[IT] Found",
+        "foundHint": "[IT] vacancies",
+        "applied": "[IT] Applies",
+        "appliedHint": "[IT] sent",
+        "responses": "[IT] Replies",
+        "responsesHint": "[IT] received"
+      },
+      "section": {
+        "active": "[IT] Active",
+        "drafts": "[IT] Drafts",
+        "completed": "[IT] Completed"
+      },
+      "empty": {
+        "title": "[IT] No campaigns yet",
+        "hint": "[IT] Tap + to create the first one."
+      },
+      "newCampaign": "[IT] New campaign"
+    },
+    "onboarding": {
+      "headline": "[IT] AI finds\nvacancies.\nYou get\nreplies.",
+      "description": "[IT] Upload your CV — we search across 12 categories and apply for you. You see progress in real time.",
+      "feature": {
+        "parse": {
+          "title": "[IT] AI CV parsing",
+          "subtitle": "[IT] PDF or LinkedIn — we fill the profile"
+        },
+        "search": {
+          "title": "[IT] Search across 12 categories",
+          "subtitle": "[IT] Tech, Design, Product, Finance..."
+        },
+        "pay": {
+          "title": "[IT] Pay with ⭐ Stars or TON",
+          "subtitle": "[IT] No cards — native to Telegram"
+        }
+      },
+      "start": "[IT] Start"
+    },
+    "settings": {
+      "title": "[IT] Settings",
+      "section": {
+        "language": "[IT] Language",
+        "notifications": "[IT] Notifications",
+        "about": "[IT] About"
+      },
+      "notification": {
+        "push": {
+          "label": "[IT] Push",
+          "description": "[IT] Status updates from your campaigns"
+        },
+        "email": {
+          "label": "[IT] Email",
+          "description": "[IT] Weekly summary"
+        },
+        "weeklyDigest": {
+          "label": "[IT] Weekly digest",
+          "description": "[IT] Top vacancies in Telegram"
+        }
+      },
+      "about": {
+        "version": "[IT] Version",
+        "support": "[IT] Support"
+      }
+    },
+    "profiles": {
+      "title": "[LOCALE] Profiles",
+      "default": "[LOCALE] Default",
+      "empty": "[LOCALE] No profiles yet. Upload your CV to start.",
+      "addCv": "[LOCALE] Add a CV",
+      "subtitle": "[LOCALE] Different roles, different profiles. One default.",
+      "newProfile": "[LOCALE] New profile",
+      "campaigns": "[LOCALE] {count, plural, one {# campaign} other {# campaigns}}",
+      "edit": "[LOCALE] Edit"
+    },
+    "upload": {
+      "title": "[LOCALE] CV",
+      "subtitle": "[LOCALE] Upload a PDF or paste a LinkedIn URL. AI will fill the profile automatically.",
+      "idle": "[LOCALE] Drop a PDF or pick a file",
+      "uploading": "[LOCALE] Uploading...",
+      "parsing": "[LOCALE] AI is reading the CV...",
+      "done": "[LOCALE] Done — review the profile",
+      "errorRetry": "[LOCALE] Try another file",
+      "dropzone": "[LOCALE] Drop CV or tap",
+      "fileTypes": "[LOCALE] PDF · up to 10 MB",
+      "orSeparator": "[LOCALE] or",
+      "linkedinPlaceholder": "[LOCALE] linkedin.com/in/...",
+      "mainCta": "[LOCALE] Upload CV",
+      "reviewCta": "[LOCALE] Open profile",
+      "step": {
+        "upload": "[LOCALE] File uploaded",
+        "extract": "[LOCALE] Extracting text",
+        "ai": "[LOCALE] AI is analyzing",
+        "profile": "[LOCALE] Preparing the profile"
+      },
+      "aiHint": "[LOCALE] Claude Sonnet 4.5 · pulling experience, stack, languages",
+      "sampleFile": "[LOCALE] cv.pdf",
+      "sampleSize": "[LOCALE] 248 KB",
+      "error": {
+        "format": "[LOCALE] Couldn't read the PDF. Try another file.",
+        "file_too_large": "[LOCALE] File is over 10 MB. Please upload a smaller one.",
+        "invalid_mime": "[LOCALE] Please upload a PDF file.",
+        "missing_file": "[LOCALE] No file selected.",
+        "empty_file": "[LOCALE] The file is empty.",
+        "rate_limit": "[LOCALE] Too many uploads — try again in a moment.",
+        "unavailable": "[LOCALE] AI is offline. Try again in a minute.",
+        "internal": "[LOCALE] Something went wrong. We're looking into it."
+      }
+    },
+    "wizard": {
+      "title": "[IT] New campaign",
+      "step": "[IT] STEP {current} / {total}",
+      "label": {
+        "category": "[IT] Category",
+        "roles": "[IT] Roles",
+        "countries": "[IT] Countries",
+        "salary": "[IT] Salary",
+        "stack": "[IT] Stack",
+        "languages": "[IT] Languages",
+        "quota": "[IT] Volume",
+        "checkout": "[IT] Review"
+      },
+      "description": {
+        "category": "[IT] Pick a category — sets pricing form",
+        "roles": "[IT] ESCO roles · up to 5",
+        "countries": "[IT] Where to apply · multi-select",
+        "salary": "[IT] Minimum monthly salary",
+        "stack": "[IT] Required tech stack",
+        "languages": "[IT] Interview languages",
+        "quota": "[IT] How many applications · drives price",
+        "checkout": "[IT] Review and pay"
+      },
+      "next": "[IT] Next",
+      "submit": "[IT] To checkout · {amount}",
+      "category": {
+        "tech": "[IT] IT / Tech",
+        "design": "[IT] Design",
+        "marketing": "[IT] Marketing",
+        "sales": "[IT] Sales",
+        "product": "[IT] Product",
+        "finance": "[IT] Finance",
+        "hr": "[IT] HR",
+        "support": "[IT] Support",
+        "content": "[IT] Content",
+        "ops": "[IT] Operations",
+        "data": "[IT] Data",
+        "web3": "[IT] Web3"
+      },
+      "roles": {
+        "placeholder": "[IT] Type a role...",
+        "selected": "[IT] Selected · {count}/5",
+        "suggestions": "[IT] ESCO suggestions",
+        "add": "[IT] Add",
+        "empty": "[IT] Pick a role from the suggestions"
+      },
+      "countries": {
+        "selected": "[IT] Selected · {count}",
+        "empty": "[IT] Pick at least one country"
+      },
+      "salary": {
+        "label": "[IT] Minimum, USD / month",
+        "min": "[IT] $1k",
+        "max": "[IT] $15k"
+      },
+      "stack": {
+        "hint": "[IT] Tap to mark as required",
+        "selected": "[IT] Selected · {count}"
+      },
+      "langs": {
+        "EN": "[IT] English",
+        "DE": "[IT] German",
+        "FR": "[IT] French",
+        "ES": "[IT] Spanish",
+        "PL": "[IT] Polish",
+        "UK": "[IT] Ukrainian",
+        "RU": "[IT] Russian",
+        "IT": "[IT] Italian"
+      },
+      "quota": {
+        "label": "[IT] Applications quota",
+        "hint": "[IT] ≈ {min}–{max} vacancies reviewed",
+        "priceNote": "[IT] Price scales linearly: 200 base + 8 per application"
+      },
+      "summary": {
+        "title": "[IT] Summary",
+        "category": "[IT] Category",
+        "roles": "[IT] Roles",
+        "rolesCount": "[IT] {count, plural, one {# role} other {# roles}}",
+        "countries": "[IT] Countries",
+        "salary": "[IT] Salary",
+        "salaryFrom": "[IT] ${amount}+",
+        "stack": "[IT] Stack",
+        "languages": "[IT] Languages",
+        "quota": "[IT] Quota",
+        "basePrice": "[IT] Base price",
+        "quotaRow": "[IT] Quota × {count}",
+        "countriesRow": "[IT] Countries × {count}",
+        "total": "[IT] Total"
+      }
+    },
+    "checkout": {
+      "title": "[IT] Choose payment",
+      "campaignSummary": "[IT] {title} · {count, plural, one {# application} other {# applications}}",
+      "totalLabel": "[IT] Total amount",
+      "methodSection": "[IT] Payment method",
+      "pay": "[IT] Pay {amount}",
+      "noteRefund": "[IT] After payment the campaign data is frozen. Refunds are not supported in MVP.",
+      "method": {
+        "stars": "[IT] Telegram Stars",
+        "starsHint": "[IT] Native payment · instant",
+        "starsBadge": "[IT] Recommended",
+        "ton": "[IT] TON Connect",
+        "tonHint": "[IT] Pay via crypto wallet"
+      }
+    },
+    "payment": {
+      "processing": "[IT] Waiting for\npayment",
+      "processingStars": "[IT] Confirm in the Telegram window",
+      "processingTon": "[IT] Confirm the transaction in your wallet",
+      "processingSecure": "[IT] SECURE · {provider}",
+      "success": "[IT] Paid",
+      "successHint": "[IT] Campaign launched. First applications in 2–6 hours.",
+      "fail": "[IT] Payment failed",
+      "failHint": "[IT] Money was not charged. Try again.",
+      "retry": "[IT] Retry",
+      "openCampaign": "[IT] Open campaign",
+      "homeCta": "[IT] Back to campaigns",
+      "rows": {
+        "amount": "[IT] Amount",
+        "transaction": "[IT] Transaction",
+        "when": "[IT] Time"
+      }
+    },
+    "detail": {
+      "paidAt": "[IT] paid {when}",
+      "appliedOf": "[IT] {applied} of {quota}",
+      "liveSearch": "[IT] live search",
+      "metric": {
+        "found": "[IT] Found",
+        "foundHint": "[IT] vacancies",
+        "responses": "[IT] Replies",
+        "responsesHint": "[IT] received"
+      },
+      "section": {
+        "progress": "[IT] Progress",
+        "events": "[IT] Activity",
+        "snapshot": "[IT] Campaign snapshot"
+      },
+      "empty": "[IT] No events yet.",
+      "status": {
+        "appliedSent": "[IT] Applications sent"
+      }
+    },
+    "error": {
+      "title": "[LOCALE] Payment\ndid not go through",
+      "code": "[IT] Error code",
+      "tryAgain": "[IT] Try again",
+      "back": "[IT] Back home",
+      "hint": "[LOCALE] Funds were not charged. The campaign stays in drafts — try again.",
+      "defaultTitle": "[LOCALE] Something went wrong",
+      "defaultHint": "[LOCALE] We couldn't load this screen. Try again or go back home.",
+      "codeLabel": "[LOCALE] error",
+      "detail": "[LOCALE] wallet did not respond in 60s",
+      "retry": "[LOCALE] Try again",
+      "home": "[LOCALE] Back to campaigns"
+    }
+  },
   "profile": {
     "title": "[IT] Profile",
     "defaultName": "[IT] Default profile",
