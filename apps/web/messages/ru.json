@@ -28,6 +28,143 @@
     "remove": "[RU] Remove",
     "add": "[RU] Add"
   },
+  "screens": {
+    "dashboard": {
+      "greeting": "Доброе утро, {name}",
+      "summary": "{count, plural, one {# кампания} few {# кампании} many {# кампаний} other {# кампании}}",
+      "stats": {
+        "found": "Найдено",
+        "foundHint": "вакансий",
+        "applied": "Откликов",
+        "appliedHint": "отправлено",
+        "responses": "Ответов",
+        "responsesHint": "получено"
+      },
+      "section": {
+        "active": "Активные",
+        "drafts": "Черновики",
+        "completed": "Завершённые"
+      },
+      "empty": {
+        "title": "Пока нет кампаний",
+        "hint": "Нажмите +, чтобы создать первую."
+      },
+      "newCampaign": "Новая кампания"
+    },
+    "onboarding": {
+      "headline": "AI находит\nвакансии.\nВы получаете\nответы.",
+      "description": "Загрузите резюме — мы сами ищем по 12 категориям и сами откликаемся. Вы видите прогресс в реальном времени.",
+      "feature": {
+        "parse": {
+          "title": "AI-парсинг резюме",
+          "subtitle": "PDF или LinkedIn — заполним профиль"
+        },
+        "search": {
+          "title": "Поиск по 12 категориям",
+          "subtitle": "Tech, Design, Product, Finance..."
+        },
+        "pay": {
+          "title": "Оплата ⭐ Stars или TON",
+          "subtitle": "Без карт — нативно в Telegram"
+        }
+      },
+      "start": "Начать"
+    },
+    "settings": {
+      "title": "Настройки",
+      "section": {
+        "language": "Язык",
+        "notifications": "Уведомления",
+        "about": "О приложении"
+      },
+      "notification": {
+        "push": {
+          "label": "Push",
+          "description": "Изменения статусов кампаний"
+        },
+        "email": {
+          "label": "Email",
+          "description": "Еженедельная сводка"
+        },
+        "weeklyDigest": {
+          "label": "Еженедельный дайджест",
+          "description": "Топ вакансий в Telegram"
+        }
+      },
+      "about": {
+        "version": "Версия",
+        "support": "Поддержка"
+      }
+    },
+    "profiles": {
+      "title": "Профили",
+      "default": "По умолчанию",
+      "empty": "Пока нет профилей. Загрузите резюме, чтобы начать.",
+      "addCv": "Добавить резюме"
+    },
+    "upload": {
+      "title": "Резюме",
+      "subtitle": "PDF или LinkedIn — мы сами заполним профиль.",
+      "idle": "Перетащите PDF или выберите файл",
+      "uploading": "Загружаем...",
+      "parsing": "AI читает резюме...",
+      "done": "Готово — проверьте профиль",
+      "errorRetry": "Попробуйте другой файл"
+    },
+    "wizard": {
+      "title": "Новая кампания",
+      "step": "ШАГ {current} / {total}",
+      "label": {
+        "profile": "Профиль",
+        "roles": "Роли",
+        "countries": "Страны",
+        "salary": "Зарплата",
+        "stack": "Стек",
+        "languages": "Языки",
+        "quota": "Объём",
+        "checkout": "Чек"
+      },
+      "next": "Далее",
+      "back": "Назад",
+      "submit": "К оплате",
+      "quotaHint": "Сколько откликов отправим"
+    },
+    "checkout": {
+      "title": "Выберите оплату",
+      "summary": "{count, plural, one {# отклик} few {# отклика} many {# откликов} other {# откликов}} · {countries}",
+      "method": {
+        "stars": "Telegram Stars",
+        "starsHint": "Мгновенно, в один клик",
+        "ton": "TON",
+        "tonHint": "Через TON Connect"
+      },
+      "pay": "Оплатить · {amount}"
+    },
+    "payment": {
+      "processing": "Обрабатываем оплату...",
+      "success": "Оплата получена",
+      "successHint": "Поиск запущен.",
+      "fail": "Оплата не прошла",
+      "failHint": "Деньги не списаны. Попробуйте ещё раз.",
+      "retry": "Повторить",
+      "openCampaign": "Открыть кампанию"
+    },
+    "detail": {
+      "appliedOf": "{applied} из {quota}",
+      "section": {
+        "progress": "Прогресс",
+        "events": "События",
+        "snapshot": "Снимок кампании"
+      },
+      "empty": "Событий пока нет."
+    },
+    "error": {
+      "title": "Что-то пошло не так",
+      "code": "Код ошибки",
+      "tryAgain": "Попробовать снова",
+      "back": "На главную"
+    }
+  },
   "profile": {
     "title": "[RU] Profile",
     "defaultName": "[RU] Default profile",

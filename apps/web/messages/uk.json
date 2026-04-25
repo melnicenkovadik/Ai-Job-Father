@@ -28,6 +28,143 @@
     "remove": "[UK] Remove",
     "add": "[UK] Add"
   },
+  "screens": {
+    "dashboard": {
+      "greeting": "[UK] Good morning, {name}",
+      "summary": "[UK] {count, plural, one {# campaign} other {# campaigns}}",
+      "stats": {
+        "found": "[UK] Found",
+        "foundHint": "[UK] vacancies",
+        "applied": "[UK] Applies",
+        "appliedHint": "[UK] sent",
+        "responses": "[UK] Replies",
+        "responsesHint": "[UK] received"
+      },
+      "section": {
+        "active": "[UK] Active",
+        "drafts": "[UK] Drafts",
+        "completed": "[UK] Completed"
+      },
+      "empty": {
+        "title": "[UK] No campaigns yet",
+        "hint": "[UK] Tap + to create the first one."
+      },
+      "newCampaign": "[UK] New campaign"
+    },
+    "onboarding": {
+      "headline": "[UK] AI finds\nvacancies.\nYou get\nreplies.",
+      "description": "[UK] Upload your CV — we search across 12 categories and apply for you. You see progress in real time.",
+      "feature": {
+        "parse": {
+          "title": "[UK] AI CV parsing",
+          "subtitle": "[UK] PDF or LinkedIn — we fill the profile"
+        },
+        "search": {
+          "title": "[UK] Search across 12 categories",
+          "subtitle": "[UK] Tech, Design, Product, Finance..."
+        },
+        "pay": {
+          "title": "[UK] Pay with ⭐ Stars or TON",
+          "subtitle": "[UK] No cards — native to Telegram"
+        }
+      },
+      "start": "[UK] Start"
+    },
+    "settings": {
+      "title": "[UK] Settings",
+      "section": {
+        "language": "[UK] Language",
+        "notifications": "[UK] Notifications",
+        "about": "[UK] About"
+      },
+      "notification": {
+        "push": {
+          "label": "[UK] Push",
+          "description": "[UK] Status updates from your campaigns"
+        },
+        "email": {
+          "label": "[UK] Email",
+          "description": "[UK] Weekly summary"
+        },
+        "weeklyDigest": {
+          "label": "[UK] Weekly digest",
+          "description": "[UK] Top vacancies in Telegram"
+        }
+      },
+      "about": {
+        "version": "[UK] Version",
+        "support": "[UK] Support"
+      }
+    },
+    "profiles": {
+      "title": "[UK] Profiles",
+      "default": "[UK] Default",
+      "empty": "[UK] No profiles yet. Upload your CV to start.",
+      "addCv": "[UK] Add a CV"
+    },
+    "upload": {
+      "title": "[UK] Upload CV",
+      "subtitle": "[UK] PDF or LinkedIn — we'll fill the profile.",
+      "idle": "[UK] Drop a PDF or pick a file",
+      "uploading": "[UK] Uploading...",
+      "parsing": "[UK] AI is reading the CV...",
+      "done": "[UK] Done — review the profile",
+      "errorRetry": "[UK] Try another file"
+    },
+    "wizard": {
+      "title": "[UK] New campaign",
+      "step": "[UK] STEP {current} / {total}",
+      "label": {
+        "profile": "[UK] Profile",
+        "roles": "[UK] Roles",
+        "countries": "[UK] Countries",
+        "salary": "[UK] Salary",
+        "stack": "[UK] Stack",
+        "languages": "[UK] Languages",
+        "quota": "[UK] Quota",
+        "checkout": "[UK] Review"
+      },
+      "next": "[UK] Next",
+      "back": "[UK] Back",
+      "submit": "[UK] To checkout",
+      "quotaHint": "[UK] How many applications to send"
+    },
+    "checkout": {
+      "title": "[UK] Choose payment",
+      "summary": "[UK] {count, plural, one {# application} other {# applications}} · {countries}",
+      "method": {
+        "stars": "[UK] Telegram Stars",
+        "starsHint": "[UK] Instant, one tap",
+        "ton": "[UK] TON",
+        "tonHint": "[UK] Via TON Connect"
+      },
+      "pay": "[UK] Pay · {amount}"
+    },
+    "payment": {
+      "processing": "[UK] Processing payment...",
+      "success": "[UK] Payment received",
+      "successHint": "[UK] Search has started.",
+      "fail": "[UK] Payment failed",
+      "failHint": "[UK] Money was not charged. Try again.",
+      "retry": "[UK] Retry",
+      "openCampaign": "[UK] Open campaign"
+    },
+    "detail": {
+      "appliedOf": "[UK] {applied} of {quota}",
+      "section": {
+        "progress": "[UK] Progress",
+        "events": "[UK] Activity",
+        "snapshot": "[UK] Campaign snapshot"
+      },
+      "empty": "[UK] No events yet."
+    },
+    "error": {
+      "title": "[UK] Something went wrong",
+      "code": "[UK] Error code",
+      "tryAgain": "[UK] Try again",
+      "back": "[UK] Back home"
+    }
+  },
   "profile": {
     "title": "[UK] Profile",
     "defaultName": "[UK] Default profile",

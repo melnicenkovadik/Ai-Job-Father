@@ -28,6 +28,143 @@
     "remove": "[PL] Remove",
     "add": "[PL] Add"
   },
+  "screens": {
+    "dashboard": {
+      "greeting": "[PL] Good morning, {name}",
+      "summary": "[PL] {count, plural, one {# campaign} other {# campaigns}}",
+      "stats": {
+        "found": "[PL] Found",
+        "foundHint": "[PL] vacancies",
+        "applied": "[PL] Applies",
+        "appliedHint": "[PL] sent",
+        "responses": "[PL] Replies",
+        "responsesHint": "[PL] received"
+      },
+      "section": {
+        "active": "[PL] Active",
+        "drafts": "[PL] Drafts",
+        "completed": "[PL] Completed"
+      },
+      "empty": {
+        "title": "[PL] No campaigns yet",
+        "hint": "[PL] Tap + to create the first one."
+      },
+      "newCampaign": "[PL] New campaign"
+    },
+    "onboarding": {
+      "headline": "[PL] AI finds\nvacancies.\nYou get\nreplies.",
+      "description": "[PL] Upload your CV — we search across 12 categories and apply for you. You see progress in real time.",
+      "feature": {
+        "parse": {
+          "title": "[PL] AI CV parsing",
+          "subtitle": "[PL] PDF or LinkedIn — we fill the profile"
+        },
+        "search": {
+          "title": "[PL] Search across 12 categories",
+          "subtitle": "[PL] Tech, Design, Product, Finance..."
+        },
+        "pay": {
+          "title": "[PL] Pay with ⭐ Stars or TON",
+          "subtitle": "[PL] No cards — native to Telegram"
+        }
+      },
+      "start": "[PL] Start"
+    },
+    "settings": {
+      "title": "[PL] Settings",
+      "section": {
+        "language": "[PL] Language",
+        "notifications": "[PL] Notifications",
+        "about": "[PL] About"
+      },
+      "notification": {
+        "push": {
+          "label": "[PL] Push",
+          "description": "[PL] Status updates from your campaigns"
+        },
+        "email": {
+          "label": "[PL] Email",
+          "description": "[PL] Weekly summary"
+        },
+        "weeklyDigest": {
+          "label": "[PL] Weekly digest",
+          "description": "[PL] Top vacancies in Telegram"
+        }
+      },
+      "about": {
+        "version": "[PL] Version",
+        "support": "[PL] Support"
+      }
+    },
+    "profiles": {
+      "title": "[PL] Profiles",
+      "default": "[PL] Default",
+      "empty": "[PL] No profiles yet. Upload your CV to start.",
+      "addCv": "[PL] Add a CV"
+    },
+    "upload": {
+      "title": "[PL] Upload CV",
+      "subtitle": "[PL] PDF or LinkedIn — we'll fill the profile.",
+      "idle": "[PL] Drop a PDF or pick a file",
+      "uploading": "[PL] Uploading...",
+      "parsing": "[PL] AI is reading the CV...",
+      "done": "[PL] Done — review the profile",
+      "errorRetry": "[PL] Try another file"
+    },
+    "wizard": {
+      "title": "[PL] New campaign",
+      "step": "[PL] STEP {current} / {total}",
+      "label": {
+        "profile": "[PL] Profile",
+        "roles": "[PL] Roles",
+        "countries": "[PL] Countries",
+        "salary": "[PL] Salary",
+        "stack": "[PL] Stack",
+        "languages": "[PL] Languages",
+        "quota": "[PL] Quota",
+        "checkout": "[PL] Review"
+      },
+      "next": "[PL] Next",
+      "back": "[PL] Back",
+      "submit": "[PL] To checkout",
+      "quotaHint": "[PL] How many applications to send"
+    },
+    "checkout": {
+      "title": "[PL] Choose payment",
+      "summary": "[PL] {count, plural, one {# application} other {# applications}} · {countries}",
+      "method": {
+        "stars": "[PL] Telegram Stars",
+        "starsHint": "[PL] Instant, one tap",
+        "ton": "[PL] TON",
+        "tonHint": "[PL] Via TON Connect"
+      },
+      "pay": "[PL] Pay · {amount}"
+    },
+    "payment": {
+      "processing": "[PL] Processing payment...",
+      "success": "[PL] Payment received",
+      "successHint": "[PL] Search has started.",
+      "fail": "[PL] Payment failed",
+      "failHint": "[PL] Money was not charged. Try again.",
+      "retry": "[PL] Retry",
+      "openCampaign": "[PL] Open campaign"
+    },
+    "detail": {
+      "appliedOf": "[PL] {applied} of {quota}",
+      "section": {
+        "progress": "[PL] Progress",
+        "events": "[PL] Activity",
+        "snapshot": "[PL] Campaign snapshot"
+      },
+      "empty": "[PL] No events yet."
+    },
+    "error": {
+      "title": "[PL] Something went wrong",
+      "code": "[PL] Error code",
+      "tryAgain": "[PL] Try again",
+      "back": "[PL] Back home"
+    }
+  },
   "profile": {
     "title": "[PL] Profile",
     "defaultName": "[PL] Default profile",

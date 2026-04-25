@@ -28,6 +28,143 @@
     "remove": "Remove",
     "add": "Add"
   },
+  "screens": {
+    "dashboard": {
+      "greeting": "Good morning, {name}",
+      "summary": "{count, plural, one {# campaign} other {# campaigns}}",
+      "stats": {
+        "found": "Found",
+        "foundHint": "vacancies",
+        "applied": "Applies",
+        "appliedHint": "sent",
+        "responses": "Replies",
+        "responsesHint": "received"
+      },
+      "section": {
+        "active": "Active",
+        "drafts": "Drafts",
+        "completed": "Completed"
+      },
+      "empty": {
+        "title": "No campaigns yet",
+        "hint": "Tap + to create the first one."
+      },
+      "newCampaign": "New campaign"
+    },
+    "onboarding": {
+      "headline": "AI finds\nvacancies.\nYou get\nreplies.",
+      "description": "Upload your CV — we search across 12 categories and apply for you. You see progress in real time.",
+      "feature": {
+        "parse": {
+          "title": "AI CV parsing",
+          "subtitle": "PDF or LinkedIn — we fill the profile"
+        },
+        "search": {
+          "title": "Search across 12 categories",
+          "subtitle": "Tech, Design, Product, Finance..."
+        },
+        "pay": {
+          "title": "Pay with ⭐ Stars or TON",
+          "subtitle": "No cards — native to Telegram"
+        }
+      },
+      "start": "Start"
+    },
+    "settings": {
+      "title": "Settings",
+      "section": {
+        "language": "Language",
+        "notifications": "Notifications",
+        "about": "About"
+      },
+      "notification": {
+        "push": {
+          "label": "Push",
+          "description": "Status updates from your campaigns"
+        },
+        "email": {
+          "label": "Email",
+          "description": "Weekly summary"
+        },
+        "weeklyDigest": {
+          "label": "Weekly digest",
+          "description": "Top vacancies in Telegram"
+        }
+      },
+      "about": {
+        "version": "Version",
+        "support": "Support"
+      }
+    },
+    "profiles": {
+      "title": "Profiles",
+      "default": "Default",
+      "empty": "No profiles yet. Upload your CV to start.",
+      "addCv": "Add a CV"
+    },
+    "upload": {
+      "title": "Upload CV",
+      "subtitle": "PDF or LinkedIn — we'll fill the profile.",
+      "idle": "Drop a PDF or pick a file",
+      "uploading": "Uploading...",
+      "parsing": "AI is reading the CV...",
+      "done": "Done — review the profile",
+      "errorRetry": "Try another file"
+    },
+    "wizard": {
+      "title": "New campaign",
+      "step": "STEP {current} / {total}",
+      "label": {
+        "profile": "Profile",
+        "roles": "Roles",
+        "countries": "Countries",
+        "salary": "Salary",
+        "stack": "Stack",
+        "languages": "Languages",
+        "quota": "Quota",
+        "checkout": "Review"
+      },
+      "next": "Next",
+      "back": "Back",
+      "submit": "To checkout",
+      "quotaHint": "How many applications to send"
+    },
+    "checkout": {
+      "title": "Choose payment",
+      "summary": "{count, plural, one {# application} other {# applications}} · {countries}",
+      "method": {
+        "stars": "Telegram Stars",
+        "starsHint": "Instant, one tap",
+        "ton": "TON",
+        "tonHint": "Via TON Connect"
+      },
+      "pay": "Pay · {amount}"
+    },
+    "payment": {
+      "processing": "Processing payment...",
+      "success": "Payment received",
+      "successHint": "Search has started.",
+      "fail": "Payment failed",
+      "failHint": "Money was not charged. Try again.",
+      "retry": "Retry",
+      "openCampaign": "Open campaign"
+    },
+    "detail": {
+      "appliedOf": "{applied} of {quota}",
+      "section": {
+        "progress": "Progress",
+        "events": "Activity",
+        "snapshot": "Campaign snapshot"
+      },
+      "empty": "No events yet."
+    },
+    "error": {
+      "title": "Something went wrong",
+      "code": "Error code",
+      "tryAgain": "Try again",
+      "back": "Back home"
+    }
+  },
   "profile": {
     "title": "Profile",
     "defaultName": "Default profile",
