@@ -97,19 +97,48 @@
       }
     },
     "profiles": {
-      "title": "[UK] Profiles",
-      "default": "[UK] Default",
-      "empty": "[UK] No profiles yet. Upload your CV to start.",
-      "addCv": "[UK] Add a CV"
+      "title": "[LOCALE] Profiles",
+      "default": "[LOCALE] Default",
+      "empty": "[LOCALE] No profiles yet. Upload your CV to start.",
+      "addCv": "[LOCALE] Add a CV",
+      "subtitle": "[LOCALE] Different roles, different profiles. One default.",
+      "newProfile": "[LOCALE] New profile",
+      "campaigns": "[LOCALE] {count, plural, one {# campaign} other {# campaigns}}",
+      "edit": "[LOCALE] Edit"
     },
     "upload": {
-      "title": "[UK] Upload CV",
-      "subtitle": "[UK] PDF or LinkedIn — we'll fill the profile.",
-      "idle": "[UK] Drop a PDF or pick a file",
-      "uploading": "[UK] Uploading...",
-      "parsing": "[UK] AI is reading the CV...",
-      "done": "[UK] Done — review the profile",
-      "errorRetry": "[UK] Try another file"
+      "title": "[LOCALE] CV",
+      "subtitle": "[LOCALE] Upload a PDF or paste a LinkedIn URL. AI will fill the profile automatically.",
+      "idle": "[LOCALE] Drop a PDF or pick a file",
+      "uploading": "[LOCALE] Uploading...",
+      "parsing": "[LOCALE] AI is reading the CV...",
+      "done": "[LOCALE] Done — review the profile",
+      "errorRetry": "[LOCALE] Try another file",
+      "dropzone": "[LOCALE] Drop CV or tap",
+      "fileTypes": "[LOCALE] PDF · up to 10 MB",
+      "orSeparator": "[LOCALE] or",
+      "linkedinPlaceholder": "[LOCALE] linkedin.com/in/...",
+      "mainCta": "[LOCALE] Upload CV",
+      "reviewCta": "[LOCALE] Open profile",
+      "step": {
+        "upload": "[LOCALE] File uploaded",
+        "extract": "[LOCALE] Extracting text",
+        "ai": "[LOCALE] AI is analyzing",
+        "profile": "[LOCALE] Preparing the profile"
+      },
+      "aiHint": "[LOCALE] Claude Sonnet 4.5 · pulling experience, stack, languages",
+      "sampleFile": "[LOCALE] cv.pdf",
+      "sampleSize": "[LOCALE] 248 KB",
+      "error": {
+        "format": "[LOCALE] Couldn't read the PDF. Try another file.",
+        "file_too_large": "[LOCALE] File is over 10 MB. Please upload a smaller one.",
+        "invalid_mime": "[LOCALE] Please upload a PDF file.",
+        "missing_file": "[LOCALE] No file selected.",
+        "empty_file": "[LOCALE] The file is empty.",
+        "rate_limit": "[LOCALE] Too many uploads — try again in a moment.",
+        "unavailable": "[LOCALE] AI is offline. Try again in a minute.",
+        "internal": "[LOCALE] Something went wrong. We're looking into it."
+      }
     },
     "wizard": {
       "title": "[UK] New campaign",

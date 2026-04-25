@@ -100,16 +100,45 @@
       "title": "Profiles",
       "default": "Default",
       "empty": "No profiles yet. Upload your CV to start.",
-      "addCv": "Add a CV"
+      "addCv": "Add a CV",
+      "subtitle": "Different roles, different profiles. One default.",
+      "newProfile": "New profile",
+      "campaigns": "{count, plural, one {# campaign} other {# campaigns}}",
+      "edit": "Edit"
     },
     "upload": {
-      "title": "Upload CV",
-      "subtitle": "PDF or LinkedIn — we'll fill the profile.",
+      "title": "CV",
+      "subtitle": "Upload a PDF or paste a LinkedIn URL. AI will fill the profile automatically.",
       "idle": "Drop a PDF or pick a file",
       "uploading": "Uploading...",
       "parsing": "AI is reading the CV...",
       "done": "Done — review the profile",
-      "errorRetry": "Try another file"
+      "errorRetry": "Try another file",
+      "dropzone": "Drop CV or tap",
+      "fileTypes": "PDF · up to 10 MB",
+      "orSeparator": "or",
+      "linkedinPlaceholder": "linkedin.com/in/...",
+      "mainCta": "Upload CV",
+      "reviewCta": "Open profile",
+      "step": {
+        "upload": "File uploaded",
+        "extract": "Extracting text",
+        "ai": "AI is analyzing",
+        "profile": "Preparing the profile"
+      },
+      "aiHint": "Claude Sonnet 4.5 · pulling experience, stack, languages",
+      "sampleFile": "cv.pdf",
+      "sampleSize": "248 KB",
+      "error": {
+        "format": "Couldn't read the PDF. Try another file.",
+        "file_too_large": "File is over 10 MB. Please upload a smaller one.",
+        "invalid_mime": "Please upload a PDF file.",
+        "missing_file": "No file selected.",
+        "empty_file": "The file is empty.",
+        "rate_limit": "Too many uploads — try again in a moment.",
+        "unavailable": "AI is offline. Try again in a minute.",
+        "internal": "Something went wrong. We're looking into it."
+      }
     },
     "wizard": {
       "title": "New campaign",
