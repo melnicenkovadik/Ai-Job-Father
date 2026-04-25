@@ -204,32 +204,56 @@
     },
     "checkout": {
       "title": "[IT] Choose payment",
-      "summary": "[IT] {count, plural, one {# application} other {# applications}} · {countries}",
+      "campaignSummary": "[IT] {title} · {count, plural, one {# application} other {# applications}}",
+      "totalLabel": "[IT] Total amount",
+      "methodSection": "[IT] Payment method",
+      "pay": "[IT] Pay {amount}",
+      "noteRefund": "[IT] After payment the campaign data is frozen. Refunds are not supported in MVP.",
       "method": {
         "stars": "[IT] Telegram Stars",
-        "starsHint": "[IT] Instant, one tap",
-        "ton": "[IT] TON",
-        "tonHint": "[IT] Via TON Connect"
-      },
-      "pay": "[IT] Pay · {amount}"
+        "starsHint": "[IT] Native payment · instant",
+        "starsBadge": "[IT] Recommended",
+        "ton": "[IT] TON Connect",
+        "tonHint": "[IT] Pay via crypto wallet"
+      }
     },
     "payment": {
-      "processing": "[IT] Processing payment...",
-      "success": "[IT] Payment received",
-      "successHint": "[IT] Search has started.",
+      "processing": "[IT] Waiting for\npayment",
+      "processingStars": "[IT] Confirm in the Telegram window",
+      "processingTon": "[IT] Confirm the transaction in your wallet",
+      "processingSecure": "[IT] SECURE · {provider}",
+      "success": "[IT] Paid",
+      "successHint": "[IT] Campaign launched. First applications in 2–6 hours.",
       "fail": "[IT] Payment failed",
       "failHint": "[IT] Money was not charged. Try again.",
       "retry": "[IT] Retry",
-      "openCampaign": "[IT] Open campaign"
+      "openCampaign": "[IT] Open campaign",
+      "homeCta": "[IT] Back to campaigns",
+      "rows": {
+        "amount": "[IT] Amount",
+        "transaction": "[IT] Transaction",
+        "when": "[IT] Time"
+      }
     },
     "detail": {
+      "paidAt": "[IT] paid {when}",
       "appliedOf": "[IT] {applied} of {quota}",
+      "liveSearch": "[IT] live search",
+      "metric": {
+        "found": "[IT] Found",
+        "foundHint": "[IT] vacancies",
+        "responses": "[IT] Replies",
+        "responsesHint": "[IT] received"
+      },
       "section": {
         "progress": "[IT] Progress",
         "events": "[IT] Activity",
         "snapshot": "[IT] Campaign snapshot"
       },
-      "empty": "[IT] No events yet."
+      "empty": "[IT] No events yet.",
+      "status": {
+        "appliedSent": "[IT] Applications sent"
+      }
     },
     "error": {
       "title": "[IT] Something went wrong",

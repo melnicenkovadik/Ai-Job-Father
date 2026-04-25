@@ -204,32 +204,56 @@
     },
     "checkout": {
       "title": "Choose payment",
-      "summary": "{count, plural, one {# application} other {# applications}} · {countries}",
+      "campaignSummary": "{title} · {count, plural, one {# application} other {# applications}}",
+      "totalLabel": "Total amount",
+      "methodSection": "Payment method",
+      "pay": "Pay {amount}",
+      "noteRefund": "After payment the campaign data is frozen. Refunds are not supported in MVP.",
       "method": {
         "stars": "Telegram Stars",
-        "starsHint": "Instant, one tap",
-        "ton": "TON",
-        "tonHint": "Via TON Connect"
-      },
-      "pay": "Pay · {amount}"
+        "starsHint": "Native payment · instant",
+        "starsBadge": "Recommended",
+        "ton": "TON Connect",
+        "tonHint": "Pay via crypto wallet"
+      }
     },
     "payment": {
-      "processing": "Processing payment...",
-      "success": "Payment received",
-      "successHint": "Search has started.",
+      "processing": "Waiting for\npayment",
+      "processingStars": "Confirm in the Telegram window",
+      "processingTon": "Confirm the transaction in your wallet",
+      "processingSecure": "SECURE · {provider}",
+      "success": "Paid",
+      "successHint": "Campaign launched. First applications in 2–6 hours.",
       "fail": "Payment failed",
       "failHint": "Money was not charged. Try again.",
       "retry": "Retry",
-      "openCampaign": "Open campaign"
+      "openCampaign": "Open campaign",
+      "homeCta": "Back to campaigns",
+      "rows": {
+        "amount": "Amount",
+        "transaction": "Transaction",
+        "when": "Time"
+      }
     },
     "detail": {
+      "paidAt": "paid {when}",
       "appliedOf": "{applied} of {quota}",
+      "liveSearch": "live search",
+      "metric": {
+        "found": "Found",
+        "foundHint": "vacancies",
+        "responses": "Replies",
+        "responsesHint": "received"
+      },
       "section": {
         "progress": "Progress",
         "events": "Activity",
         "snapshot": "Campaign snapshot"
       },
-      "empty": "No events yet."
+      "empty": "No events yet.",
+      "status": {
+        "appliedSent": "Applications sent"
+      }
     },
     "error": {
       "title": "Something went wrong",

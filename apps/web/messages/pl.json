@@ -204,32 +204,56 @@
     },
     "checkout": {
       "title": "[PL] Choose payment",
-      "summary": "[PL] {count, plural, one {# application} other {# applications}} · {countries}",
+      "campaignSummary": "[PL] {title} · {count, plural, one {# application} other {# applications}}",
+      "totalLabel": "[PL] Total amount",
+      "methodSection": "[PL] Payment method",
+      "pay": "[PL] Pay {amount}",
+      "noteRefund": "[PL] After payment the campaign data is frozen. Refunds are not supported in MVP.",
       "method": {
         "stars": "[PL] Telegram Stars",
-        "starsHint": "[PL] Instant, one tap",
-        "ton": "[PL] TON",
-        "tonHint": "[PL] Via TON Connect"
-      },
-      "pay": "[PL] Pay · {amount}"
+        "starsHint": "[PL] Native payment · instant",
+        "starsBadge": "[PL] Recommended",
+        "ton": "[PL] TON Connect",
+        "tonHint": "[PL] Pay via crypto wallet"
+      }
     },
     "payment": {
-      "processing": "[PL] Processing payment...",
-      "success": "[PL] Payment received",
-      "successHint": "[PL] Search has started.",
+      "processing": "[PL] Waiting for\npayment",
+      "processingStars": "[PL] Confirm in the Telegram window",
+      "processingTon": "[PL] Confirm the transaction in your wallet",
+      "processingSecure": "[PL] SECURE · {provider}",
+      "success": "[PL] Paid",
+      "successHint": "[PL] Campaign launched. First applications in 2–6 hours.",
       "fail": "[PL] Payment failed",
       "failHint": "[PL] Money was not charged. Try again.",
       "retry": "[PL] Retry",
-      "openCampaign": "[PL] Open campaign"
+      "openCampaign": "[PL] Open campaign",
+      "homeCta": "[PL] Back to campaigns",
+      "rows": {
+        "amount": "[PL] Amount",
+        "transaction": "[PL] Transaction",
+        "when": "[PL] Time"
+      }
     },
     "detail": {
+      "paidAt": "[PL] paid {when}",
       "appliedOf": "[PL] {applied} of {quota}",
+      "liveSearch": "[PL] live search",
+      "metric": {
+        "found": "[PL] Found",
+        "foundHint": "[PL] vacancies",
+        "responses": "[PL] Replies",
+        "responsesHint": "[PL] received"
+      },
       "section": {
         "progress": "[PL] Progress",
         "events": "[PL] Activity",
         "snapshot": "[PL] Campaign snapshot"
       },
-      "empty": "[PL] No events yet."
+      "empty": "[PL] No events yet.",
+      "status": {
+        "appliedSent": "[PL] Applications sent"
+      }
     },
     "error": {
       "title": "[PL] Something went wrong",

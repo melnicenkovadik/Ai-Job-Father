@@ -203,33 +203,57 @@
       }
     },
     "checkout": {
-      "title": "Выберите оплату",
-      "summary": "{count, plural, one {# отклик} few {# отклика} many {# откликов} other {# откликов}} · {countries}",
+      "title": "Оплата",
+      "campaignSummary": "{title} · {count, plural, one {# отклик} few {# отклика} many {# откликов} other {# откликов}}",
+      "totalLabel": "К оплате",
+      "methodSection": "Способ оплаты",
+      "pay": "Оплатить {amount}",
+      "noteRefund": "После оплаты данные кампании не редактируются. Возврат средств в MVP не предусмотрен.",
       "method": {
         "stars": "Telegram Stars",
-        "starsHint": "Мгновенно, в один клик",
-        "ton": "TON",
-        "tonHint": "Через TON Connect"
-      },
-      "pay": "Оплатить · {amount}"
+        "starsHint": "Нативная оплата · мгновенно",
+        "starsBadge": "Рекомендуем",
+        "ton": "TON Connect",
+        "tonHint": "Оплата через крипто-кошелёк"
+      }
     },
     "payment": {
-      "processing": "Обрабатываем оплату...",
-      "success": "Оплата получена",
-      "successHint": "Поиск запущен.",
+      "processing": "Ожидаем\nоплату",
+      "processingStars": "Подтвердите в окне Telegram",
+      "processingTon": "Подтвердите транзакцию в кошельке",
+      "processingSecure": "SECURE · {provider}",
+      "success": "Оплачено",
+      "successHint": "Кампания запущена. Первые отклики за 2–6 часов.",
       "fail": "Оплата не прошла",
       "failHint": "Деньги не списаны. Попробуйте ещё раз.",
-      "retry": "Повторить",
-      "openCampaign": "Открыть кампанию"
+      "retry": "Попробовать снова",
+      "openCampaign": "Открыть кампанию",
+      "homeCta": "К кампаниям",
+      "rows": {
+        "amount": "Сумма",
+        "transaction": "Транзакция",
+        "when": "Время"
+      }
     },
     "detail": {
+      "paidAt": "оплачено {when}",
       "appliedOf": "{applied} из {quota}",
+      "liveSearch": "живой поиск",
+      "metric": {
+        "found": "Найдено",
+        "foundHint": "вакансий",
+        "responses": "Ответов",
+        "responsesHint": "получено"
+      },
       "section": {
         "progress": "Прогресс",
-        "events": "События",
-        "snapshot": "Снимок кампании"
+        "events": "Лента событий",
+        "snapshot": "Снэпшот кампании"
       },
-      "empty": "Событий пока нет."
+      "empty": "Событий пока нет.",
+      "status": {
+        "appliedSent": "Отклики отправлены"
+      }
     },
     "error": {
       "title": "Что-то пошло не так",

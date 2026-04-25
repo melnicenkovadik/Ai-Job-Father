@@ -204,32 +204,56 @@
     },
     "checkout": {
       "title": "[UK] Choose payment",
-      "summary": "[UK] {count, plural, one {# application} other {# applications}} · {countries}",
+      "campaignSummary": "[UK] {title} · {count, plural, one {# application} other {# applications}}",
+      "totalLabel": "[UK] Total amount",
+      "methodSection": "[UK] Payment method",
+      "pay": "[UK] Pay {amount}",
+      "noteRefund": "[UK] After payment the campaign data is frozen. Refunds are not supported in MVP.",
       "method": {
         "stars": "[UK] Telegram Stars",
-        "starsHint": "[UK] Instant, one tap",
-        "ton": "[UK] TON",
-        "tonHint": "[UK] Via TON Connect"
-      },
-      "pay": "[UK] Pay · {amount}"
+        "starsHint": "[UK] Native payment · instant",
+        "starsBadge": "[UK] Recommended",
+        "ton": "[UK] TON Connect",
+        "tonHint": "[UK] Pay via crypto wallet"
+      }
     },
     "payment": {
-      "processing": "[UK] Processing payment...",
-      "success": "[UK] Payment received",
-      "successHint": "[UK] Search has started.",
+      "processing": "[UK] Waiting for\npayment",
+      "processingStars": "[UK] Confirm in the Telegram window",
+      "processingTon": "[UK] Confirm the transaction in your wallet",
+      "processingSecure": "[UK] SECURE · {provider}",
+      "success": "[UK] Paid",
+      "successHint": "[UK] Campaign launched. First applications in 2–6 hours.",
       "fail": "[UK] Payment failed",
       "failHint": "[UK] Money was not charged. Try again.",
       "retry": "[UK] Retry",
-      "openCampaign": "[UK] Open campaign"
+      "openCampaign": "[UK] Open campaign",
+      "homeCta": "[UK] Back to campaigns",
+      "rows": {
+        "amount": "[UK] Amount",
+        "transaction": "[UK] Transaction",
+        "when": "[UK] Time"
+      }
     },
     "detail": {
+      "paidAt": "[UK] paid {when}",
       "appliedOf": "[UK] {applied} of {quota}",
+      "liveSearch": "[UK] live search",
+      "metric": {
+        "found": "[UK] Found",
+        "foundHint": "[UK] vacancies",
+        "responses": "[UK] Replies",
+        "responsesHint": "[UK] received"
+      },
       "section": {
         "progress": "[UK] Progress",
         "events": "[UK] Activity",
         "snapshot": "[UK] Campaign snapshot"
       },
-      "empty": "[UK] No events yet."
+      "empty": "[UK] No events yet.",
+      "status": {
+        "appliedSent": "[UK] Applications sent"
+      }
     },
     "error": {
       "title": "[UK] Something went wrong",
