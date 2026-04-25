@@ -285,10 +285,17 @@
       }
     },
     "error": {
-      "title": "[IT] Something went wrong",
+      "title": "[LOCALE] Payment\ndid not go through",
       "code": "[IT] Error code",
       "tryAgain": "[IT] Try again",
-      "back": "[IT] Back home"
+      "back": "[IT] Back home",
+      "hint": "[LOCALE] Funds were not charged. The campaign stays in drafts — try again.",
+      "defaultTitle": "[LOCALE] Something went wrong",
+      "defaultHint": "[LOCALE] We couldn't load this screen. Try again or go back home.",
+      "codeLabel": "[LOCALE] error",
+      "detail": "[LOCALE] wallet did not respond in 60s",
+      "retry": "[LOCALE] Try again",
+      "home": "[LOCALE] Back to campaigns"
     }
   },
   "profile": {

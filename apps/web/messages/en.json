@@ -285,10 +285,17 @@
       }
     },
     "error": {
-      "title": "Something went wrong",
+      "title": "Payment\ndid not go through",
       "code": "Error code",
       "tryAgain": "Try again",
-      "back": "Back home"
+      "back": "Back home",
+      "hint": "Funds were not charged. The campaign stays in drafts — try again.",
+      "defaultTitle": "Something went wrong",
+      "defaultHint": "We couldn't load this screen. Try again or go back home.",
+      "codeLabel": "error",
+      "detail": "wallet did not respond in 60s",
+      "retry": "Try again",
+      "home": "Back to campaigns"
     }
   },
   "profile": {
