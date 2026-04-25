@@ -4,41 +4,45 @@ import { useEffect } from 'react';
 import { getWebApp } from './webapp';
 
 /**
- * Bridges Telegram `themeParams` + viewport into CSS variables.
- * Runs on mount, re-applies on `themeChanged` + `viewportChanged` events.
- * Graceful no-op when rendered outside Telegram WebApp.
+ * Owns two responsibilities:
+ *   1. data-theme attribute on <html> — drives the MINIMAL light/dark palette
+ *      defined in globals.css. Inside Telegram: from `colorScheme`. Outside
+ *      Telegram (browser dev): from `prefers-color-scheme`.
+ *   2. Telegram viewport CSS variables (--tg-viewport-height,
+ *      --tg-viewport-stable-height) so <Screen> sizes correctly.
+ *
+ * Color themeParams are intentionally NOT bridged — MINIMAL palette is the
+ * single source of truth. Users with custom Telegram themes still get the
+ * MINIMAL look so the brand identity stays consistent.
  */
 export function ThemeBridge(): null {
   useEffect(() => {
+    const root = document.documentElement;
     const wa = getWebApp();
-    if (!wa) return;
 
-    const apply = (): void => {
-      const root = document.documentElement;
-      const tp = wa.themeParams;
-      const set = (token: string, value?: string): void => {
-        if (value) root.style.setProperty(token, value);
+    if (wa) {
+      const apply = (): void => {
+        root.setAttribute('data-theme', wa.colorScheme);
+        root.style.setProperty('--tg-viewport-height', `${wa.viewportHeight}px`);
+        root.style.setProperty('--tg-viewport-stable-height', `${wa.viewportStableHeight}px`);
       };
-      set('--color-bg', tp.bg_color);
-      set('--color-text', tp.text_color);
-      set('--color-hint', tp.hint_color);
-      set('--color-link', tp.link_color);
-      set('--color-button', tp.button_color);
-      set('--color-button-text', tp.button_text_color);
-      set('--color-bg-secondary', tp.secondary_bg_color);
-      set('--color-accent', tp.accent_text_color);
-      set('--color-destructive', tp.destructive_text_color);
-      root.setAttribute('data-theme', wa.colorScheme);
-      root.style.setProperty('--tg-viewport-height', `${wa.viewportHeight}px`);
-      root.style.setProperty('--tg-viewport-stable-height', `${wa.viewportStableHeight}px`);
-    };
+      apply();
+      wa.onEvent('themeChanged', apply);
+      wa.onEvent('viewportChanged', apply);
+      return () => {
+        wa.offEvent('themeChanged', apply);
+        wa.offEvent('viewportChanged', apply);
+      };
+    }
 
-    apply();
-    wa.onEvent('themeChanged', apply);
-    wa.onEvent('viewportChanged', apply);
+    const media = window.matchMedia('(prefers-color-scheme: light)');
+    const applyBrowser = (): void => {
+      root.setAttribute('data-theme', media.matches ? 'light' : 'dark');
+    };
+    applyBrowser();
+    media.addEventListener('change', applyBrowser);
     return () => {
-      wa.offEvent('themeChanged', apply);
-      wa.offEvent('viewportChanged', apply);
+      media.removeEventListener('change', applyBrowser);
     };
   }, []);
 
