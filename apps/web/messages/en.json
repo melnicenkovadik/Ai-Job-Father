@@ -115,19 +115,92 @@
       "title": "New campaign",
       "step": "STEP {current} / {total}",
       "label": {
-        "profile": "Profile",
+        "category": "Category",
         "roles": "Roles",
         "countries": "Countries",
         "salary": "Salary",
         "stack": "Stack",
         "languages": "Languages",
-        "quota": "Quota",
+        "quota": "Volume",
         "checkout": "Review"
       },
+      "description": {
+        "category": "Pick a category — sets pricing form",
+        "roles": "ESCO roles · up to 5",
+        "countries": "Where to apply · multi-select",
+        "salary": "Minimum monthly salary",
+        "stack": "Required tech stack",
+        "languages": "Interview languages",
+        "quota": "How many applications · drives price",
+        "checkout": "Review and pay"
+      },
       "next": "Next",
-      "back": "Back",
-      "submit": "To checkout",
-      "quotaHint": "How many applications to send"
+      "submit": "To checkout · {amount}",
+      "category": {
+        "tech": "IT / Tech",
+        "design": "Design",
+        "marketing": "Marketing",
+        "sales": "Sales",
+        "product": "Product",
+        "finance": "Finance",
+        "hr": "HR",
+        "support": "Support",
+        "content": "Content",
+        "ops": "Operations",
+        "data": "Data",
+        "web3": "Web3"
+      },
+      "roles": {
+        "placeholder": "Type a role...",
+        "selected": "Selected · {count}/5",
+        "suggestions": "ESCO suggestions",
+        "add": "Add",
+        "empty": "Pick a role from the suggestions"
+      },
+      "countries": {
+        "selected": "Selected · {count}",
+        "empty": "Pick at least one country"
+      },
+      "salary": {
+        "label": "Minimum, USD / month",
+        "min": "$1k",
+        "max": "$15k"
+      },
+      "stack": {
+        "hint": "Tap to mark as required",
+        "selected": "Selected · {count}"
+      },
+      "langs": {
+        "EN": "English",
+        "DE": "German",
+        "FR": "French",
+        "ES": "Spanish",
+        "PL": "Polish",
+        "UK": "Ukrainian",
+        "RU": "Russian",
+        "IT": "Italian"
+      },
+      "quota": {
+        "label": "Applications quota",
+        "hint": "≈ {min}–{max} vacancies reviewed",
+        "priceNote": "Price scales linearly: 200 base + 8 per application"
+      },
+      "summary": {
+        "title": "Summary",
+        "category": "Category",
+        "roles": "Roles",
+        "rolesCount": "{count, plural, one {# role} other {# roles}}",
+        "countries": "Countries",
+        "salary": "Salary",
+        "salaryFrom": "${amount}+",
+        "stack": "Stack",
+        "languages": "Languages",
+        "quota": "Quota",
+        "basePrice": "Base price",
+        "quotaRow": "Quota × {count}",
+        "countriesRow": "Countries × {count}",
+        "total": "Total"
+      }
     },
     "checkout": {
       "title": "Choose payment",

@@ -115,19 +115,92 @@
       "title": "[UK] New campaign",
       "step": "[UK] STEP {current} / {total}",
       "label": {
-        "profile": "[UK] Profile",
+        "category": "[UK] Category",
         "roles": "[UK] Roles",
         "countries": "[UK] Countries",
         "salary": "[UK] Salary",
         "stack": "[UK] Stack",
         "languages": "[UK] Languages",
-        "quota": "[UK] Quota",
+        "quota": "[UK] Volume",
         "checkout": "[UK] Review"
       },
+      "description": {
+        "category": "[UK] Pick a category — sets pricing form",
+        "roles": "[UK] ESCO roles · up to 5",
+        "countries": "[UK] Where to apply · multi-select",
+        "salary": "[UK] Minimum monthly salary",
+        "stack": "[UK] Required tech stack",
+        "languages": "[UK] Interview languages",
+        "quota": "[UK] How many applications · drives price",
+        "checkout": "[UK] Review and pay"
+      },
       "next": "[UK] Next",
-      "back": "[UK] Back",
-      "submit": "[UK] To checkout",
-      "quotaHint": "[UK] How many applications to send"
+      "submit": "[UK] To checkout · {amount}",
+      "category": {
+        "tech": "[UK] IT / Tech",
+        "design": "[UK] Design",
+        "marketing": "[UK] Marketing",
+        "sales": "[UK] Sales",
+        "product": "[UK] Product",
+        "finance": "[UK] Finance",
+        "hr": "[UK] HR",
+        "support": "[UK] Support",
+        "content": "[UK] Content",
+        "ops": "[UK] Operations",
+        "data": "[UK] Data",
+        "web3": "[UK] Web3"
+      },
+      "roles": {
+        "placeholder": "[UK] Type a role...",
+        "selected": "[UK] Selected · {count}/5",
+        "suggestions": "[UK] ESCO suggestions",
+        "add": "[UK] Add",
+        "empty": "[UK] Pick a role from the suggestions"
+      },
+      "countries": {
+        "selected": "[UK] Selected · {count}",
+        "empty": "[UK] Pick at least one country"
+      },
+      "salary": {
+        "label": "[UK] Minimum, USD / month",
+        "min": "[UK] $1k",
+        "max": "[UK] $15k"
+      },
+      "stack": {
+        "hint": "[UK] Tap to mark as required",
+        "selected": "[UK] Selected · {count}"
+      },
+      "langs": {
+        "EN": "[UK] English",
+        "DE": "[UK] German",
+        "FR": "[UK] French",
+        "ES": "[UK] Spanish",
+        "PL": "[UK] Polish",
+        "UK": "[UK] Ukrainian",
+        "RU": "[UK] Russian",
+        "IT": "[UK] Italian"
+      },
+      "quota": {
+        "label": "[UK] Applications quota",
+        "hint": "[UK] ≈ {min}–{max} vacancies reviewed",
+        "priceNote": "[UK] Price scales linearly: 200 base + 8 per application"
+      },
+      "summary": {
+        "title": "[UK] Summary",
+        "category": "[UK] Category",
+        "roles": "[UK] Roles",
+        "rolesCount": "[UK] {count, plural, one {# role} other {# roles}}",
+        "countries": "[UK] Countries",
+        "salary": "[UK] Salary",
+        "salaryFrom": "[UK] ${amount}+",
+        "stack": "[UK] Stack",
+        "languages": "[UK] Languages",
+        "quota": "[UK] Quota",
+        "basePrice": "[UK] Base price",
+        "quotaRow": "[UK] Quota × {count}",
+        "countriesRow": "[UK] Countries × {count}",
+        "total": "[UK] Total"
+      }
     },
     "checkout": {
       "title": "[UK] Choose payment",

@@ -115,19 +115,92 @@
       "title": "[PL] New campaign",
       "step": "[PL] STEP {current} / {total}",
       "label": {
-        "profile": "[PL] Profile",
+        "category": "[PL] Category",
         "roles": "[PL] Roles",
         "countries": "[PL] Countries",
         "salary": "[PL] Salary",
         "stack": "[PL] Stack",
         "languages": "[PL] Languages",
-        "quota": "[PL] Quota",
+        "quota": "[PL] Volume",
         "checkout": "[PL] Review"
       },
+      "description": {
+        "category": "[PL] Pick a category — sets pricing form",
+        "roles": "[PL] ESCO roles · up to 5",
+        "countries": "[PL] Where to apply · multi-select",
+        "salary": "[PL] Minimum monthly salary",
+        "stack": "[PL] Required tech stack",
+        "languages": "[PL] Interview languages",
+        "quota": "[PL] How many applications · drives price",
+        "checkout": "[PL] Review and pay"
+      },
       "next": "[PL] Next",
-      "back": "[PL] Back",
-      "submit": "[PL] To checkout",
-      "quotaHint": "[PL] How many applications to send"
+      "submit": "[PL] To checkout · {amount}",
+      "category": {
+        "tech": "[PL] IT / Tech",
+        "design": "[PL] Design",
+        "marketing": "[PL] Marketing",
+        "sales": "[PL] Sales",
+        "product": "[PL] Product",
+        "finance": "[PL] Finance",
+        "hr": "[PL] HR",
+        "support": "[PL] Support",
+        "content": "[PL] Content",
+        "ops": "[PL] Operations",
+        "data": "[PL] Data",
+        "web3": "[PL] Web3"
+      },
+      "roles": {
+        "placeholder": "[PL] Type a role...",
+        "selected": "[PL] Selected · {count}/5",
+        "suggestions": "[PL] ESCO suggestions",
+        "add": "[PL] Add",
+        "empty": "[PL] Pick a role from the suggestions"
+      },
+      "countries": {
+        "selected": "[PL] Selected · {count}",
+        "empty": "[PL] Pick at least one country"
+      },
+      "salary": {
+        "label": "[PL] Minimum, USD / month",
+        "min": "[PL] $1k",
+        "max": "[PL] $15k"
+      },
+      "stack": {
+        "hint": "[PL] Tap to mark as required",
+        "selected": "[PL] Selected · {count}"
+      },
+      "langs": {
+        "EN": "[PL] English",
+        "DE": "[PL] German",
+        "FR": "[PL] French",
+        "ES": "[PL] Spanish",
+        "PL": "[PL] Polish",
+        "UK": "[PL] Ukrainian",
+        "RU": "[PL] Russian",
+        "IT": "[PL] Italian"
+      },
+      "quota": {
+        "label": "[PL] Applications quota",
+        "hint": "[PL] ≈ {min}–{max} vacancies reviewed",
+        "priceNote": "[PL] Price scales linearly: 200 base + 8 per application"
+      },
+      "summary": {
+        "title": "[PL] Summary",
+        "category": "[PL] Category",
+        "roles": "[PL] Roles",
+        "rolesCount": "[PL] {count, plural, one {# role} other {# roles}}",
+        "countries": "[PL] Countries",
+        "salary": "[PL] Salary",
+        "salaryFrom": "[PL] ${amount}+",
+        "stack": "[PL] Stack",
+        "languages": "[PL] Languages",
+        "quota": "[PL] Quota",
+        "basePrice": "[PL] Base price",
+        "quotaRow": "[PL] Quota × {count}",
+        "countriesRow": "[PL] Countries × {count}",
+        "total": "[PL] Total"
+      }
     },
     "checkout": {
       "title": "[PL] Choose payment",

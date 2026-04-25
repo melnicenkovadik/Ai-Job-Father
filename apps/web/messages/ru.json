@@ -115,7 +115,7 @@
       "title": "Новая кампания",
       "step": "ШАГ {current} / {total}",
       "label": {
-        "profile": "Профиль",
+        "category": "Категория",
         "roles": "Роли",
         "countries": "Страны",
         "salary": "Зарплата",
@@ -124,10 +124,83 @@
         "quota": "Объём",
         "checkout": "Чек"
       },
+      "description": {
+        "category": "Выберите категорию — определит форму и цену",
+        "roles": "ESCO-роли · до 5 штук",
+        "countries": "Где искать · мульти-выбор",
+        "salary": "Минимальная зарплата",
+        "stack": "Обязательный стек",
+        "languages": "Языки собеседования",
+        "quota": "Сколько откликов хотите · прямо влияет на цену",
+        "checkout": "Проверьте и оплатите"
+      },
       "next": "Далее",
-      "back": "Назад",
-      "submit": "К оплате",
-      "quotaHint": "Сколько откликов отправим"
+      "submit": "К оплате · {amount}",
+      "category": {
+        "tech": "IT / Tech",
+        "design": "Design",
+        "marketing": "Marketing",
+        "sales": "Sales",
+        "product": "Product",
+        "finance": "Finance",
+        "hr": "HR",
+        "support": "Support",
+        "content": "Content",
+        "ops": "Operations",
+        "data": "Data",
+        "web3": "Web3"
+      },
+      "roles": {
+        "placeholder": "Введите роль...",
+        "selected": "Выбрано · {count}/5",
+        "suggestions": "Подсказки ESCO",
+        "add": "Добавить",
+        "empty": "Выберите роль из подсказок"
+      },
+      "countries": {
+        "selected": "Выбрано · {count}",
+        "empty": "Укажите хотя бы одну страну"
+      },
+      "salary": {
+        "label": "Минимум, USD / месяц",
+        "min": "$1k",
+        "max": "$15k"
+      },
+      "stack": {
+        "hint": "Касание — отметить как жёсткое требование",
+        "selected": "Выбрано · {count}"
+      },
+      "langs": {
+        "EN": "Английский",
+        "DE": "Немецкий",
+        "FR": "Французский",
+        "ES": "Испанский",
+        "PL": "Польский",
+        "UK": "Украинский",
+        "RU": "Русский",
+        "IT": "Итальянский"
+      },
+      "quota": {
+        "label": "Квота откликов",
+        "hint": "≈ {min}–{max} вакансий просмотрено",
+        "priceNote": "Цена растёт линейно: 200 ⭐ базово + 8 ⭐ за каждый отклик"
+      },
+      "summary": {
+        "title": "Итог",
+        "category": "Категория",
+        "roles": "Роли",
+        "rolesCount": "{count, plural, one {# роль} few {# роли} many {# ролей} other {# ролей}}",
+        "countries": "Страны",
+        "salary": "Зарплата",
+        "salaryFrom": "${amount}+",
+        "stack": "Стек",
+        "languages": "Языки",
+        "quota": "Квота откликов",
+        "basePrice": "Базовая цена",
+        "quotaRow": "Квота × {count}",
+        "countriesRow": "Страны × {count}",
+        "total": "К оплате"
+      }
     },
     "checkout": {
       "title": "Выберите оплату",
