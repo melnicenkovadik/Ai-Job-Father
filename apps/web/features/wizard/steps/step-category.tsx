@@ -1,19 +1,16 @@
 'use client';
 
 import { CATEGORY_GLYPH } from '@/components/ui';
-import { useMockStore } from '@/lib/mocks/store';
+import { useWizardDraft } from '@/features/wizard/draft-store';
 import { JOB_CATEGORIES, type JobCategory } from '@ai-job-bot/core';
 import { useTranslations } from 'next-intl';
-import { useShallow } from 'zustand/shallow';
 
 export function StepCategory() {
   const t = useTranslations('screens.wizard.category');
-  const { category, patchDraft } = useMockStore(
-    useShallow((s) => ({
-      category: s.wizard.draft.category,
-      patchDraft: s.patchDraft,
-    })),
-  );
+  const { category, patchDraft } = useWizardDraft((s) => ({
+    category: s.draft.category,
+    patchDraft: s.patchDraft,
+  }));
 
   return (
     <div className="grid grid-cols-2 gap-2">

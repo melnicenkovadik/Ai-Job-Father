@@ -10,24 +10,37 @@ import {
   SectionTitle,
 } from '@/components/ui';
 import { Screen, Scroll, Section, Stack } from '@/components/ui/layout';
-import { useMockStore } from '@/lib/mocks/store';
+import { formatPriceUsd } from '@/features/campaigns/format';
+import { useCampaignQuery } from '@/features/campaigns/use-campaigns';
 import { useTranslations } from 'next-intl';
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 interface CheckoutScreenProps {
   campaignId: string;
 }
 
-const TON_RATE = 0.004;
+// Rough demo conversions until Wave D wires real Stars/TON quotes.
+const STARS_PER_USD_CENT = 0.5; // 50¢ → 25 ⭐
+const TON_PER_USD_CENT = 0.0004; // ≈ $2.50/TON
 
 export function CheckoutScreen({ campaignId }: CheckoutScreenProps) {
   const t = useTranslations('screens.checkout');
-  const router = useRouter();
-  const campaign = useMockStore((s) => s.campaigns[campaignId]);
+  const { data: campaign, isLoading } = useCampaignQuery(campaignId);
   const [method, setMethod] = useState<PaymentMethod>('stars');
 
   useTelegramBackButton('/');
+
+  if (isLoading) {
+    return (
+      <Screen>
+        <Scroll className="flex-1">
+          <Stack gap={2} className="px-6 py-12 text-center">
+            <p className="text-[14px] text-[var(--color-text-dim)]">…</p>
+          </Stack>
+        </Scroll>
+      </Screen>
+    );
+  }
 
   if (!campaign) {
     return (
@@ -44,12 +57,17 @@ export function CheckoutScreen({ campaignId }: CheckoutScreenProps) {
     );
   }
 
-  const starsAmount = campaign.price.amount;
-  const tonAmount = (starsAmount * TON_RATE).toFixed(2);
+  const usdLabel = formatPriceUsd(campaign.priceAmountCents);
+  const starsAmount = Math.round(campaign.priceAmountCents * STARS_PER_USD_CENT);
+  const tonAmount = (campaign.priceAmountCents * TON_PER_USD_CENT).toFixed(2);
   const ctaAmount = method === 'stars' ? `${starsAmount} ⭐` : `${tonAmount} TON`;
 
   const onPay = () => {
-    router.push(`/campaign/${campaignId}/payment?method=${method}`);
+    // Wave D will wire this to the real Stars / TON flow. Today we just bounce
+    // to the payment screen which currently fakes a success.
+    if (typeof window !== 'undefined') {
+      window.alert('Payments coming in Wave D — Stars + TON wire-up.');
+    }
   };
 
   return (
@@ -61,7 +79,7 @@ export function CheckoutScreen({ campaignId }: CheckoutScreenProps) {
             <p className="text-[13px] text-[var(--color-text-dim)]">
               {t('campaignSummary', {
                 title: campaign.title,
-                count: campaign.progress.quota,
+                count: campaign.quota,
               })}
             </p>
           </Stack>
@@ -78,11 +96,7 @@ export function CheckoutScreen({ campaignId }: CheckoutScreenProps) {
                 {method === 'stars' ? '⭐ Stars' : 'TON'}
               </span>
             </div>
-            {method === 'ton' ? (
-              <p className="mt-1 font-mono text-[12px] text-[var(--color-text-mute)]">
-                ≈ ${(starsAmount * TON_RATE * 6).toFixed(2)} USD
-              </p>
-            ) : null}
+            <p className="mt-1 font-mono text-[12px] text-[var(--color-text-mute)]">≈ {usdLabel}</p>
           </div>
         </Stack>
 

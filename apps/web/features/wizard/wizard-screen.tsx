@@ -3,12 +3,13 @@
 import { useTelegramBackButton } from '@/components/telegram/use-back-button';
 import { Headline, MainButtonBinding, WizardProgress } from '@/components/ui';
 import { Screen, Scroll, Stack } from '@/components/ui/layout';
-import { computePrice, useMockStore } from '@/lib/mocks/store';
-import type { WizardDraft } from '@/lib/mocks/types';
+import { useCreateCampaign } from '@/features/campaigns/use-campaigns';
+import { useProfilesQuery } from '@/features/profiles-list/use-profiles';
+import { type Complexity, priceCampaign } from '@ai-job-bot/core';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
-import { useCallback, useMemo } from 'react';
-import { useShallow } from 'zustand/shallow';
+import { useCallback } from 'react';
+import { type WizardDraft, useWizardStore } from './draft-store';
 import { StepCategory } from './steps/step-category';
 import { StepCountries } from './steps/step-countries';
 import { StepLanguages } from './steps/step-languages';
@@ -30,6 +31,21 @@ const STEP_KEYS = [
   'checkout',
 ] as const;
 
+const CATEGORY_FALLBACK_TITLE: Record<string, string> = {
+  tech: 'Tech Specialist',
+  design: 'Designer',
+  marketing: 'Marketer',
+  sales: 'Sales',
+  product: 'Product Manager',
+  finance: 'Finance Pro',
+  hr: 'HR Specialist',
+  support: 'Support Specialist',
+  content: 'Content Pro',
+  ops: 'Operations',
+  data: 'Data Specialist',
+  web3: 'Web3 Engineer',
+};
+
 interface WizardScreenProps {
   initialStep?: number;
 }
@@ -37,20 +53,23 @@ interface WizardScreenProps {
 export function WizardScreen({ initialStep }: WizardScreenProps = {}) {
   const t = useTranslations('screens.wizard');
   const router = useRouter();
-  const { step, setStep, draft, createCampaignFromDraft, resetDraft } = useMockStore(
-    useShallow((s) => ({
-      step: s.wizard.step,
-      setStep: s.setStep,
-      draft: s.wizard.draft,
-      createCampaignFromDraft: s.createCampaignFromDraft,
-      resetDraft: s.resetDraft,
-    })),
-  );
+  const step = useWizardStore((s) => s.step);
+  const draft = useWizardStore((s) => s.draft);
+  const setStep = useWizardStore((s) => s.setStep);
+  const resetDraft = useWizardStore((s) => s.resetDraft);
+  const { data: profiles = [] } = useProfilesQuery();
+  const create = useCreateCampaign();
 
   const effectiveStep =
     typeof initialStep === 'number' ? Math.max(0, Math.min(TOTAL - 1, initialStep)) : step;
 
-  const price = useMemo(() => computePrice(draft), [draft]);
+  const breakdown = draft.category
+    ? priceCampaign({
+        category: draft.category,
+        quota: draft.quota,
+        complexity: 'medium' as Complexity,
+      })
+    : null;
 
   const goBack = useCallback(() => {
     if (effectiveStep > 0) {
@@ -63,20 +82,39 @@ export function WizardScreen({ initialStep }: WizardScreenProps = {}) {
   useTelegramBackButton(goBack);
 
   const stepKey = STEP_KEYS[effectiveStep] ?? 'category';
+  const defaultProfile = profiles.find((p) => p.isDefault) ?? profiles[0];
 
   const advance = useCallback(() => {
     if (effectiveStep < TOTAL - 1) {
       setStep(effectiveStep + 1);
       return;
     }
-    const campaign = createCampaignFromDraft(draft);
-    resetDraft();
-    router.push(`/campaign/${campaign.id}/checkout`);
-  }, [effectiveStep, setStep, createCampaignFromDraft, draft, resetDraft, router]);
+    if (!draft.category) return;
+    if (!defaultProfile) return;
+    create.mutate(
+      {
+        profileId: defaultProfile.id,
+        title: titleFromDraft(draft),
+        category: draft.category,
+        quota: draft.quota,
+        countries: draft.countries,
+        complexity: 'medium',
+      },
+      {
+        onSuccess: (campaign) => {
+          resetDraft();
+          router.push(`/campaign/${campaign.id}/checkout`);
+        },
+      },
+    );
+  }, [effectiveStep, setStep, create, draft, defaultProfile, resetDraft, router]);
 
-  const ctaText =
-    effectiveStep === TOTAL - 1 ? t('submit', { amount: `${price.amount} ⭐` }) : t('next');
-  const canAdvance = canStepAdvance(stepKey, draft);
+  const priceLabel = breakdown ? formatCents(breakdown.amountCents) : '—';
+  const ctaText = effectiveStep === TOTAL - 1 ? t('submit', { amount: priceLabel }) : t('next');
+  const canAdvance =
+    canStepAdvance(stepKey, draft) &&
+    !create.isPending &&
+    !(effectiveStep === TOTAL - 1 && !defaultProfile);
 
   return (
     <Screen>
@@ -88,7 +126,7 @@ export function WizardScreen({ initialStep }: WizardScreenProps = {}) {
             current: String(effectiveStep + 1).padStart(2, '0'),
             total: String(TOTAL).padStart(2, '0'),
           })}
-          label={`${price.amount} ⭐`}
+          label={priceLabel}
         />
       </Stack>
 
@@ -101,6 +139,17 @@ export function WizardScreen({ initialStep }: WizardScreenProps = {}) {
         <div className="px-4 py-4">
           <StepBody stepKey={stepKey} />
         </div>
+
+        {effectiveStep === TOTAL - 1 && !defaultProfile ? (
+          <p className="mx-4 mb-4 rounded-[var(--radius-md)] border border-[var(--color-warn)] bg-[var(--color-warn)]/10 px-3 py-3 text-[13px] text-[var(--color-warn)]">
+            {t('summary.noProfile') || 'Create a profile first.'}
+          </p>
+        ) : null}
+        {create.isError ? (
+          <p className="mx-4 mb-4 rounded-[var(--radius-md)] border border-[var(--color-danger)] bg-[var(--color-danger)]/10 px-3 py-3 text-[13px] text-[var(--color-danger)]">
+            {create.error.message}
+          </p>
+        ) : null}
       </Scroll>
 
       <MainButtonBinding text={ctaText} onClick={advance} disabled={!canAdvance} />
@@ -142,4 +191,14 @@ function canStepAdvance(stepKey: (typeof STEP_KEYS)[number], draft: WizardDraft)
     default:
       return true;
   }
+}
+
+function titleFromDraft(draft: WizardDraft): string {
+  if (draft.roles[0]) return draft.roles[0].slice(0, 80);
+  if (draft.category) return CATEGORY_FALLBACK_TITLE[draft.category] ?? 'Campaign';
+  return 'New campaign';
+}
+
+function formatCents(cents: number): string {
+  return `$${(cents / 100).toFixed(2)}`;
 }

@@ -4,19 +4,16 @@ import { Icon } from '@/components/icons';
 import { useTelegramBackButton } from '@/components/telegram/use-back-button';
 import { Headline, MainButtonBinding } from '@/components/ui';
 import { Screen, Scroll, Stack } from '@/components/ui/layout';
-import { useMockStore } from '@/lib/mocks/store';
-import type { MockProfile } from '@/lib/mocks/types';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
+import { type ProfileSummaryDto, useProfilesQuery } from './use-profiles';
 
 export function ProfilesListScreen() {
   const t = useTranslations('screens.profiles');
   const router = useRouter();
-  const profiles = useMockStore((s) => s.profiles);
+  const { data: list = [], isLoading } = useProfilesQuery();
 
   useTelegramBackButton('/');
-
-  const list = Object.values(profiles);
 
   return (
     <Screen>
@@ -27,24 +24,25 @@ export function ProfilesListScreen() {
             <p className="text-[13px] text-[var(--color-text-dim)]">{t('subtitle')}</p>
           </Stack>
 
-          {list.length === 0 ? (
+          {!isLoading && list.length === 0 ? (
             <p className="rounded-[var(--radius-md)] border border-dashed border-[var(--color-border)] px-3 py-6 text-center text-[13px] text-[var(--color-text-mute)]">
               {t('empty')}
             </p>
-          ) : (
+          ) : null}
+          {list.length > 0 ? (
             <Stack gap={2}>
               {list.map((p) => (
                 <ProfileCard
                   key={p.id}
                   profile={p}
                   defaultLabel={t('default')}
-                  campaignsLabel={t('campaigns', { count: profileCampaignCount(p) })}
+                  campaignsLabel={t('campaigns', { count: p.campaignCount })}
                   editLabel={t('edit')}
                   onOpen={() => router.push('/profile')}
                 />
               ))}
             </Stack>
-          )}
+          ) : null}
         </Stack>
       </Scroll>
 
@@ -54,7 +52,7 @@ export function ProfilesListScreen() {
 }
 
 interface ProfileCardProps {
-  profile: MockProfile;
+  profile: ProfileSummaryDto;
   defaultLabel: string;
   campaignsLabel: string;
   editLabel: string;
@@ -68,6 +66,7 @@ function ProfileCard({
   editLabel,
   onOpen,
 }: ProfileCardProps) {
+  const display = profile.fullName ?? profile.name;
   return (
     <button
       type="button"
@@ -80,12 +79,12 @@ function ProfileCard({
     >
       <div className="flex min-w-0 items-start gap-2.5">
         <span className="inline-flex size-10 shrink-0 items-center justify-center rounded-full bg-[var(--color-accent-bg)] text-[14px] font-bold text-[var(--color-accent)]">
-          {profile.name.charAt(0).toUpperCase()}
+          {display.charAt(0).toUpperCase()}
         </span>
         <div className="min-w-0 flex-1">
           <div className="flex min-w-0 items-center gap-1.5">
             <span className="min-w-0 truncate text-[15px] font-semibold text-[var(--color-text)]">
-              {profile.name}
+              {display}
             </span>
             {profile.isDefault ? (
               <span className="shrink-0 rounded-[var(--radius-sm)] bg-[var(--color-accent)] px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[var(--color-accent-ink)]">
@@ -109,8 +108,4 @@ function ProfileCard({
       </div>
     </button>
   );
-}
-
-function profileCampaignCount(_profile: MockProfile): number {
-  return 0;
 }

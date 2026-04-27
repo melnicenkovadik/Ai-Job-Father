@@ -2,9 +2,8 @@
 
 import { Icon } from '@/components/icons';
 import { Stack } from '@/components/ui/layout';
-import { useMockStore } from '@/lib/mocks/store';
+import { useWizardDraft } from '@/features/wizard/draft-store';
 import { useTranslations } from 'next-intl';
-import { useShallow } from 'zustand/shallow';
 
 const ALL_STACK = [
   'React',
@@ -24,12 +23,10 @@ const ALL_STACK = [
 
 export function StepStack() {
   const t = useTranslations('screens.wizard.stack');
-  const { stack, patchDraft } = useMockStore(
-    useShallow((s) => ({
-      stack: s.wizard.draft.stack,
-      patchDraft: s.patchDraft,
-    })),
-  );
+  const { stack, patchDraft } = useWizardDraft((s) => ({
+    stack: s.draft.stack,
+    patchDraft: s.patchDraft,
+  }));
 
   const toggle = (item: string) => {
     if (stack.includes(item)) {

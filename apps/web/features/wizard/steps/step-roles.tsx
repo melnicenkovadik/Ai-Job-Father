@@ -3,10 +3,9 @@
 import { Icon } from '@/components/icons';
 import { Pill, SectionTitle } from '@/components/ui';
 import { Stack } from '@/components/ui/layout';
-import { useMockStore } from '@/lib/mocks/store';
+import { useWizardDraft } from '@/features/wizard/draft-store';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
-import { useShallow } from 'zustand/shallow';
 
 const SUGGESTIONS = [
   'Senior Frontend Developer',
@@ -20,12 +19,10 @@ const MAX_ROLES = 5;
 
 export function StepRoles() {
   const t = useTranslations('screens.wizard.roles');
-  const { roles, patchDraft } = useMockStore(
-    useShallow((s) => ({
-      roles: s.wizard.draft.roles,
-      patchDraft: s.patchDraft,
-    })),
-  );
+  const { roles, patchDraft } = useWizardDraft((s) => ({
+    roles: s.draft.roles,
+    patchDraft: s.patchDraft,
+  }));
   const [input, setInput] = useState('');
 
   const add = (value: string) => {
