@@ -1,6 +1,7 @@
 import 'server-only';
 import { Bot, InlineKeyboard } from 'grammy';
 import { env } from '../env';
+import { registerStarsPaymentHandlers } from './payment-handlers';
 
 /**
  * grammY Bot singleton — lazily instantiated.
@@ -85,6 +86,8 @@ export function getBot(): Bot {
       { reply_markup: openAppKeyboard('/') },
     );
   });
+
+  registerStarsPaymentHandlers(bot);
 
   botSingleton = bot;
   return bot;

@@ -50,6 +50,14 @@ export interface TelegramWebApp {
     notificationOccurred(type: 'error' | 'success' | 'warning'): void;
     selectionChanged(): void;
   };
+  /**
+   * Open a Telegram invoice (Stars or provider). Callback is invoked with
+   * the final status: 'paid' | 'cancelled' | 'failed' | 'pending'.
+   */
+  openInvoice?(
+    url: string,
+    callback?: (status: 'paid' | 'cancelled' | 'failed' | 'pending') => void,
+  ): void;
 }
 
 declare global {

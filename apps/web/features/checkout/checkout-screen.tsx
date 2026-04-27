@@ -13,6 +13,7 @@ import { Screen, Scroll, Section, Stack } from '@/components/ui/layout';
 import { formatPriceUsd } from '@/features/campaigns/format';
 import { useCampaignQuery } from '@/features/campaigns/use-campaigns';
 import { useTranslations } from 'next-intl';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 interface CheckoutScreenProps {
@@ -25,6 +26,7 @@ const TON_PER_USD_CENT = 0.0004; // ≈ $2.50/TON
 
 export function CheckoutScreen({ campaignId }: CheckoutScreenProps) {
   const t = useTranslations('screens.checkout');
+  const router = useRouter();
   const { data: campaign, isLoading } = useCampaignQuery(campaignId);
   const [method, setMethod] = useState<PaymentMethod>('stars');
 
@@ -63,11 +65,15 @@ export function CheckoutScreen({ campaignId }: CheckoutScreenProps) {
   const ctaAmount = method === 'stars' ? `${starsAmount} ⭐` : `${tonAmount} TON`;
 
   const onPay = () => {
-    // Wave D will wire this to the real Stars / TON flow. Today we just bounce
-    // to the payment screen which currently fakes a success.
-    if (typeof window !== 'undefined') {
-      window.alert('Payments coming in Wave D — Stars + TON wire-up.');
+    if (method === 'ton') {
+      // TON lands in Wave E. Keep the option visible so users see what's
+      // coming, but don't pretend to charge them.
+      if (typeof window !== 'undefined') {
+        window.alert('TON payments arrive in Wave E. Use Stars for now.');
+      }
+      return;
     }
+    router.push(`/campaign/${campaignId}/payment?method=stars`);
   };
 
   return (

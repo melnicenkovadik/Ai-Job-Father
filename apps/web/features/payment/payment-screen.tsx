@@ -4,67 +4,70 @@ import { Icon } from '@/components/icons';
 import { useTelegramBackButton } from '@/components/telegram/use-back-button';
 import { Button, FieldRow, Headline, MainButtonBinding } from '@/components/ui';
 import { Screen, Scroll, Stack } from '@/components/ui/layout';
-import { useMockStore } from '@/lib/mocks/store';
-import type { PaymentMethod } from '@/lib/mocks/types';
+import { useCampaignQuery } from '@/features/campaigns/use-campaigns';
+import { usePayWithStars } from '@/features/payment/use-payments';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 type Phase = 'processing' | 'success' | 'fail';
 
-const TON_RATE = 0.004;
-
 interface PaymentScreenProps {
   campaignId: string;
-  method: PaymentMethod;
-  initialPhase?: Phase;
-  simulate?: 'success' | 'fail';
+  /** 'stars' for now; 'ton' will land in Wave E. */
+  method?: 'stars' | 'ton';
 }
 
-export function PaymentScreen({
-  campaignId,
-  method,
-  initialPhase = 'processing',
-  simulate = 'success',
-}: PaymentScreenProps) {
+export function PaymentScreen({ campaignId, method = 'stars' }: PaymentScreenProps) {
   const t = useTranslations('screens.payment');
   const router = useRouter();
-  const campaign = useMockStore((s) => s.campaigns[campaignId]);
-  const payCampaign = useMockStore((s) => s.payCampaign);
-  const [phase, setPhase] = useState<Phase>(initialPhase);
-
-  useEffect(() => {
-    if (phase !== 'processing') return;
-    const timer = setTimeout(() => {
-      if (simulate === 'fail') {
-        setPhase('fail');
-        return;
-      }
-      payCampaign(campaignId, method);
-      setPhase('success');
-    }, 2200);
-    return () => clearTimeout(timer);
-  }, [phase, simulate, campaignId, method, payCampaign]);
+  const { data: campaign } = useCampaignQuery(campaignId);
+  const stars = usePayWithStars();
+  const [phase, setPhase] = useState<Phase>('processing');
+  const [errorText, setErrorText] = useState<string | null>(null);
+  const startedRef = useRef(false);
 
   useTelegramBackButton(`/campaign/${campaignId}/checkout`);
+
+  useEffect(() => {
+    if (startedRef.current) return;
+    if (method !== 'stars') {
+      setPhase('fail');
+      setErrorText('TON payments arrive in Wave E.');
+      return;
+    }
+    startedRef.current = true;
+    void stars
+      .pay(campaignId)
+      .then((status) => {
+        if (status === 'paid') setPhase('success');
+        else if (status === 'cancelled') {
+          // user dismissed — bounce back to checkout to retry
+          router.replace(`/campaign/${campaignId}/checkout`);
+        } else {
+          setPhase('fail');
+          setErrorText(`Payment ${status}`);
+        }
+      })
+      .catch((err: Error) => {
+        setPhase('fail');
+        setErrorText(err.message);
+      });
+  }, [method, campaignId, stars, router]);
 
   if (!campaign) {
     return (
       <Screen>
         <Scroll className="flex-1">
           <Stack gap={2} className="px-6 py-12 text-center">
-            <Headline size="md">404</Headline>
-            <p className="text-[14px] text-[var(--color-text-dim)]">
-              Campaign not found · {campaignId}
-            </p>
+            <p className="text-[14px] text-[var(--color-text-dim)]">…</p>
           </Stack>
         </Scroll>
       </Screen>
     );
   }
 
-  const amount = campaign.price.amount;
-  const amountLabel = method === 'stars' ? `${amount} ⭐` : `${(amount * TON_RATE).toFixed(2)} TON`;
+  const amountLabel = `${campaign.priceBreakdown.amountCents / 100} USD`;
   const provider = method === 'stars' ? 'TELEGRAM' : 'TON NETWORK';
 
   return (
@@ -95,15 +98,22 @@ export function PaymentScreen({
           {phase === 'fail' ? (
             <FailView
               title={t('fail')}
-              hint={t('failHint')}
+              hint={errorText ?? t('failHint')}
               retryLabel={t('retry')}
-              onRetry={() => setPhase('processing')}
+              onRetry={() => {
+                startedRef.current = false;
+                setErrorText(null);
+                setPhase('processing');
+              }}
             />
           ) : null}
         </Stack>
       </Scroll>
       {phase === 'success' ? (
-        <MainButtonBinding text={t('homeCta')} onClick={() => router.push('/')} />
+        <MainButtonBinding
+          text={t('homeCta')}
+          onClick={() => router.push(`/campaign/${campaignId}`)}
+        />
       ) : null}
     </Screen>
   );
@@ -115,7 +125,7 @@ function ProcessingView({
   subtitle,
   secure,
 }: {
-  method: PaymentMethod;
+  method: 'stars' | 'ton';
   title: string;
   subtitle: string;
   secure: string;
@@ -126,7 +136,7 @@ function ProcessingView({
         /* layout-safe: animated payment indicator — absolute children render the spinning ring around the icon. */
         className="relative inline-flex size-[7.5rem] items-center justify-center rounded-full bg-[var(--color-accent-bg)]"
       >
-        <span className="absolute -inset-1 rounded-full border-[3px] border-[var(--color-accent)] border-t-transparent animate-spin" />
+        <span className="absolute -inset-1 animate-spin rounded-full border-[3px] border-[var(--color-accent)] border-t-transparent" />
         <span className="text-[52px]">
           {method === 'stars' ? (
             '⭐'
@@ -161,7 +171,7 @@ function SuccessView({
   hint: string;
   amountLabel: string;
   rows: { amount: string; transaction: string; when: string };
-  method: PaymentMethod;
+  method: 'stars' | 'ton';
 }) {
   return (
     <>
@@ -176,10 +186,19 @@ function SuccessView({
         <FieldRow label={rows.amount} value={amountLabel} mono />
         <FieldRow
           label={rows.transaction}
-          value={method === 'stars' ? 'tg_pmt_7a2f91' : 'EQCd2…7kJ'}
+          value={method === 'stars' ? 'see Stars history' : 'see TON tx'}
           mono
         />
-        <FieldRow label={rows.when} value="14 апр · 09:41" mono />
+        <FieldRow
+          label={rows.when}
+          value={new Date().toLocaleString('ru-RU', {
+            day: 'numeric',
+            month: 'short',
+            hour: '2-digit',
+            minute: '2-digit',
+          })}
+          mono
+        />
       </div>
     </>
   );
@@ -204,7 +223,7 @@ function FailView({
       <Headline size="md" className="text-center">
         {title}
       </Headline>
-      <p className="text-[15px] text-[var(--color-text-dim)]">{hint}</p>
+      <p className="text-[15px] text-[var(--color-text-dim)] [overflow-wrap:anywhere]">{hint}</p>
       <Button onClick={onRetry} variant="solid" size="lg">
         {retryLabel}
       </Button>

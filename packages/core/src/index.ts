@@ -10,6 +10,8 @@ export * from './domain/volume-estimate';
 export * from './domain/campaign';
 export * from './domain/campaign-status';
 export * from './domain/campaign-event';
+export * from './domain/payment';
+export * from './domain/currency-conversion';
 // `./domain/dedup` is server-only (uses node:crypto). Import directly as
 // `@ai-job-bot/core/domain/dedup` from Node runtimes — never from the client
 // bundle.
@@ -23,6 +25,7 @@ export * from './application/ports/profile-repo';
 export * from './application/ports/resume-parser';
 export * from './application/ports/campaign-repo';
 export * from './application/ports/campaign-event-repo';
+export * from './application/ports/payment-repo';
 export * from './application/upsert-user';
 export * from './application/update-user-settings';
 export * from './application/mark-onboarded';
@@ -30,3 +33,4 @@ export * from './application/save-profile';
 export * from './application/parse-resume';
 export * from './application/create-campaign';
 export * from './application/cancel-campaign';
+export * from './application/record-payment';
