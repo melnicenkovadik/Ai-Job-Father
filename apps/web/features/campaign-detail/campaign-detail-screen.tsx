@@ -11,7 +11,14 @@ import {
   TimelineItem,
 } from '@/components/ui';
 import { Screen, Scroll, Section, Stack } from '@/components/ui/layout';
-import { useMockStore } from '@/lib/mocks/store';
+import { formatPriceUsd, relativeTime } from '@/features/campaigns/format';
+import {
+  type CampaignDto,
+  type CampaignEventDto,
+  isCampaignActive,
+  useCampaignEventsQuery,
+  useCampaignQuery,
+} from '@/features/campaigns/use-campaigns';
 import { useTranslations } from 'next-intl';
 
 interface CampaignDetailScreenProps {
@@ -20,11 +27,24 @@ interface CampaignDetailScreenProps {
 
 export function CampaignDetailScreen({ campaignId }: CampaignDetailScreenProps) {
   const t = useTranslations('screens.detail');
-  const campaign = useMockStore((s) => s.campaigns[campaignId]);
+  const { data: campaign, isLoading, isError } = useCampaignQuery(campaignId);
+  const { data: events = [] } = useCampaignEventsQuery(campaignId);
 
   useTelegramBackButton('/');
 
-  if (!campaign) {
+  if (isLoading) {
+    return (
+      <Screen>
+        <Scroll className="flex-1">
+          <Stack gap={2} className="px-6 py-12 text-center">
+            <p className="text-[14px] text-[var(--color-text-dim)]">…</p>
+          </Stack>
+        </Scroll>
+      </Screen>
+    );
+  }
+
+  if (isError || !campaign) {
     return (
       <Screen>
         <Scroll className="flex-1">
@@ -39,21 +59,10 @@ export function CampaignDetailScreen({ campaignId }: CampaignDetailScreenProps) 
     );
   }
 
-  const pct = campaign.progress.quota
-    ? Math.round((campaign.progress.applied / campaign.progress.quota) * 100)
-    : 0;
-  const events = campaign.events ?? [];
-  const isLive = campaign.status === 'searching' || campaign.status === 'applying';
+  const pct = campaign.quota ? Math.round((campaign.progress.applied / campaign.quota) * 100) : 0;
+  const isLive = isCampaignActive(campaign);
   const responses = Math.floor(campaign.progress.applied * 0.14);
-
-  const snapshot: ReadonlyArray<readonly [string, string]> = [
-    ['category', `"${campaign.category}"`],
-    ['countries', JSON.stringify(campaign.countries)],
-    ['quota', String(campaign.progress.quota)],
-    ['price', `${campaign.price.amount} ${campaign.price.currency}`],
-    ['status', `"${campaign.status}"`],
-    ['schema_version', '1'],
-  ];
+  const snapshot = campaignSnapshot(campaign);
 
   return (
     <Screen reserveMainButton={false}>
@@ -67,11 +76,11 @@ export function CampaignDetailScreen({ campaignId }: CampaignDetailScreenProps) 
             <Headline size="md">{campaign.title}</Headline>
             <p className="text-[13px] text-[var(--color-text-dim)]">
               <span>id · </span>
-              <span className="font-mono">{campaign.id}</span>
+              <span className="font-mono">{campaign.id.slice(0, 8)}</span>
               {campaign.paidAt ? (
                 <>
                   <span> · </span>
-                  <span>{t('paidAt', { when: campaign.paidAt })}</span>
+                  <span>{t('paidAt', { when: relativeTime(campaign.paidAt) })}</span>
                 </>
               ) : null}
             </p>
@@ -83,7 +92,7 @@ export function CampaignDetailScreen({ campaignId }: CampaignDetailScreenProps) 
                 {campaign.progress.applied}
               </span>
               <span className="font-mono text-[18px] text-[var(--color-text-mute)]">
-                / {campaign.progress.quota}
+                / {campaign.quota}
               </span>
               <span className="ml-auto font-mono text-[16px] font-bold text-[var(--color-accent)]">
                 {pct}%
@@ -91,7 +100,7 @@ export function CampaignDetailScreen({ campaignId }: CampaignDetailScreenProps) 
             </div>
             <ProgressBar
               value={campaign.progress.applied}
-              max={campaign.progress.quota}
+              max={campaign.quota}
               tone={campaign.status === 'completed' ? 'success' : 'accent'}
               glow={isLive}
               className="mt-3"
@@ -130,8 +139,8 @@ export function CampaignDetailScreen({ campaignId }: CampaignDetailScreenProps) 
             <div className="rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2">
               {events.map((e, i) => (
                 <TimelineItem
-                  key={`${e.t}-${e.text}`}
-                  time={e.t}
+                  key={e.id}
+                  time={formatTime(e.createdAt)}
                   text={e.text}
                   kind={e.kind}
                   isLast={i === events.length - 1}
@@ -162,3 +171,24 @@ export function CampaignDetailScreen({ campaignId }: CampaignDetailScreenProps) 
     </Screen>
   );
 }
+
+function campaignSnapshot(c: CampaignDto): ReadonlyArray<readonly [string, string]> {
+  return [
+    ['category', `"${c.category}"`],
+    ['countries', JSON.stringify(c.countries)],
+    ['quota', String(c.quota)],
+    ['price', formatPriceUsd(c.priceAmountCents)],
+    ['status', `"${c.status}"`],
+    ['schema_version', '1'],
+  ];
+}
+
+function formatTime(iso: string): string {
+  const d = new Date(iso);
+  const hh = String(d.getHours()).padStart(2, '0');
+  const mm = String(d.getMinutes()).padStart(2, '0');
+  return `${hh}:${mm}`;
+}
+
+// Suppress unused import lint when dead-code-remover trims this file later.
+export type { CampaignEventDto };

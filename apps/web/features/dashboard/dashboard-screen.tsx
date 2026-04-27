@@ -12,13 +12,14 @@ import {
   StatusBadge,
 } from '@/components/ui';
 import { Screen, Scroll, Section, Stack } from '@/components/ui/layout';
-import { useMockStore } from '@/lib/mocks/store';
-import type { Campaign, CampaignStatus } from '@/lib/mocks/types';
+import { relativeTime } from '@/features/campaigns/format';
+import {
+  type CampaignDto,
+  isCampaignActive,
+  useCampaignsQuery,
+} from '@/features/campaigns/use-campaigns';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
-import { useShallow } from 'zustand/shallow';
-
-const ACTIVE_STATUSES: readonly CampaignStatus[] = ['searching', 'applying', 'running', 'paid'];
 
 interface DashboardScreenProps {
   greetingName: string;
@@ -26,15 +27,10 @@ interface DashboardScreenProps {
 
 export function DashboardScreen({ greetingName }: DashboardScreenProps) {
   const t = useTranslations('screens.dashboard');
-  const { campaigns, campaignOrder } = useMockStore(
-    useShallow((s) => ({
-      campaigns: s.campaigns,
-      campaignOrder: s.campaignOrder,
-    })),
-  );
+  const { data, isLoading, isError } = useCampaignsQuery();
+  const list = data ?? [];
 
-  const list = campaignOrder.map((id) => campaigns[id]).filter((c): c is Campaign => Boolean(c));
-  const active = list.filter((c) => ACTIVE_STATUSES.includes(c.status));
+  const active = list.filter((c) => isCampaignActive(c));
   const drafts = list.filter((c) => c.status === 'draft');
   const completed = list.filter((c) => c.status === 'completed');
 
@@ -82,11 +78,16 @@ export function DashboardScreen({ greetingName }: DashboardScreenProps) {
           <CampaignList title={t('section.completed')} items={completed} />
         ) : null}
 
-        {list.length === 0 ? (
+        {!isLoading && list.length === 0 ? (
           <div className="px-4 py-12 text-center">
             <p className="text-[16px] font-semibold text-[var(--color-text)]">{t('empty.title')}</p>
             <p className="mt-1 text-[14px] text-[var(--color-text-dim)]">{t('empty.hint')}</p>
           </div>
+        ) : null}
+        {isError ? (
+          <p className="px-4 py-6 text-center text-[13px] text-[var(--color-danger)]">
+            {t('empty.title')}
+          </p>
         ) : null}
       </Scroll>
 
@@ -104,7 +105,7 @@ function CampaignList({
   variant = 'detail',
 }: {
   title: string;
-  items: Campaign[];
+  items: CampaignDto[];
   variant?: 'detail' | 'checkout';
 }) {
   return (
@@ -122,8 +123,9 @@ function CampaignList({
   );
 }
 
-function CampaignCard({ c, href }: { c: Campaign; href: string }) {
-  const pct = c.progress.quota ? Math.round((c.progress.applied / c.progress.quota) * 100) : 0;
+function CampaignCard({ c, href }: { c: CampaignDto; href: string }) {
+  const pct = c.quota ? Math.round((c.progress.applied / c.quota) * 100) : 0;
+  const subtitle = [c.countries.join(', '), relativeTime(c.createdAt)].filter(Boolean).join(' · ');
   return (
     <Link
       href={href}
@@ -135,9 +137,7 @@ function CampaignCard({ c, href }: { c: Campaign; href: string }) {
           <div className="truncate text-[15px] font-semibold text-[var(--color-text)]">
             {c.title}
           </div>
-          <div className="mt-0.5 truncate text-[12px] text-[var(--color-text-dim)]">
-            {c.countries.join(', ')} · {c.createdAt}
-          </div>
+          <div className="mt-0.5 truncate text-[12px] text-[var(--color-text-dim)]">{subtitle}</div>
         </div>
         <StatusBadge status={c.status} />
       </div>
@@ -145,13 +145,13 @@ function CampaignCard({ c, href }: { c: Campaign; href: string }) {
         <div className="flex min-w-0 items-center gap-3">
           <ProgressBar
             value={c.progress.applied}
-            max={c.progress.quota}
+            max={c.quota}
             tone={c.status === 'completed' ? 'success' : 'accent'}
             glow={c.status === 'searching' || c.status === 'applying'}
             className="flex-1"
           />
           <span className="shrink-0 font-mono text-[12px] text-[var(--color-text-dim)]">
-            {c.progress.applied}/{c.progress.quota}
+            {c.progress.applied}/{c.quota}
             <span className="ml-1 text-[var(--color-text-mute)]">· {pct}%</span>
           </span>
         </div>
