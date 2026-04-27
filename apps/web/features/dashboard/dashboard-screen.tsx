@@ -16,6 +16,7 @@ import { useMockStore } from '@/lib/mocks/store';
 import type { Campaign, CampaignStatus } from '@/lib/mocks/types';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
+import { useShallow } from 'zustand/shallow';
 
 const ACTIVE_STATUSES: readonly CampaignStatus[] = ['searching', 'applying', 'running', 'paid'];
 
@@ -25,10 +26,12 @@ interface DashboardScreenProps {
 
 export function DashboardScreen({ greetingName }: DashboardScreenProps) {
   const t = useTranslations('screens.dashboard');
-  const { campaigns, campaignOrder } = useMockStore((s) => ({
-    campaigns: s.campaigns,
-    campaignOrder: s.campaignOrder,
-  }));
+  const { campaigns, campaignOrder } = useMockStore(
+    useShallow((s) => ({
+      campaigns: s.campaigns,
+      campaignOrder: s.campaignOrder,
+    })),
+  );
 
   const list = campaignOrder.map((id) => campaigns[id]).filter((c): c is Campaign => Boolean(c));
   const active = list.filter((c) => ACTIVE_STATUSES.includes(c.status));

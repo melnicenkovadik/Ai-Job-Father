@@ -3,6 +3,7 @@
 import { Stack } from '@/components/ui/layout';
 import { useMockStore } from '@/lib/mocks/store';
 import { useTranslations } from 'next-intl';
+import { useShallow } from 'zustand/shallow';
 
 const MIN = 1000;
 const MAX = 15000;
@@ -10,10 +11,12 @@ const STEP = 500;
 
 export function StepSalary() {
   const t = useTranslations('screens.wizard.salary');
-  const { salaryMin, patchDraft } = useMockStore((s) => ({
-    salaryMin: s.wizard.draft.salaryMin ?? 5000,
-    patchDraft: s.patchDraft,
-  }));
+  const { salaryMin, patchDraft } = useMockStore(
+    useShallow((s) => ({
+      salaryMin: s.wizard.draft.salaryMin ?? 5000,
+      patchDraft: s.patchDraft,
+    })),
+  );
 
   return (
     <Stack gap={4}>

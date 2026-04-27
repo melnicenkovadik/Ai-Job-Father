@@ -4,15 +4,18 @@ import { Pill } from '@/components/ui';
 import { Stack } from '@/components/ui/layout';
 import { useMockStore } from '@/lib/mocks/store';
 import { useTranslations } from 'next-intl';
+import { useShallow } from 'zustand/shallow';
 
 const QUICK = ['Any EU', 'Any Remote', 'DE', 'NL', 'PL', 'UK', 'US', 'UA', 'CZ', 'ES', 'FR', 'IT'];
 
 export function StepCountries() {
   const t = useTranslations('screens.wizard.countries');
-  const { countries, patchDraft } = useMockStore((s) => ({
-    countries: s.wizard.draft.countries,
-    patchDraft: s.patchDraft,
-  }));
+  const { countries, patchDraft } = useMockStore(
+    useShallow((s) => ({
+      countries: s.wizard.draft.countries,
+      patchDraft: s.patchDraft,
+    })),
+  );
 
   const toggle = (code: string) => {
     if (countries.includes(code)) {

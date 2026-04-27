@@ -6,15 +6,18 @@ import { useMockStore } from '@/lib/mocks/store';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
+import { useShallow } from 'zustand/shallow';
 
 export default function HomePage() {
   const t = useTranslations('home');
   const session = useSession();
   const router = useRouter();
-  const { hasOnboarded, hasCampaigns } = useMockStore((s) => ({
-    hasOnboarded: s.settings.hasOnboarded,
-    hasCampaigns: s.campaignOrder.length > 0,
-  }));
+  const { hasOnboarded, hasCampaigns } = useMockStore(
+    useShallow((s) => ({
+      hasOnboarded: s.settings.hasOnboarded,
+      hasCampaigns: s.campaignOrder.length > 0,
+    })),
+  );
 
   useEffect(() => {
     if (!hasOnboarded && !hasCampaigns) {

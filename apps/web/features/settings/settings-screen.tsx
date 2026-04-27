@@ -5,6 +5,7 @@ import { Screen, Scroll, Section, Stack } from '@/components/ui/layout';
 import { useMockStore } from '@/lib/mocks/store';
 import type { Locale } from '@/lib/mocks/types';
 import { useTranslations } from 'next-intl';
+import { useShallow } from 'zustand/shallow';
 
 const LOCALES: { code: Locale; label: string; native: string }[] = [
   { code: 'ru', label: 'RU', native: 'Русский' },
@@ -16,11 +17,13 @@ const LOCALES: { code: Locale; label: string; native: string }[] = [
 
 export function SettingsScreen() {
   const t = useTranslations('screens.settings');
-  const { settings, setSettings, setNotification } = useMockStore((s) => ({
-    settings: s.settings,
-    setSettings: s.setSettings,
-    setNotification: s.setNotification,
-  }));
+  const { settings, setSettings, setNotification } = useMockStore(
+    useShallow((s) => ({
+      settings: s.settings,
+      setSettings: s.setSettings,
+      setNotification: s.setNotification,
+    })),
+  );
 
   return (
     <Screen reserveMainButton={false} className="pb-[5.5rem]">

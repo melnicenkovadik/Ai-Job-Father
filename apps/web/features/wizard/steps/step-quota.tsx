@@ -4,6 +4,7 @@ import { Icon } from '@/components/icons';
 import { Stack } from '@/components/ui/layout';
 import { useMockStore } from '@/lib/mocks/store';
 import { useTranslations } from 'next-intl';
+import { useShallow } from 'zustand/shallow';
 
 const MIN = 10;
 const MAX = 100;
@@ -11,10 +12,12 @@ const STEP = 5;
 
 export function StepQuota() {
   const t = useTranslations('screens.wizard.quota');
-  const { quota, patchDraft } = useMockStore((s) => ({
-    quota: s.wizard.draft.quota,
-    patchDraft: s.patchDraft,
-  }));
+  const { quota, patchDraft } = useMockStore(
+    useShallow((s) => ({
+      quota: s.wizard.draft.quota,
+      patchDraft: s.patchDraft,
+    })),
+  );
 
   return (
     <Stack gap={4}>

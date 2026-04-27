@@ -4,16 +4,19 @@ import { LanguageTile } from '@/components/ui';
 import { Stack } from '@/components/ui/layout';
 import { useMockStore } from '@/lib/mocks/store';
 import { useTranslations } from 'next-intl';
+import { useShallow } from 'zustand/shallow';
 
 const LANGS = ['EN', 'DE', 'FR', 'ES', 'PL'] as const;
 type LangCode = (typeof LANGS)[number];
 
 export function StepLanguages() {
   const t = useTranslations('screens.wizard.langs');
-  const { languages, patchDraft } = useMockStore((s) => ({
-    languages: s.wizard.draft.languages,
-    patchDraft: s.patchDraft,
-  }));
+  const { languages, patchDraft } = useMockStore(
+    useShallow((s) => ({
+      languages: s.wizard.draft.languages,
+      patchDraft: s.patchDraft,
+    })),
+  );
 
   const toggle = (code: LangCode) => {
     if (languages.includes(code)) {

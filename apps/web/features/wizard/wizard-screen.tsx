@@ -8,6 +8,7 @@ import type { WizardDraft } from '@/lib/mocks/types';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useCallback, useMemo } from 'react';
+import { useShallow } from 'zustand/shallow';
 import { StepCategory } from './steps/step-category';
 import { StepCountries } from './steps/step-countries';
 import { StepLanguages } from './steps/step-languages';
@@ -36,13 +37,15 @@ interface WizardScreenProps {
 export function WizardScreen({ initialStep }: WizardScreenProps = {}) {
   const t = useTranslations('screens.wizard');
   const router = useRouter();
-  const { step, setStep, draft, createCampaignFromDraft, resetDraft } = useMockStore((s) => ({
-    step: s.wizard.step,
-    setStep: s.setStep,
-    draft: s.wizard.draft,
-    createCampaignFromDraft: s.createCampaignFromDraft,
-    resetDraft: s.resetDraft,
-  }));
+  const { step, setStep, draft, createCampaignFromDraft, resetDraft } = useMockStore(
+    useShallow((s) => ({
+      step: s.wizard.step,
+      setStep: s.setStep,
+      draft: s.wizard.draft,
+      createCampaignFromDraft: s.createCampaignFromDraft,
+      resetDraft: s.resetDraft,
+    })),
+  );
 
   const effectiveStep =
     typeof initialStep === 'number' ? Math.max(0, Math.min(TOTAL - 1, initialStep)) : step;
