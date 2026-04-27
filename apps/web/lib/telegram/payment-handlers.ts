@@ -2,6 +2,7 @@ import 'server-only';
 import { getServerLogger } from '@/lib/logger/server';
 import { decodePayload } from '@/lib/payments/payload';
 import { hashSnapshot } from '@/lib/payments/snapshot';
+import { getCampaignProgressDriver } from '@/lib/sim/factory';
 import { SupabaseCampaignEventRepo } from '@/lib/supabase/campaign-event-repo';
 import { SupabaseCampaignRepo } from '@/lib/supabase/campaign-repo';
 import { SupabasePaymentRepo } from '@/lib/supabase/payment-repo';
@@ -155,7 +156,12 @@ async function handleSuccessfulPayment(ctx: Context): Promise<void> {
         nonce: decoded.nonce,
         rawEvent: payment as unknown as Record<string, unknown>,
       },
-      { paymentRepo, campaignRepo, campaignEventRepo: eventRepo },
+      {
+        paymentRepo,
+        campaignRepo,
+        campaignEventRepo: eventRepo,
+        campaignProgressDriver: getCampaignProgressDriver(),
+      },
     );
 
     log.info({

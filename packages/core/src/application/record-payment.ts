@@ -3,6 +3,7 @@ import { CampaignEventFactory, type NewCampaignEvent } from '../domain/campaign-
 import type { Payment, PaymentCurrency, PaymentProvider } from '../domain/payment';
 import { DomainError, type UserId } from '../domain/user';
 import type { CampaignEventRepo } from './ports/campaign-event-repo';
+import type { CampaignProgressDriver } from './ports/campaign-progress-driver';
 import type { CampaignRepo } from './ports/campaign-repo';
 import type { PaymentRepo } from './ports/payment-repo';
 
@@ -30,6 +31,12 @@ export interface RecordPaymentDeps {
   readonly paymentRepo: PaymentRepo;
   readonly campaignRepo: CampaignRepo;
   readonly campaignEventRepo: CampaignEventRepo;
+  /**
+   * Optional. When provided, `recordPayment` calls `start(campaignId, quota)`
+   * after a successful flip to `searching` so the simulator (or real
+   * downstream worker) can begin producing ticks. Tests pass `undefined`.
+   */
+  readonly campaignProgressDriver?: CampaignProgressDriver | undefined;
 }
 
 /**
@@ -83,6 +90,10 @@ export async function recordPayment(
     CampaignEventFactory.started(input.campaignId, input.userId),
   ];
   await deps.campaignEventRepo.insertMany(events);
+
+  if (deps.campaignProgressDriver) {
+    await deps.campaignProgressDriver.start(input.campaignId, campaign.quota);
+  }
 
   return payment;
 }

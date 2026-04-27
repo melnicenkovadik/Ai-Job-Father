@@ -3,13 +3,20 @@ export const dynamic = 'force-dynamic';
 
 import { campaignToDto, createCampaignSchema } from '@/lib/campaign/schema';
 import { getServerLogger } from '@/lib/logger/server';
+import { SystemClock, getCampaignProgressDriver } from '@/lib/sim/factory';
+import { SupabaseCampaignEventRepo } from '@/lib/supabase/campaign-event-repo';
 import { SupabaseCampaignRepo } from '@/lib/supabase/campaign-repo';
 import { SupabaseProfileRepo } from '@/lib/supabase/profile-repo';
 import { createServiceRoleClient } from '@/lib/supabase/server';
 import { requireAuth } from '@/lib/telegram/auth-middleware';
-import { ProfileOwnershipError, createCampaign } from '@ai-job-bot/core';
+import {
+  ProfileOwnershipError,
+  createCampaign,
+  isActive,
+  tickCampaignIfDue,
+} from '@ai-job-bot/core';
 
-const SystemClock = { now: () => new Date() };
+const LAZY_TICK_BATCH_LIMIT = 10;
 
 /**
  * GET  /api/campaigns → all campaigns for the authenticated user, newest first.
@@ -18,8 +25,41 @@ const SystemClock = { now: () => new Date() };
 
 export const GET = requireAuth(async (_req, { user }) => {
   const repo = new SupabaseCampaignRepo();
+  const eventRepo = new SupabaseCampaignEventRepo();
   try {
-    const campaigns = await repo.findByUserId(user.id);
+    let campaigns = await repo.findByUserId(user.id);
+
+    const activeIds = campaigns
+      .filter((c) => isActive(c.status))
+      .slice(0, LAZY_TICK_BATCH_LIMIT)
+      .map((c) => c.id);
+
+    if (activeIds.length > 0) {
+      await Promise.all(
+        activeIds.map((id) =>
+          tickCampaignIfDue(
+            { campaignId: id },
+            {
+              campaignRepo: repo,
+              campaignEventRepo: eventRepo,
+              campaignProgressDriver: getCampaignProgressDriver(),
+              clock: SystemClock,
+            },
+          ).catch((err) => {
+            // Lazy tick must never break the list response.
+            getServerLogger().warn({
+              context: 'api/campaigns.list.tick',
+              data: { id: id.value },
+              error: err,
+            });
+            return null;
+          }),
+        ),
+      );
+      // Re-fetch so the response reflects the freshly-ticked progress.
+      campaigns = await repo.findByUserId(user.id);
+    }
+
     return Response.json({ campaigns: campaigns.map(campaignToDto) });
   } catch (err) {
     getServerLogger().error({ context: 'api/campaigns.list', error: err });

@@ -105,6 +105,11 @@ export function useCampaignsQuery() {
     queryFn: fetchCampaigns,
     staleTime: 10_000,
     refetchOnWindowFocus: 'always',
+    refetchInterval: (query) => {
+      const data = query.state.data;
+      if (!data) return false;
+      return data.some(isCampaignActive) ? 15_000 : false;
+    },
   });
 }
 
@@ -114,6 +119,11 @@ export function useCampaignQuery(id: string) {
     queryFn: () => fetchCampaign(id),
     staleTime: 5_000,
     enabled: id.length > 0,
+    refetchInterval: (query) => {
+      const data = query.state.data;
+      if (!data) return false;
+      return isCampaignActive(data) ? 5_000 : false;
+    },
   });
 }
 
