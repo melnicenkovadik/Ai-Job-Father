@@ -3,18 +3,20 @@
 import { Icon } from '@/components/icons';
 import { Headline, MainButtonBinding } from '@/components/ui';
 import { Screen, Scroll, Stack } from '@/components/ui/layout';
-import { useMockStore } from '@/lib/mocks/store';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
+import { useCompleteOnboarding } from './use-onboarding';
 
 export function OnboardingScreen() {
   const t = useTranslations('screens.onboarding');
   const router = useRouter();
-  const markOnboarded = useMockStore((s) => s.markOnboarded);
+  const complete = useCompleteOnboarding();
 
   const handleStart = () => {
-    markOnboarded();
-    router.push('/profile/upload');
+    if (complete.isPending) return;
+    complete.mutate(undefined, {
+      onSuccess: () => router.push('/profile/upload'),
+    });
   };
 
   return (

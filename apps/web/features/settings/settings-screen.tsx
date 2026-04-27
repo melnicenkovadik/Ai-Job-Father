@@ -2,12 +2,10 @@
 
 import { BottomTabBar, FieldRow, LanguageTile, SectionTitle, Toggle } from '@/components/ui';
 import { Screen, Scroll, Section, Stack } from '@/components/ui/layout';
-import { useMockStore } from '@/lib/mocks/store';
-import type { Locale } from '@/lib/mocks/types';
 import { useTranslations } from 'next-intl';
-import { useShallow } from 'zustand/shallow';
+import { type SettingsDto, useSettingsQuery, useUpdateSettings } from './use-settings';
 
-const LOCALES: { code: Locale; label: string; native: string }[] = [
+const LOCALES: { code: SettingsDto['locale']; label: string; native: string }[] = [
   { code: 'ru', label: 'RU', native: 'Русский' },
   { code: 'uk', label: 'UA', native: 'Українська' },
   { code: 'en', label: 'EN', native: 'English' },
@@ -15,15 +13,16 @@ const LOCALES: { code: Locale; label: string; native: string }[] = [
   { code: 'it', label: 'IT', native: 'Italiano' },
 ];
 
+const PLACEHOLDER_NOTIFICATIONS = { push: false, email: false, weekly: false };
+
 export function SettingsScreen() {
   const t = useTranslations('screens.settings');
-  const { settings, setSettings, setNotification } = useMockStore(
-    useShallow((s) => ({
-      settings: s.settings,
-      setSettings: s.setSettings,
-      setNotification: s.setNotification,
-    })),
-  );
+  const { data, isLoading } = useSettingsQuery();
+  const update = useUpdateSettings();
+
+  const locale = data?.locale ?? 'en';
+  const notifications = data?.notifications ?? PLACEHOLDER_NOTIFICATIONS;
+  const disabled = isLoading || update.isPending;
 
   return (
     <Screen reserveMainButton={false} className="pb-[5.5rem]">
@@ -41,8 +40,11 @@ export function SettingsScreen() {
                 key={l.code}
                 code={l.label}
                 label={l.native}
-                selected={settings.locale === l.code}
-                onSelect={() => setSettings({ locale: l.code })}
+                selected={locale === l.code}
+                onSelect={() => {
+                  if (disabled || locale === l.code) return;
+                  update.mutate({ locale: l.code });
+                }}
               />
             ))}
           </Stack>
@@ -51,20 +53,29 @@ export function SettingsScreen() {
         <Section title={<SectionTitle>{t('section.notifications')}</SectionTitle>}>
           <div className="rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] px-4">
             <Toggle
-              checked={settings.notifications.push}
-              onChange={(v) => setNotification('push', v)}
+              checked={notifications.push}
+              onChange={(v) => {
+                if (disabled) return;
+                update.mutate({ notifications: { push: v } });
+              }}
               label={t('notification.push.label')}
               description={t('notification.push.description')}
             />
             <Toggle
-              checked={settings.notifications.email}
-              onChange={(v) => setNotification('email', v)}
+              checked={notifications.email}
+              onChange={(v) => {
+                if (disabled) return;
+                update.mutate({ notifications: { email: v } });
+              }}
               label={t('notification.email.label')}
               description={t('notification.email.description')}
             />
             <Toggle
-              checked={settings.notifications.weeklyDigest}
-              onChange={(v) => setNotification('weeklyDigest', v)}
+              checked={notifications.weekly}
+              onChange={(v) => {
+                if (disabled) return;
+                update.mutate({ notifications: { weekly: v } });
+              }}
               label={t('notification.weeklyDigest.label')}
               description={t('notification.weeklyDigest.description')}
             />
