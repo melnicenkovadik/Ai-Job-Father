@@ -1,6 +1,7 @@
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
+import { getServerLogger } from '@/lib/logger/server';
 import { TelegramEnvMissingError, resolveSession } from '@/lib/telegram/session';
 import {
   InvalidInitDataSignatureError,
@@ -45,8 +46,12 @@ export async function POST(req: Request): Promise<Response> {
         { status: 503 },
       );
     }
-    console.error('resolveSession error', err);
     const message = err instanceof Error ? `${err.name}: ${err.message}` : String(err);
+    getServerLogger().error({
+      context: 'api/auth/session',
+      message: 'resolveSession failed',
+      error: err,
+    });
     return Response.json({ error: 'internal', message }, { status: 500 });
   }
 }

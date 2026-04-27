@@ -2,6 +2,7 @@ export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 import { env } from '@/lib/env';
+import { getServerLogger } from '@/lib/logger/server';
 import { createOpenAIResumeParser } from '@/lib/openai/resume-parser';
 import { createHeuristicResumeParser } from '@/lib/resume/heuristic-parser';
 import { requireAuth } from '@/lib/telegram/auth-middleware';
@@ -92,6 +93,6 @@ function mapParserError(err: unknown): Response {
   if (err instanceof ResumeParseError) {
     return Response.json({ error: 'parse', message: err.message }, { status: 500 });
   }
-  console.error('parse-resume: unexpected error', err);
+  getServerLogger().error({ context: 'api/profile/parse-resume', error: err });
   return Response.json({ error: 'internal' }, { status: 500 });
 }

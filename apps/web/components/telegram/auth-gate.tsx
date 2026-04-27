@@ -1,5 +1,6 @@
 'use client';
 
+import { bindLogContext, getBrowserLogger } from '@/lib/logger';
 import { applySupabaseJwt } from '@/lib/supabase/browser';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
@@ -131,7 +132,28 @@ export function AuthGate({ children }: { children: ReactNode }): ReactNode {
     mutationFn: postSession,
     onSuccess: async (data) => {
       await applySupabaseJwt(data.jwt);
+      bindLogContext({ userId: data.user.id, telegramId: data.user.telegramId });
+      getBrowserLogger().info({
+        context: 'auth-gate.session-ready',
+        message: 'session established',
+        data: { telegramId: data.user.telegramId },
+      });
       queryClient.setQueryData(['session'], data);
+    },
+    onError: (err) => {
+      getBrowserLogger().error({
+        context: 'auth-gate.session-failed',
+        message: err.message,
+        error: err,
+        data:
+          err instanceof SessionRequestError
+            ? {
+                status: err.status,
+                detail: err.detail ?? null,
+                bodySnippet: err.bodySnippet ?? null,
+              }
+            : undefined,
+      });
     },
   });
 

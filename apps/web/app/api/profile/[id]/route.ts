@@ -1,6 +1,7 @@
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
+import { getServerLogger } from '@/lib/logger/server';
 import { profileDraftSchema, profileToDto } from '@/lib/profile/schema';
 import { SupabaseProfileRepo } from '@/lib/supabase/profile-repo';
 import { createServiceRoleClient } from '@/lib/supabase/server';
@@ -43,7 +44,11 @@ export const PUT = async (
       const updated = await updateProfile({ id, ...parsed.data }, { profileRepo: repo });
       return Response.json(profileToDto(updated));
     } catch (err) {
-      console.error('PUT /api/profile/:id', err);
+      getServerLogger().error({
+        context: 'api/profile/[id].PUT',
+        data: { id },
+        error: err,
+      });
       return Response.json({ error: 'internal' }, { status: 500 });
     }
   })(req);

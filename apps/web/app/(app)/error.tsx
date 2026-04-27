@@ -1,6 +1,7 @@
 'use client';
 
 import { ErrorScreen } from '@/features/error/error-screen';
+import { getBrowserLogger } from '@/lib/logger';
 import { useEffect } from 'react';
 
 interface ErrorBoundaryProps {
@@ -10,7 +11,12 @@ interface ErrorBoundaryProps {
 
 export default function AppErrorBoundary({ error, reset }: ErrorBoundaryProps) {
   useEffect(() => {
-    console.error('[app-error-boundary]', error);
+    getBrowserLogger().error({
+      context: 'app-error-boundary',
+      message: error.message,
+      data: { digest: error.digest ?? null },
+      error,
+    });
   }, [error]);
 
   return (

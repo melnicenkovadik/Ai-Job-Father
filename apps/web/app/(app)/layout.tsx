@@ -1,3 +1,5 @@
+import { GlobalErrorBoundary } from '@/components/global-error-boundary';
+import { LoggerBootstrap } from '@/components/logger-bootstrap';
 import { TelegramProvider } from '@/components/telegram/provider';
 import { MockStoreProvider } from '@/lib/mocks/hydrate';
 import { NextIntlClientProvider } from 'next-intl';
@@ -21,9 +23,12 @@ export default async function AppLayout({
   const [locale, messages] = await Promise.all([getLocale(), getMessages()]);
   return (
     <NextIntlClientProvider locale={locale} messages={messages}>
-      <TelegramProvider>
-        <MockStoreProvider>{children}</MockStoreProvider>
-      </TelegramProvider>
+      <GlobalErrorBoundary>
+        <LoggerBootstrap />
+        <TelegramProvider>
+          <MockStoreProvider>{children}</MockStoreProvider>
+        </TelegramProvider>
+      </GlobalErrorBoundary>
     </NextIntlClientProvider>
   );
 }

@@ -1,6 +1,7 @@
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
+import { getServerLogger } from '@/lib/logger/server';
 import { profileDraftSchema, profileToDto } from '@/lib/profile/schema';
 import { SupabaseProfileRepo } from '@/lib/supabase/profile-repo';
 import { createServiceRoleClient } from '@/lib/supabase/server';
@@ -49,7 +50,7 @@ export const POST = requireAuth(async (req, { user }) => {
     );
     return Response.json(profileToDto(profile), { status: 201 });
   } catch (err) {
-    console.error('POST /api/profile', err);
+    getServerLogger().error({ context: 'api/profile.POST', error: err });
     return Response.json({ error: 'internal' }, { status: 500 });
   }
 });
