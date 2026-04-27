@@ -1,7 +1,6 @@
 import { GlobalErrorBoundary } from '@/components/global-error-boundary';
 import { LoggerBootstrap } from '@/components/logger-bootstrap';
 import { TelegramProvider } from '@/components/telegram/provider';
-import { MockStoreProvider } from '@/lib/mocks/hydrate';
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale, getMessages } from 'next-intl/server';
 import type { ReactNode } from 'react';
@@ -25,9 +24,7 @@ export default async function AppLayout({
     <NextIntlClientProvider locale={locale} messages={messages}>
       <GlobalErrorBoundary>
         <LoggerBootstrap />
-        <TelegramProvider>
-          <MockStoreProvider>{children}</MockStoreProvider>
-        </TelegramProvider>
+        <TelegramProvider>{children}</TelegramProvider>
       </GlobalErrorBoundary>
     </NextIntlClientProvider>
   );
