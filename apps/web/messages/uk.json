@@ -15,9 +15,16 @@
       "missing_init_data": "[UK] Please open this app from Telegram.",
       "stale_init_data": "[UK] Session expired. Reloading...",
       "invalid_signature": "[UK] Invalid Telegram session.",
-      "malformed_init_data": "[UK] Malformed session data."
+      "malformed_init_data": "[UK] Malformed session data.",
+      "telegram_env_missing": "[UK] Server isn't configured for Telegram auth.",
+      "vercel_protection": "[UK] Deployment is blocked by Vercel Authentication. Disable it in Project Settings → Deployment Protection.",
+      "internal": "[UK] Server error. Tap Retry.",
+      "network_error": "[UK] Network error. Check your connection."
     },
-    "retry": "[UK] Retry"
+    "retry": "[UK] Retry",
+    "diagnostics": {
+      "title": "[UK] Diagnostics"
+    }
   },
   "common": {
     "loading": "[UK] Loading...",
