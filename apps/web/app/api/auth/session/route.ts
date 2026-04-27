@@ -46,6 +46,7 @@ export async function POST(req: Request): Promise<Response> {
       );
     }
     console.error('resolveSession error', err);
-    return Response.json({ error: 'internal' }, { status: 500 });
+    const message = err instanceof Error ? `${err.name}: ${err.message}` : String(err);
+    return Response.json({ error: 'internal', message }, { status: 500 });
   }
 }
