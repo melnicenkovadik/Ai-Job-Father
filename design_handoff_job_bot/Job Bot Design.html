@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Job Bot · Mini App Design</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&family=Fraunces:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+  html, body { margin:0; padding:0; height:100%; background:#f0eee9; overflow:hidden; font-family: 'Inter', system-ui, sans-serif; }
+  #root { height:100%; }
+</style>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel" src="tokens.jsx"></script>
+<script type="text/babel" src="icons.jsx"></script>
+<script type="text/babel" src="tg-frame.jsx"></script>
+<script type="text/babel" src="data.jsx"></script>
+<script type="text/babel" src="variants.jsx"></script>
+<script type="text/babel" src="screens.jsx"></script>
+<script type="text/babel" src="design-canvas.jsx"></script>
+
+<script type="text/babel">
+const TWEAKS = /*EDITMODE-BEGIN*/{
+  "theme": "dark"
+}/*EDITMODE-END*/;
+
+function PhoneSim({ variantId, theme }) {
+  const tok = VARIANTS[variantId];
+  const pal = tok[theme];
+  const style = variantId === 'minimal' ? STYLE_MINIMAL : variantId === 'bold' ? STYLE_BOLD : STYLE_PLAYFUL;
+  style.tok = tok;
+
+  // Per-phone nav state
+  const nav = useNav('dashboard');
+  const scr = SCREENS[nav.cur] || SCREENS.dashboard;
+  const C = scr.C;
+
+  // Apply font family on container
+  return (
+    <TGFrame variant={variantId} theme={theme} title={scr.title}>
+      <div style={{ height: '100%', fontFamily: tok.fontSans, color: pal.text, position: 'relative' }}>
+        <C pal={pal} style={style} nav={nav}/>
+      </div>
+    </TGFrame>
+  );
+}
+
+const SCREEN_LIST = [
+  { id: 'onboarding', label: '01 · Онбординг' },
+  { id: 'dashboard',  label: '02 · Дашборд' },
+  { id: 'upload',     label: '03 · Загрузка CV' },
+  { id: 'review',     label: '04 · Профиль (AI)' },
+  { id: 'wizard',     label: '05 · Визард кампании' },
+  { id: 'checkout',   label: '06 · Чек-аут' },
+  { id: 'payment',    label: '07 · Оплата · успех' },
+  { id: 'detail',     label: '08 · Детали кампании' },
+  { id: 'profile',    label: '09 · Профили' },
+  { id: 'settings',   label: '10 · Настройки' },
+  { id: 'empty',      label: '11 · Ошибка' },
+];
+
+// Static phone rendering a specific screen (for canvas artboards)
+function StaticPhone({ variantId, theme, screenId }) {
+  const tok = VARIANTS[variantId];
+  const pal = tok[theme];
+  const style = variantId === 'minimal' ? STYLE_MINIMAL : variantId === 'bold' ? STYLE_BOLD : STYLE_PLAYFUL;
+  style.tok = tok;
+
+  // Small synthetic nav for static screens
+  const fakeNav = {
+    cur: screenId,
+    data: {},
+    push: () => {}, back: () => {}, reset: () => {}, set: () => {},
+  };
+
+  const scr = SCREENS[screenId];
+  const C = scr.C;
+  const title = scr.title;
+
+  return (
+    <div style={{ pointerEvents: 'none' }}>
+      <TGFrame variant={variantId} theme={theme} title={title}>
+        <div style={{ height: '100%', fontFamily: tok.fontSans, color: pal.text, position: 'relative' }}>
+          <C pal={pal} style={style} nav={fakeNav}/>
+        </div>
+      </TGFrame>
+    </div>
+  );
+}
+
+// Live clickable prototype in the canvas — one per variant
+function LivePhone({ variantId, theme }) {
+  return (
+    <div style={{ position: 'relative' }}>
+      <PhoneSim variantId={variantId} theme={theme}/>
+    </div>
+  );
+}
+
+// Tweaks panel: theme toggle
+function TweaksPanel({ theme, setTheme }) {
+  const [visible, setVisible] = React.useState(false);
+  React.useEffect(() => {
+    const h = (e) => {
+      if (e.data?.type === '__activate_edit_mode') setVisible(true);
+      if (e.data?.type === '__deactivate_edit_mode') setVisible(false);
+    };
+    window.addEventListener('message', h);
+    window.parent.postMessage({ type: '__edit_mode_available' }, '*');
+    return () => window.removeEventListener('message', h);
+  }, []);
+
+  if (!visible) return null;
+
+  const btn = (on) => ({
+    padding: '6px 10px', borderRadius: 6,
+    background: on ? '#c96442' : 'rgba(255,255,255,0.08)',
+    color: on ? '#fff' : 'rgba(255,255,255,0.85)',
+    border: 'none', cursor: 'pointer', fontSize: 12, fontWeight: 600,
+    fontFamily: 'inherit',
+  });
+
+  const sendEdit = (edits) => {
+    window.parent.postMessage({ type: '__edit_mode_set_keys', edits }, '*');
+  };
+
+  return (
+    <div style={{
+      position: 'fixed', right: 20, bottom: 20, zIndex: 999,
+      padding: 14, borderRadius: 10,
+      background: 'rgba(25,20,16,0.95)', color: '#fff',
+      backdropFilter: 'blur(10px)',
+      boxShadow: '0 16px 48px rgba(0,0,0,0.4)',
+      fontFamily: 'Inter, system-ui', fontSize: 12,
+      minWidth: 240,
+    }}>
+      <div style={{ fontWeight: 700, fontSize: 11, marginBottom: 10, opacity: 0.7, textTransform: 'uppercase', letterSpacing: 1 }}>Tweaks</div>
+      <div style={{ marginBottom: 10 }}>
+        <div style={{ marginBottom: 6, opacity: 0.7 }}>Тема</div>
+        <div style={{ display: 'flex', gap: 6 }}>
+          {['dark', 'light'].map(t => (
+            <button key={t} onClick={() => { setTheme(t); sendEdit({ theme: t }); }} style={btn(theme === t)}>{t}</button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function App() {
+  const [theme, setTheme] = React.useState(TWEAKS.theme);
+  const v = 'minimal';
+
+  return (
+    <>
+      <DesignCanvas>
+        <DCSection id="live" title="Clickable prototype" subtitle="Нажмите на кнопки и элементы — навигация работает. Начало: дашборд.">
+          <DCArtboard id={'live-'+v} label={VARIANTS[v].name + ' · живой'} width={440} height={880}>
+            <div style={{ padding: 25, height: '100%', boxSizing: 'border-box', background: theme === 'dark' ? '#1a1815' : '#e8e5df', display: 'flex', alignItems: 'flex-start', justifyContent: 'center' }}>
+              <LivePhone variantId={v} theme={theme}/>
+            </div>
+          </DCArtboard>
+        </DCSection>
+
+        <DCSection id={v} title={VARIANTS[v].name}
+          subtitle="Чистая линия · моно-цифры · приглушённый акцент. Все 11 экранов.">
+          {SCREEN_LIST.map(s => (
+            <DCArtboard key={s.id} id={v + '-' + s.id} label={s.label} width={420} height={860}>
+              <div style={{ padding: 20, height: '100%', boxSizing: 'border-box', background: theme === 'dark' ? '#1a1815' : '#e8e5df', display: 'flex', alignItems: 'flex-start', justifyContent: 'center' }}>
+                <StaticPhone variantId={v} theme={theme} screenId={s.id}/>
+              </div>
+            </DCArtboard>
+          ))}
+        </DCSection>
+      </DesignCanvas>
+
+      <TweaksPanel theme={theme} setTheme={setTheme}/>
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
