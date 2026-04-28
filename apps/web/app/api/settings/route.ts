@@ -102,7 +102,18 @@ export const PUT = requireAuth(async (req, { user }) => {
         keys: Object.keys(parsed.data),
       },
     });
-    return Response.json(settingsToDto(next));
+    const headers = new Headers({ 'content-type': 'application/json' });
+    // next-intl reads the locale from this cookie on the next server render.
+    // Without setting it here, the React Query cache flips to ru while RSC
+    // still resolves en — the user clicks ru and sees nothing change.
+    if (parsed.data.locale !== undefined) {
+      const oneYear = 60 * 60 * 24 * 365;
+      headers.append(
+        'set-cookie',
+        `locale=${parsed.data.locale}; Path=/; Max-Age=${oneYear}; SameSite=Lax`,
+      );
+    }
+    return new Response(JSON.stringify(settingsToDto(next)), { status: 200, headers });
   } catch (err) {
     getServerLogger().error({ context: 'api/settings.PUT', error: err });
     return Response.json({ error: 'internal' }, { status: 500 });

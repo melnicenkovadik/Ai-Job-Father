@@ -3,6 +3,7 @@
 import { BottomTabBar, FieldRow, LanguageTile, SectionTitle, Toggle } from '@/components/ui';
 import { Screen, Scroll, Section, Stack } from '@/components/ui/layout';
 import { useTranslations } from 'next-intl';
+import { useRouter } from 'next/navigation';
 import { type SettingsDto, useSettingsQuery, useUpdateSettings } from './use-settings';
 
 const LOCALES: { code: SettingsDto['locale']; label: string; native: string }[] = [
@@ -17,6 +18,7 @@ const PLACEHOLDER_NOTIFICATIONS = { push: false, email: false, weekly: false };
 
 export function SettingsScreen() {
   const t = useTranslations('screens.settings');
+  const router = useRouter();
   const { data, isLoading } = useSettingsQuery();
   const update = useUpdateSettings();
 
@@ -43,39 +45,52 @@ export function SettingsScreen() {
                 selected={locale === l.code}
                 onSelect={() => {
                   if (disabled || locale === l.code) return;
-                  update.mutate({ locale: l.code });
+                  update.mutate(
+                    { locale: l.code },
+                    {
+                      // The server has set the `locale` cookie in the response.
+                      // router.refresh() forces RSC to re-render with the new
+                      // cookie so next-intl picks the new dictionary.
+                      onSuccess: () => router.refresh(),
+                    },
+                  );
                 }}
               />
             ))}
           </Stack>
         </Section>
 
-        <Section title={<SectionTitle>{t('section.notifications')}</SectionTitle>}>
-          <div className="rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] px-4">
+        <Section
+          title={
+            <SectionTitle>
+              <span className="inline-flex items-center gap-2">
+                {t('section.notifications')}
+                <span className="rounded-full bg-[var(--color-bg-2)] px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-[var(--color-text-mute)]">
+                  {t('comingSoon')}
+                </span>
+              </span>
+            </SectionTitle>
+          }
+        >
+          <div
+            aria-disabled="true"
+            className="pointer-events-none rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] px-4 opacity-50"
+          >
             <Toggle
               checked={notifications.push}
-              onChange={(v) => {
-                if (disabled) return;
-                update.mutate({ notifications: { push: v } });
-              }}
+              onChange={() => {}}
               label={t('notification.push.label')}
               description={t('notification.push.description')}
             />
             <Toggle
               checked={notifications.email}
-              onChange={(v) => {
-                if (disabled) return;
-                update.mutate({ notifications: { email: v } });
-              }}
+              onChange={() => {}}
               label={t('notification.email.label')}
               description={t('notification.email.description')}
             />
             <Toggle
               checked={notifications.weekly}
-              onChange={(v) => {
-                if (disabled) return;
-                update.mutate({ notifications: { weekly: v } });
-              }}
+              onChange={() => {}}
               label={t('notification.weeklyDigest.label')}
               description={t('notification.weeklyDigest.description')}
             />

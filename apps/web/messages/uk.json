@@ -107,7 +107,8 @@
       "about": {
         "version": "Версія",
         "support": "Підтримка"
-      }
+      },
+      "comingSoon": "Скоро"
     },
     "profiles": {
       "title": "Профілі",

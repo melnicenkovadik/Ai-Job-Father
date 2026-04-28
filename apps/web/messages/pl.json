@@ -107,7 +107,8 @@
       "about": {
         "version": "Wersja",
         "support": "Wsparcie"
-      }
+      },
+      "comingSoon": "Wkrótce"
     },
     "profiles": {
       "title": "Profile",
