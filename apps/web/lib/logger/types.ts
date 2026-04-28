@@ -72,5 +72,35 @@ export function normalizeError(err: unknown): LogEvent['error'] {
       stack: err.stack,
     };
   }
+  // Supabase / PostgrestError / fetch responses come through as plain objects
+  // with `message`/`code`/`details`/`hint`. Pull what looks like an Error so the
+  // app_logs row carries useful diagnostics instead of "[object Object]".
+  if (typeof err === 'object') {
+    const e = err as Record<string, unknown>;
+    const message = pickString(e.message) ?? pickString(e.error) ?? safeJson(err);
+    const code = pickString(e.code);
+    const details = pickString(e.details);
+    const hint = pickString(e.hint);
+    const tail = [code && `code=${code}`, details && `details=${details}`, hint && `hint=${hint}`]
+      .filter(Boolean)
+      .join(' · ');
+    return {
+      name: pickString(e.name) ?? 'NonError',
+      message: tail ? `${message} (${tail})` : message,
+      stack: pickString(e.stack),
+    };
+  }
   return { name: 'NonError', message: String(err) };
+}
+
+function pickString(v: unknown): string | undefined {
+  return typeof v === 'string' && v.length > 0 ? v : undefined;
+}
+
+function safeJson(v: unknown): string {
+  try {
+    return JSON.stringify(v);
+  } catch {
+    return String(v);
+  }
 }
