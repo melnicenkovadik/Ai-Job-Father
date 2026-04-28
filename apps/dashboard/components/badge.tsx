@@ -13,6 +13,7 @@ const STATUS_COLORS: Record<string, string> = {
   warn: 'bg-amber-950 text-amber-300 border-amber-900',
   info: 'bg-blue-950 text-blue-300 border-blue-900',
   debug: 'bg-zinc-800 text-zinc-400 border-zinc-700',
+  fatal: 'bg-red-950 text-red-200 border-red-800',
 };
 
 export function StatusBadge({ status }: { status: string }) {
