@@ -60,6 +60,11 @@ export const env = createEnv({
     // /api/logs.
     NEXT_PUBLIC_LOG_ENABLED: z.string().optional(),
     NEXT_PUBLIC_LOG_LEVEL: z.enum(['debug', 'info', 'warn', 'error']).default('info'),
+    // Mirrors the server-side STARS_TEST_MODE so the checkout/payment UI can
+    // show "1 ⭐" instead of the real conversion when test mode is on.
+    // Without this flag the UI shows $55 → 110⭐ but the server issues a 1⭐
+    // invoice, which confuses users (and may trigger pre-checkout mismatch).
+    NEXT_PUBLIC_STARS_TEST_MODE: z.string().optional(),
   },
   runtimeEnv: {
     NODE_ENV: process.env.NODE_ENV,
@@ -91,6 +96,7 @@ export const env = createEnv({
     NEXT_PUBLIC_TONCONNECT_MANIFEST_URL: process.env.NEXT_PUBLIC_TONCONNECT_MANIFEST_URL,
     NEXT_PUBLIC_LOG_ENABLED: process.env.NEXT_PUBLIC_LOG_ENABLED,
     NEXT_PUBLIC_LOG_LEVEL: process.env.NEXT_PUBLIC_LOG_LEVEL,
+    NEXT_PUBLIC_STARS_TEST_MODE: process.env.NEXT_PUBLIC_STARS_TEST_MODE,
   },
   emptyStringAsUndefined: true,
   skipValidation: process.env.SKIP_ENV_VALIDATION === '1',

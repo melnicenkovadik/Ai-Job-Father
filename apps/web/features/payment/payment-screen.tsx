@@ -2,11 +2,15 @@
 
 import { Icon } from '@/components/icons';
 import { useTelegramBackButton } from '@/components/telegram/use-back-button';
-import { Button, FieldRow, Headline, MainButtonBinding } from '@/components/ui';
+import { Button, FieldRow, Headline, MainButtonBinding, Spinner } from '@/components/ui';
 import { Screen, Scroll, Stack } from '@/components/ui/layout';
 import { useCampaignQuery } from '@/features/campaigns/use-campaigns';
 import { usePayWithStars } from '@/features/payment/use-payments';
 import { usePayWithTon } from '@/features/payment/use-ton-payment';
+import {
+  TEST_MODE_TON_AMOUNT,
+  isStarsTestModeOnClient,
+} from '@/lib/payments/test-mode-client';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
@@ -55,15 +59,24 @@ export function PaymentScreen({ campaignId, method = 'stars' }: PaymentScreenPro
     return (
       <Screen>
         <Scroll className="flex-1">
-          <Stack gap={2} className="px-6 py-12 text-center">
-            <p className="text-[14px] text-[var(--color-text-dim)]">…</p>
+          <Stack gap={2} className="items-center px-6 py-12 text-center">
+            <Spinner size={20} />
+            <p className="text-[14px] text-[var(--color-text-dim)]">{t('loading')}</p>
           </Stack>
         </Scroll>
       </Screen>
     );
   }
 
-  const amountLabel = `${campaign.priceBreakdown.amountCents / 100} USD`;
+  const testMode = isStarsTestModeOnClient();
+  const usdAmount = campaign.priceBreakdown.amountCents / 100;
+  const starsAmount = testMode ? 1 : Math.round(campaign.priceBreakdown.amountCents * 0.5);
+  const tonAmount = testMode
+    ? TEST_MODE_TON_AMOUNT
+    : (campaign.priceBreakdown.amountCents * 0.0004).toFixed(2);
+  const amountLabel =
+    method === 'stars' ? `${starsAmount} ⭐` : `${tonAmount} TON`;
+  const usdLabel = `${usdAmount.toFixed(2)} USD`;
   const provider = method === 'stars' ? 'TELEGRAM' : 'TON NETWORK';
 
   return (
@@ -83,6 +96,7 @@ export function PaymentScreen({ campaignId, method = 'stars' }: PaymentScreenPro
               title={t('success')}
               hint={t('successHint')}
               amountLabel={amountLabel}
+              usdLabel={usdLabel}
               rows={{
                 amount: t('rows.amount'),
                 transaction: t('rows.transaction'),
@@ -160,12 +174,14 @@ function SuccessView({
   title,
   hint,
   amountLabel,
+  usdLabel,
   rows,
   method,
 }: {
   title: string;
   hint: string;
   amountLabel: string;
+  usdLabel: string;
   rows: { amount: string; transaction: string; when: string };
   method: 'stars' | 'ton';
 }) {
@@ -179,7 +195,7 @@ function SuccessView({
       </Headline>
       <p className="text-[15px] text-[var(--color-text-dim)]">{hint}</p>
       <div className="w-full rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] px-4 text-left">
-        <FieldRow label={rows.amount} value={amountLabel} mono />
+        <FieldRow label={rows.amount} value={`${amountLabel} (≈ ${usdLabel})`} mono />
         <FieldRow
           label={rows.transaction}
           value={method === 'stars' ? 'see Stars history' : 'see TON tx'}

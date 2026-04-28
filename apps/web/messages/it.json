@@ -255,14 +255,14 @@
       "totalLabel": "Importo totale",
       "methodSection": "Metodo di pagamento",
       "pay": "Avvia · {amount}",
-      "noteRefund": "Dopo il pagamento i dati della campagna sono congelati. I rimborsi non sono supportati nell'MVP.",
       "method": {
         "stars": "Telegram Stars",
         "starsHint": "Pagamento nativo · istantaneo",
         "starsBadge": "Consigliato",
         "ton": "TON Connect",
         "tonHint": "Paga con wallet crypto"
-      }
+      },
+      "loading": "Caricamento checkout…"
     },
     "payment": {
       "processing": "Quasi\nfatto",
@@ -280,7 +280,8 @@
         "amount": "Importo",
         "transaction": "Transazione",
         "when": "Ora"
-      }
+      },
+      "loading": "Caricamento pagamento…"
     },
     "detail": {
       "paidAt": "pagato {when}",

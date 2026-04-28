@@ -255,14 +255,14 @@
       "totalLabel": "Kwota do zapłaty",
       "methodSection": "Metoda płatności",
       "pay": "Uruchom · {amount}",
-      "noteRefund": "Po płatności dane kampanii są zamrożone. Zwroty nie są obsługiwane w MVP.",
       "method": {
         "stars": "Telegram Stars",
         "starsHint": "Płatność natywna · natychmiast",
         "starsBadge": "Polecane",
         "ton": "TON Connect",
         "tonHint": "Zapłać kryptoportfelem"
-      }
+      },
+      "loading": "Ładowanie płatności…"
     },
     "payment": {
       "processing": "Już\nprawie",
@@ -280,7 +280,8 @@
         "amount": "Kwota",
         "transaction": "Transakcja",
         "when": "Czas"
-      }
+      },
+      "loading": "Ładowanie płatności…"
     },
     "detail": {
       "paidAt": "opłacono {when}",

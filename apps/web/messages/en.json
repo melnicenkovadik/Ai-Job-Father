@@ -255,14 +255,14 @@
       "totalLabel": "Total amount",
       "methodSection": "Payment method",
       "pay": "Launch · {amount}",
-      "noteRefund": "After payment the campaign data is frozen. Refunds are not supported in MVP.",
       "method": {
         "stars": "Telegram Stars",
         "starsHint": "Native payment · instant",
         "starsBadge": "Recommended",
         "ton": "TON Connect",
         "tonHint": "Pay via crypto wallet"
-      }
+      },
+      "loading": "Loading checkout…"
     },
     "payment": {
       "processing": "Almost\nthere",
@@ -280,7 +280,8 @@
         "amount": "Amount",
         "transaction": "Transaction",
         "when": "Time"
-      }
+      },
+      "loading": "Loading payment…"
     },
     "detail": {
       "paidAt": "paid {when}",

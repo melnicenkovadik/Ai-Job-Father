@@ -255,14 +255,14 @@
       "totalLabel": "Сумма к оплате",
       "methodSection": "Способ оплаты",
       "pay": "Запустить · {amount}",
-      "noteRefund": "После оплаты данные кампании заморожены. Возвраты в MVP не поддерживаются.",
       "method": {
         "stars": "Telegram Stars",
         "starsHint": "Нативно · мгновенно",
         "starsBadge": "Рекомендуем",
         "ton": "TON Connect",
         "tonHint": "Через крипто-кошелёк"
-      }
+      },
+      "loading": "Загружаем оплату…"
     },
     "payment": {
       "processing": "Почти\nготово",
@@ -280,7 +280,8 @@
         "amount": "Сумма",
         "transaction": "Транзакция",
         "when": "Время"
-      }
+      },
+      "loading": "Готовим оплату…"
     },
     "detail": {
       "paidAt": "оплачено {when}",

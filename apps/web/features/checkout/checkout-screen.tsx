@@ -1,17 +1,21 @@
 'use client';
 
-import { Icon } from '@/components/icons';
-import { useTelegramBackButton } from '@/components/telegram/use-back-button';
 import {
   Headline,
   MainButtonBinding,
   type PaymentMethod,
   PaymentMethodCard,
   SectionTitle,
+  Spinner,
 } from '@/components/ui';
 import { Screen, Scroll, Section, Stack } from '@/components/ui/layout';
+import { useTelegramBackButton } from '@/components/telegram/use-back-button';
 import { formatPriceUsd } from '@/features/campaigns/format';
 import { useCampaignQuery } from '@/features/campaigns/use-campaigns';
+import {
+  TEST_MODE_TON_AMOUNT,
+  isStarsTestModeOnClient,
+} from '@/lib/payments/test-mode-client';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -36,8 +40,9 @@ export function CheckoutScreen({ campaignId }: CheckoutScreenProps) {
     return (
       <Screen>
         <Scroll className="flex-1">
-          <Stack gap={2} className="px-6 py-12 text-center">
-            <p className="text-[14px] text-[var(--color-text-dim)]">…</p>
+          <Stack gap={2} className="items-center px-6 py-12 text-center">
+            <Spinner size={20} />
+            <p className="text-[14px] text-[var(--color-text-dim)]">{t('loading')}</p>
           </Stack>
         </Scroll>
       </Screen>
@@ -59,9 +64,14 @@ export function CheckoutScreen({ campaignId }: CheckoutScreenProps) {
     );
   }
 
+  const testMode = isStarsTestModeOnClient();
   const usdLabel = formatPriceUsd(campaign.priceAmountCents);
-  const starsAmount = Math.round(campaign.priceAmountCents * STARS_PER_USD_CENT);
-  const tonAmount = (campaign.priceAmountCents * TON_PER_USD_CENT).toFixed(2);
+  const starsAmount = testMode
+    ? 1
+    : Math.round(campaign.priceAmountCents * STARS_PER_USD_CENT);
+  const tonAmount = testMode
+    ? TEST_MODE_TON_AMOUNT
+    : (campaign.priceAmountCents * TON_PER_USD_CENT).toFixed(2);
   const ctaAmount = method === 'stars' ? `${starsAmount} ⭐` : `${tonAmount} TON`;
 
   const onPay = () => {
@@ -94,7 +104,9 @@ export function CheckoutScreen({ campaignId }: CheckoutScreenProps) {
                 {method === 'stars' ? '⭐ Stars' : 'TON'}
               </span>
             </div>
-            <p className="mt-1 font-mono text-[12px] text-[var(--color-text-mute)]">≈ {usdLabel}</p>
+            <p className="mt-1 font-mono text-[12px] text-[var(--color-text-mute)]">
+              {testMode ? `Test mode · real price ≈ ${usdLabel}` : `≈ ${usdLabel}`}
+            </p>
           </div>
         </Stack>
 
@@ -120,12 +132,6 @@ export function CheckoutScreen({ campaignId }: CheckoutScreenProps) {
           </Stack>
         </Section>
 
-        <div className="px-4 pb-2">
-          <div className="flex min-w-0 items-start gap-2 rounded-[var(--radius-md)] bg-[var(--color-bg-2)] px-3 py-3 text-[12px] text-[var(--color-text-dim)]">
-            <Icon.Alert size={14} className="mt-px shrink-0" />
-            <span className="min-w-0">{t('noteRefund')}</span>
-          </div>
-        </div>
       </Scroll>
 
       <MainButtonBinding text={t('pay', { amount: ctaAmount })} onClick={onPay} />
