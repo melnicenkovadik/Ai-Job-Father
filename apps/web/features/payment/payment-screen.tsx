@@ -7,10 +7,7 @@ import { Screen, Scroll, Stack } from '@/components/ui/layout';
 import { useCampaignQuery } from '@/features/campaigns/use-campaigns';
 import { usePayWithStars } from '@/features/payment/use-payments';
 import { usePayWithTon } from '@/features/payment/use-ton-payment';
-import {
-  TEST_MODE_TON_AMOUNT,
-  isStarsTestModeOnClient,
-} from '@/lib/payments/test-mode-client';
+import { TEST_MODE_TON_AMOUNT, isStarsTestModeOnClient } from '@/lib/payments/test-mode-client';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
@@ -74,8 +71,7 @@ export function PaymentScreen({ campaignId, method = 'stars' }: PaymentScreenPro
   const tonAmount = testMode
     ? TEST_MODE_TON_AMOUNT
     : (campaign.priceBreakdown.amountCents * 0.0004).toFixed(2);
-  const amountLabel =
-    method === 'stars' ? `${starsAmount} ⭐` : `${tonAmount} TON`;
+  const amountLabel = method === 'stars' ? `${starsAmount} ⭐` : `${tonAmount} TON`;
   const usdLabel = `${usdAmount.toFixed(2)} USD`;
   const provider = method === 'stars' ? 'TELEGRAM' : 'TON NETWORK';
 

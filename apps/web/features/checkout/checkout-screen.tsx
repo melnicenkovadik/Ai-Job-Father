@@ -1,5 +1,6 @@
 'use client';
 
+import { useTelegramBackButton } from '@/components/telegram/use-back-button';
 import {
   Headline,
   MainButtonBinding,
@@ -9,13 +10,9 @@ import {
   Spinner,
 } from '@/components/ui';
 import { Screen, Scroll, Section, Stack } from '@/components/ui/layout';
-import { useTelegramBackButton } from '@/components/telegram/use-back-button';
 import { formatPriceUsd } from '@/features/campaigns/format';
 import { useCampaignQuery } from '@/features/campaigns/use-campaigns';
-import {
-  TEST_MODE_TON_AMOUNT,
-  isStarsTestModeOnClient,
-} from '@/lib/payments/test-mode-client';
+import { TEST_MODE_TON_AMOUNT, isStarsTestModeOnClient } from '@/lib/payments/test-mode-client';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -66,9 +63,7 @@ export function CheckoutScreen({ campaignId }: CheckoutScreenProps) {
 
   const testMode = isStarsTestModeOnClient();
   const usdLabel = formatPriceUsd(campaign.priceAmountCents);
-  const starsAmount = testMode
-    ? 1
-    : Math.round(campaign.priceAmountCents * STARS_PER_USD_CENT);
+  const starsAmount = testMode ? 1 : Math.round(campaign.priceAmountCents * STARS_PER_USD_CENT);
   const tonAmount = testMode
     ? TEST_MODE_TON_AMOUNT
     : (campaign.priceAmountCents * TON_PER_USD_CENT).toFixed(2);
@@ -131,7 +126,6 @@ export function CheckoutScreen({ campaignId }: CheckoutScreenProps) {
             />
           </Stack>
         </Section>
-
       </Scroll>
 
       <MainButtonBinding text={t('pay', { amount: ctaAmount })} onClick={onPay} />
