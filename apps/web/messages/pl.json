@@ -248,6 +248,67 @@
         "quotaRow": "Limit × {count}",
         "countriesRow": "Kraje × {count}",
         "total": "Razem"
+      },
+      "wizard": {
+        "roles": {
+          "pickCategoryFirst": "Najpierw wybierz kategorię — zaproponujemy role."
+        },
+        "countries": {
+          "searchPlaceholder": "Szukaj po nazwie lub kodzie (DE, CH...)",
+          "clear": "Wyczyść",
+          "section": {
+            "quick": "Szybki wybór",
+            "europe": "Europa",
+            "cis": "WNP",
+            "anglo": "Anglosfera",
+            "other": "Inne"
+          },
+          "noResults": "Brak wyników dla \"{query}\""
+        },
+        "salary": {
+          "levelLabel": "Poziom",
+          "minLabel": "Minimum",
+          "maxLabel": "Maksimum",
+          "level": {
+            "junior": "Junior",
+            "mid": "Mid",
+            "senior": "Senior",
+            "lead": "Lead"
+          }
+        },
+        "stack": {
+          "fromResume": "Z Twojego CV",
+          "suggested": "Sugestie dla kategorii",
+          "suggestedMore": "Więcej sugestii",
+          "errorPickAtLeastOne": "Wybierz co najmniej jedną — używamy tego do filtrowania ofert."
+        },
+        "langs": {
+          "primaryFor": "Podstawowy dla {country}",
+          "others": "Inne języki",
+          "errorPickAtLeastOne": "Wybierz co najmniej jeden język rozmów.",
+          "selectedCount": "Wybrano: {count}"
+        },
+        "quota": {
+          "exampleLabel": "Jak to wygląda w praktyce",
+          "funnel": {
+            "applies": "Wysłane aplikacje",
+            "responses": "Odpowiedzi",
+            "meetings": "Spotkania umówione"
+          },
+          "exampleNote": "Liczby orientacyjne — na podstawie podobnych kampanii. Wynik zależy od CV, rynku i szczęścia."
+        },
+        "breakdown": {
+          "base": "Cena bazowa",
+          "baseHint": "Koszt jednej aplikacji wysłanej przez bota.",
+          "quota": "× {count} aplikacji",
+          "quotaHint": "Liczba aplikacji wybrana w kroku ilości.",
+          "category": "× {mult} ({category})",
+          "categoryHint": "Niektóre kategorie wymagają większej personalizacji.",
+          "complexity": "× {mult} (średnia złożoność)",
+          "complexityHint": "Domyślny poziom — przeliczy się przy większej ilości danych.",
+          "equivalent": "≈ {stars} ⭐ w Telegram Stars · {ton} TON",
+          "testMode": "Tryb testowy · faktura = 1 ⭐"
+        }
       }
     },
     "checkout": {

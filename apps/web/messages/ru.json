@@ -248,6 +248,67 @@
         "quotaRow": "Квота × {count}",
         "countriesRow": "Страны × {count}",
         "total": "Итого"
+      },
+      "wizard": {
+        "roles": {
+          "pickCategoryFirst": "Сначала выбери категорию — подскажем подходящие роли."
+        },
+        "countries": {
+          "searchPlaceholder": "Поиск по названию или коду (DE, CH...)",
+          "clear": "Очистить поиск",
+          "section": {
+            "quick": "Быстрый выбор",
+            "europe": "Европа",
+            "cis": "СНГ",
+            "anglo": "Англоязычные",
+            "other": "Другие"
+          },
+          "noResults": "Ничего не найдено по \"{query}\""
+        },
+        "salary": {
+          "levelLabel": "Уровень",
+          "minLabel": "Минимум",
+          "maxLabel": "Максимум",
+          "level": {
+            "junior": "Junior",
+            "mid": "Middle",
+            "senior": "Senior",
+            "lead": "Lead"
+          }
+        },
+        "stack": {
+          "fromResume": "Из твоего резюме",
+          "suggested": "Подходит к категории",
+          "suggestedMore": "Что ещё может пригодиться",
+          "errorPickAtLeastOne": "Отметь хотя бы один — это нужно для фильтра вакансий."
+        },
+        "langs": {
+          "primaryFor": "Основной для {country}",
+          "others": "Другие языки",
+          "errorPickAtLeastOne": "Выбери хотя бы один язык собеседования.",
+          "selectedCount": "Выбрано: {count}"
+        },
+        "quota": {
+          "exampleLabel": "Как это выглядит на практике",
+          "funnel": {
+            "applies": "Откликов отправлено",
+            "responses": "Ответов",
+            "meetings": "Дойдут до встречи"
+          },
+          "exampleNote": "Цифры ориентировочные — оценка по похожим кампаниям. Итог зависит от резюме, рынка и удачи."
+        },
+        "breakdown": {
+          "base": "Базовая цена",
+          "baseHint": "Стоимость одного отклика, который отправит бот.",
+          "quota": "× {count} откликов",
+          "quotaHint": "Количество откликов, которое ты выбрал на шаге квоты.",
+          "category": "× {mult} ({category})",
+          "categoryHint": "Часть категорий требует больше времени на персонализацию.",
+          "complexity": "× {mult} (средняя сложность)",
+          "complexityHint": "Уровень по умолчанию — пересчитается, когда появится больше данных.",
+          "equivalent": "≈ {stars} ⭐ в Telegram Stars · {ton} TON",
+          "testMode": "Тест-режим включён · счёт будет на 1 ⭐"
+        }
       }
     },
     "checkout": {

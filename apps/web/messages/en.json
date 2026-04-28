@@ -248,6 +248,67 @@
         "quotaRow": "Quota × {count}",
         "countriesRow": "Countries × {count}",
         "total": "Total"
+      },
+      "wizard": {
+        "roles": {
+          "pickCategoryFirst": "Pick a category first to see suggested roles."
+        },
+        "countries": {
+          "searchPlaceholder": "Search by name or code (DE, CH...)",
+          "clear": "Clear search",
+          "section": {
+            "quick": "Quick picks",
+            "europe": "Europe",
+            "cis": "CIS",
+            "anglo": "Anglosphere",
+            "other": "Other"
+          },
+          "noResults": "Nothing matches \"{query}\""
+        },
+        "salary": {
+          "levelLabel": "Experience level",
+          "minLabel": "Minimum",
+          "maxLabel": "Maximum",
+          "level": {
+            "junior": "Junior",
+            "mid": "Mid",
+            "senior": "Senior",
+            "lead": "Lead"
+          }
+        },
+        "stack": {
+          "fromResume": "From your resume",
+          "suggested": "Suggested for this category",
+          "suggestedMore": "More suggestions",
+          "errorPickAtLeastOne": "Pick at least one — we use this to filter jobs."
+        },
+        "langs": {
+          "primaryFor": "Primary in {country}",
+          "others": "Other languages",
+          "errorPickAtLeastOne": "Pick at least one interview language.",
+          "selectedCount": "{count} selected"
+        },
+        "quota": {
+          "exampleLabel": "What this looks like in practice",
+          "funnel": {
+            "applies": "Applications sent",
+            "responses": "Responses",
+            "meetings": "Meetings booked"
+          },
+          "exampleNote": "Ballpark numbers — based on similar campaigns. Real outcomes depend on your resume, market, and the day."
+        },
+        "breakdown": {
+          "base": "Base price",
+          "baseHint": "Cost per single application the bot sends.",
+          "quota": "× {count} applications",
+          "quotaHint": "Number of applications you chose on the quota step.",
+          "category": "× {mult} ({category})",
+          "categoryHint": "Some categories take more time to personalise.",
+          "complexity": "× {mult} (medium complexity)",
+          "complexityHint": "Default difficulty — adjusted automatically when we know more.",
+          "equivalent": "≈ {stars} ⭐ in Telegram Stars · {ton} TON",
+          "testMode": "Test mode is on · invoice = 1 ⭐"
+        }
       }
     },
     "checkout": {

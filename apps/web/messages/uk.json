@@ -248,6 +248,67 @@
         "quotaRow": "Квота × {count}",
         "countriesRow": "Країни × {count}",
         "total": "Разом"
+      },
+      "wizard": {
+        "roles": {
+          "pickCategoryFirst": "Спочатку обери категорію — підкажемо ролі."
+        },
+        "countries": {
+          "searchPlaceholder": "Пошук за назвою або кодом (DE, CH...)",
+          "clear": "Очистити пошук",
+          "section": {
+            "quick": "Швидкий вибір",
+            "europe": "Європа",
+            "cis": "СНД",
+            "anglo": "Англомовні",
+            "other": "Інші"
+          },
+          "noResults": "Нічого не знайдено за \"{query}\""
+        },
+        "salary": {
+          "levelLabel": "Рівень",
+          "minLabel": "Мінімум",
+          "maxLabel": "Максимум",
+          "level": {
+            "junior": "Junior",
+            "mid": "Middle",
+            "senior": "Senior",
+            "lead": "Lead"
+          }
+        },
+        "stack": {
+          "fromResume": "З твого резюме",
+          "suggested": "Підходить категорії",
+          "suggestedMore": "Що ще може стати у пригоді",
+          "errorPickAtLeastOne": "Обери хоча б один — це фільтр для вакансій."
+        },
+        "langs": {
+          "primaryFor": "Основна для {country}",
+          "others": "Інші мови",
+          "errorPickAtLeastOne": "Обери хоча б одну мову співбесід.",
+          "selectedCount": "Обрано: {count}"
+        },
+        "quota": {
+          "exampleLabel": "Як це виглядає на практиці",
+          "funnel": {
+            "applies": "Відгуків надіслано",
+            "responses": "Відповідей",
+            "meetings": "Дійдуть до зустрічі"
+          },
+          "exampleNote": "Орієнтовні цифри — за схожими кампаніями. Результат залежить від резюме, ринку та удачі."
+        },
+        "breakdown": {
+          "base": "Базова ціна",
+          "baseHint": "Вартість одного відгуку, який надішле бот.",
+          "quota": "× {count} відгуків",
+          "quotaHint": "Кількість відгуків, яку ти обрав у кроці квоти.",
+          "category": "× {mult} ({category})",
+          "categoryHint": "Деякі категорії потребують більше персоналізації.",
+          "complexity": "× {mult} (середня складність)",
+          "complexityHint": "За замовчуванням — перерахуємо, коли буде більше даних.",
+          "equivalent": "≈ {stars} ⭐ у Telegram Stars · {ton} TON",
+          "testMode": "Тест-режим увімкнено · рахунок 1 ⭐"
+        }
       }
     },
     "checkout": {

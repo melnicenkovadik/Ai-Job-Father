@@ -248,6 +248,67 @@
         "quotaRow": "Quota × {count}",
         "countriesRow": "Paesi × {count}",
         "total": "Totale"
+      },
+      "wizard": {
+        "roles": {
+          "pickCategoryFirst": "Scegli prima una categoria per vedere i ruoli suggeriti."
+        },
+        "countries": {
+          "searchPlaceholder": "Cerca per nome o codice (DE, CH...)",
+          "clear": "Azzera ricerca",
+          "section": {
+            "quick": "Selezione rapida",
+            "europe": "Europa",
+            "cis": "CSI",
+            "anglo": "Anglosfera",
+            "other": "Altri"
+          },
+          "noResults": "Nessun risultato per \"{query}\""
+        },
+        "salary": {
+          "levelLabel": "Livello",
+          "minLabel": "Minimo",
+          "maxLabel": "Massimo",
+          "level": {
+            "junior": "Junior",
+            "mid": "Mid",
+            "senior": "Senior",
+            "lead": "Lead"
+          }
+        },
+        "stack": {
+          "fromResume": "Dal tuo CV",
+          "suggested": "Suggeriti per la categoria",
+          "suggestedMore": "Altri suggerimenti",
+          "errorPickAtLeastOne": "Selezionane almeno uno — serve a filtrare gli annunci."
+        },
+        "langs": {
+          "primaryFor": "Principale in {country}",
+          "others": "Altre lingue",
+          "errorPickAtLeastOne": "Seleziona almeno una lingua di colloquio.",
+          "selectedCount": "{count} selezionate"
+        },
+        "quota": {
+          "exampleLabel": "Cosa significa in pratica",
+          "funnel": {
+            "applies": "Candidature inviate",
+            "responses": "Risposte",
+            "meetings": "Colloqui fissati"
+          },
+          "exampleNote": "Numeri indicativi — basati su campagne simili. Il risultato dipende da CV, mercato e fortuna."
+        },
+        "breakdown": {
+          "base": "Prezzo base",
+          "baseHint": "Costo per ogni candidatura inviata dal bot.",
+          "quota": "× {count} candidature",
+          "quotaHint": "Numero di candidature scelto al passo della quota.",
+          "category": "× {mult} ({category})",
+          "categoryHint": "Alcune categorie richiedono più personalizzazione.",
+          "complexity": "× {mult} (complessità media)",
+          "complexityHint": "Difficoltà di default — ricalcolata con più dati.",
+          "equivalent": "≈ {stars} ⭐ in Telegram Stars · {ton} TON",
+          "testMode": "Modalità test attiva · fattura = 1 ⭐"
+        }
       }
     },
     "checkout": {
