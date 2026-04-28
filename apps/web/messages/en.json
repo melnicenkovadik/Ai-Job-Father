@@ -1,11 +1,11 @@
 {
   "home": {
     "greeting": "Hi, {name}!",
-    "description": "AI Job Bot helps you find the right role — across tech, design, marketing, and more.",
+    "description": "Stop copy-pasting your CV for every job. AI does it for you — IT, design, marketing, and 9 more fields.",
     "fallbackName": "friend",
     "phaseNote": "Profile, the campaign wizard and payments are live.",
     "cta": {
-      "create_campaign": "Create a campaign"
+      "create_campaign": "Start the search"
     }
   },
   "nav": {
@@ -59,21 +59,21 @@
         "completed": "Completed"
       },
       "empty": {
-        "title": "No campaigns yet",
-        "hint": "Tap + to create the first one."
+        "title": "Nothing running yet",
+        "hint": "Tap + and AI starts searching."
       },
       "newCampaign": "New campaign"
     },
     "onboarding": {
-      "headline": "AI finds\nvacancies.\nYou get\nreplies.",
-      "description": "Upload your CV — we search across 12 categories and apply for you. You see progress in real time.",
+      "headline": "AI sends\napplications.\nYou take\nthe interviews.",
+      "description": "Drop your CV. AI searches 12 fields and applies — you just show up to interviews.",
       "feature": {
         "parse": {
-          "title": "AI CV parsing",
-          "subtitle": "PDF or LinkedIn — we fill the profile"
+          "title": "AI fills your profile",
+          "subtitle": "PDF or LinkedIn — done in 30 seconds"
         },
         "search": {
-          "title": "Search across 12 categories",
+          "title": "Search across 12 fields",
           "subtitle": "Tech, Design, Product, Finance..."
         },
         "pay": {
@@ -81,7 +81,7 @@
           "subtitle": "No cards — native to Telegram"
         }
       },
-      "start": "Start"
+      "start": "Get started"
     },
     "settings": {
       "title": "Settings",
@@ -112,19 +112,19 @@
     "profiles": {
       "title": "Profiles",
       "default": "Default",
-      "empty": "No profiles yet. Upload your CV to start.",
+      "empty": "No profile yet. Drop your CV — AI fills it in.",
       "addCv": "Add a CV",
-      "subtitle": "Different roles, different profiles. One default.",
+      "subtitle": "Different roles need different profiles. One default.",
       "newProfile": "New profile",
       "campaigns": "{count, plural, one {# campaign} other {# campaigns}}",
       "edit": "Edit"
     },
     "upload": {
       "title": "CV",
-      "subtitle": "Upload a PDF or paste a LinkedIn URL. AI will fill the profile automatically.",
+      "subtitle": "Drop a PDF or paste a LinkedIn URL. AI fills the profile in seconds.",
       "idle": "Drop a PDF or pick a file",
       "uploading": "Uploading...",
-      "parsing": "AI is reading the CV...",
+      "parsing": "AI is reading your CV...",
       "done": "Done — review the profile",
       "errorRetry": "Try another file",
       "dropzone": "Drop CV or tap",
@@ -137,7 +137,7 @@
         "upload": "File uploaded",
         "extract": "Extracting text",
         "ai": "AI is analyzing",
-        "profile": "Preparing the profile"
+        "profile": "Preparing your profile"
       },
       "aiHint": "Claude Sonnet 4.5 · pulling experience, stack, languages",
       "sampleFile": "cv.pdf",
@@ -167,17 +167,17 @@
         "checkout": "Review"
       },
       "description": {
-        "category": "Pick a category — sets pricing form",
+        "category": "Pick a category — sets the price formula",
         "roles": "ESCO roles · up to 5",
         "countries": "Where to apply · multi-select",
         "salary": "Minimum monthly salary",
         "stack": "Required tech stack",
         "languages": "Interview languages",
-        "quota": "How many applications · drives price",
+        "quota": "How many applications · sets the price",
         "checkout": "Review and pay"
       },
       "next": "Next",
-      "submit": "To checkout · {amount}",
+      "submit": "Review & launch · {amount}",
       "category": {
         "tech": "IT / Tech",
         "design": "Design",
@@ -225,7 +225,7 @@
       "quota": {
         "label": "Applications quota",
         "hint": "≈ {min}–{max} vacancies reviewed",
-        "priceNote": "Price scales linearly: 200 base + 8 per application"
+        "priceNote": "More applications → more interviews. Base 200 ⭐ + 8 ⭐ each."
       },
       "summary": {
         "title": "Summary",
@@ -250,7 +250,7 @@
       "campaignSummary": "{title} · {count, plural, one {# application} other {# applications}}",
       "totalLabel": "Total amount",
       "methodSection": "Payment method",
-      "pay": "Pay {amount}",
+      "pay": "Launch · {amount}",
       "noteRefund": "After payment the campaign data is frozen. Refunds are not supported in MVP.",
       "method": {
         "stars": "Telegram Stars",
@@ -261,14 +261,14 @@
       }
     },
     "payment": {
-      "processing": "Waiting for\npayment",
+      "processing": "Almost\nthere",
       "processingStars": "Confirm in the Telegram window",
       "processingTon": "Confirm the transaction in your wallet",
       "processingSecure": "SECURE · {provider}",
-      "success": "Paid",
-      "successHint": "Campaign launched. First applications in 2–6 hours.",
+      "success": "You're in",
+      "successHint": "AI is searching now — first replies in 2–6 hours.",
       "fail": "Payment failed",
-      "failHint": "Money was not charged. Try again.",
+      "failHint": "No charge. Give it another shot.",
       "retry": "Retry",
       "openCampaign": "Open campaign",
       "homeCta": "Back to campaigns",
@@ -306,7 +306,7 @@
       "code": "Error code",
       "tryAgain": "Try again",
       "back": "Back home",
-      "hint": "Funds were not charged. The campaign stays in drafts — try again.",
+      "hint": "No charge. Your campaign is in drafts — try again.",
       "defaultTitle": "Something went wrong",
       "defaultHint": "We couldn't load this screen. Try again or go back home.",
       "codeLabel": "error",
@@ -320,7 +320,7 @@
     "defaultName": "Default profile",
     "loading": "Loading profile...",
     "upload": {
-      "label": "✨ AI-fill from CV",
+      "label": "✨ Auto-fill from CV",
       "parsing": "AI is reading your CV...",
       "success": "Done · {filled} / {total} fields filled",
       "error": {

@@ -1,11 +1,11 @@
 {
   "home": {
     "greeting": "Ciao, {name}!",
-    "description": "AI Job Bot ti aiuta a trovare il ruolo giusto — tech, design, marketing e altro.",
+    "description": "Basta copia-incolla del CV per ogni offerta. L'AI lo fa per te — IT, design, marketing e altri 9 settori.",
     "fallbackName": "amico",
     "phaseNote": "Profilo, creazione campagna e pagamenti sono attivi.",
     "cta": {
-      "create_campaign": "Crea una campagna"
+      "create_campaign": "Inizia la ricerca"
     }
   },
   "nav": {
@@ -59,21 +59,21 @@
         "completed": "Completate"
       },
       "empty": {
-        "title": "Nessuna campagna",
-        "hint": "Tocca + per creare la prima."
+        "title": "Niente in corso",
+        "hint": "Tocca + e l'AI inizia a cercare."
       },
       "newCampaign": "Nuova campagna"
     },
     "onboarding": {
-      "headline": "L'AI trova\nofferte.\nTu ricevi\nrisposte.",
-      "description": "Carica il CV — cerchiamo in 12 categorie e ci candidiamo per te. Puoi seguire i progressi in tempo reale.",
+      "headline": "L'AI invia\nle candidature.\nTu fai\ni colloqui.",
+      "description": "Carica il CV. L'AI cerca in 12 settori e si candida — tu pensi solo ai colloqui.",
       "feature": {
         "parse": {
-          "title": "Analisi AI del CV",
-          "subtitle": "PDF o LinkedIn — compiliamo il profilo"
+          "title": "L'AI compila il profilo",
+          "subtitle": "PDF o LinkedIn — in 30 secondi"
         },
         "search": {
-          "title": "Ricerca in 12 categorie",
+          "title": "Ricerca in 12 settori",
           "subtitle": "Tech, Design, Product, Finance..."
         },
         "pay": {
@@ -112,7 +112,7 @@
     "profiles": {
       "title": "Profili",
       "default": "Predefinito",
-      "empty": "Nessun profilo. Carica il CV per iniziare.",
+      "empty": "Nessun profilo. Carica il CV — l'AI lo compila per te.",
       "addCv": "Aggiungi CV",
       "subtitle": "Ruoli diversi, profili diversi. Uno predefinito.",
       "newProfile": "Nuovo profilo",
@@ -121,7 +121,7 @@
     },
     "upload": {
       "title": "CV",
-      "subtitle": "Carica un PDF o incolla un URL LinkedIn. L'AI compilerà il profilo automaticamente.",
+      "subtitle": "Carica un PDF o incolla un link LinkedIn. L'AI compila il profilo in pochi secondi.",
       "idle": "Trascina un PDF o scegli un file",
       "uploading": "Caricamento...",
       "parsing": "L'AI sta leggendo il CV...",
@@ -177,7 +177,7 @@
         "checkout": "Riepilogo e pagamento"
       },
       "next": "Avanti",
-      "submit": "Al pagamento · {amount}",
+      "submit": "Riepilogo e avvio · {amount}",
       "category": {
         "tech": "IT / Tech",
         "design": "Design",
@@ -225,7 +225,7 @@
       "quota": {
         "label": "Quota candidature",
         "hint": "≈ {min}–{max} annunci esaminati",
-        "priceNote": "Prezzo lineare: 200 base + 8 per candidatura"
+        "priceNote": "Più candidature → più colloqui. Base 200 ⭐ + 8 ⭐ ciascuna."
       },
       "summary": {
         "title": "Riepilogo",
@@ -250,7 +250,7 @@
       "campaignSummary": "{title} · {count, plural, one {# candidatura} other {# candidature}}",
       "totalLabel": "Importo totale",
       "methodSection": "Metodo di pagamento",
-      "pay": "Paga {amount}",
+      "pay": "Avvia · {amount}",
       "noteRefund": "Dopo il pagamento i dati della campagna sono congelati. I rimborsi non sono supportati nell'MVP.",
       "method": {
         "stars": "Telegram Stars",
@@ -261,12 +261,12 @@
       }
     },
     "payment": {
-      "processing": "In attesa\ndel pagamento",
+      "processing": "Quasi\nfatto",
       "processingStars": "Conferma nella finestra Telegram",
       "processingTon": "Conferma la transazione nel wallet",
       "processingSecure": "SICURO · {provider}",
-      "success": "Pagato",
-      "successHint": "Campagna avviata. Prime candidature in 2–6 ore.",
+      "success": "Avviato",
+      "successHint": "L'AI sta già lavorando — prime risposte in 2–6 ore.",
       "fail": "Pagamento fallito",
       "failHint": "Nessun addebito. Riprova.",
       "retry": "Riprova",
@@ -320,7 +320,7 @@
     "defaultName": "Profilo predefinito",
     "loading": "Caricamento profilo...",
     "upload": {
-      "label": "✨ Compilazione AI dal CV",
+      "label": "✨ Compila dal CV",
       "parsing": "L'AI sta leggendo il tuo CV...",
       "success": "Fatto · {filled} / {total} campi compilati",
       "error": {

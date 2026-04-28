@@ -1,11 +1,11 @@
 {
   "home": {
     "greeting": "Cześć, {name}!",
-    "description": "AI Job Bot pomaga znaleźć właściwą rolę — IT, design, marketing i więcej.",
+    "description": "Koniec z kopiowaniem CV pod każdą ofertę. AI robi to za ciebie — IT, design, marketing i 9 innych branż.",
     "fallbackName": "przyjacielu",
     "phaseNote": "Profil, kreator kampanii i płatności już działają.",
     "cta": {
-      "create_campaign": "Utwórz kampanię"
+      "create_campaign": "Rozpocznij wyszukiwanie"
     }
   },
   "nav": {
@@ -59,21 +59,21 @@
         "completed": "Zakończone"
       },
       "empty": {
-        "title": "Brak kampanii",
-        "hint": "Naciśnij +, aby utworzyć pierwszą."
+        "title": "Nic nie uruchomione",
+        "hint": "Naciśnij + i AI zacznie szukać."
       },
       "newCampaign": "Nowa kampania"
     },
     "onboarding": {
-      "headline": "AI znajduje\noferty.\nTy dostajesz\nodpowiedzi.",
-      "description": "Wgraj CV — szukamy w 12 kategoriach i aplikujemy za Ciebie. Postępy widzisz na bieżąco.",
+      "headline": "AI wysyła\naplikacje.\nTy chodzisz\nna rozmowy.",
+      "description": "Wgraj CV. AI szuka w 12 branżach i wysyła aplikacje — ty idziesz tylko na rozmowy.",
       "feature": {
         "parse": {
-          "title": "AI analiza CV",
-          "subtitle": "PDF lub LinkedIn — wypełnimy profil"
+          "title": "AI wypełni profil",
+          "subtitle": "PDF lub LinkedIn — w 30 sekund"
         },
         "search": {
-          "title": "Szukamy w 12 kategoriach",
+          "title": "Wyszukiwanie w 12 branżach",
           "subtitle": "Tech, Design, Product, Finance..."
         },
         "pay": {
@@ -81,7 +81,7 @@
           "subtitle": "Bez kart — natywne dla Telegrama"
         }
       },
-      "start": "Rozpocznij"
+      "start": "Zaczynamy"
     },
     "settings": {
       "title": "Ustawienia",
@@ -93,7 +93,7 @@
       "notification": {
         "push": {
           "label": "Push",
-          "description": "Aktualizacje statusu Twoich kampanii"
+          "description": "Aktualizacje statusu twoich kampanii"
         },
         "email": {
           "label": "Email",
@@ -112,7 +112,7 @@
     "profiles": {
       "title": "Profile",
       "default": "Domyślny",
-      "empty": "Brak profili. Wgraj CV, aby zacząć.",
+      "empty": "Brak profilu. Wgraj CV — AI wypełni profil za ciebie.",
       "addCv": "Dodaj CV",
       "subtitle": "Różne role, różne profile. Jeden domyślny.",
       "newProfile": "Nowy profil",
@@ -121,7 +121,7 @@
     },
     "upload": {
       "title": "CV",
-      "subtitle": "Wgraj PDF lub wklej link LinkedIn. AI wypełni profil automatycznie.",
+      "subtitle": "Wgraj PDF lub wklej link LinkedIn. AI wypełni profil w kilka sekund.",
       "idle": "Upuść PDF lub wybierz plik",
       "uploading": "Wgrywanie...",
       "parsing": "AI czyta CV...",
@@ -177,7 +177,7 @@
         "checkout": "Podgląd i płatność"
       },
       "next": "Dalej",
-      "submit": "Do płatności · {amount}",
+      "submit": "Podgląd i uruchom · {amount}",
       "category": {
         "tech": "IT / Tech",
         "design": "Design",
@@ -225,7 +225,7 @@
       "quota": {
         "label": "Limit aplikacji",
         "hint": "≈ {min}–{max} ofert przejrzanych",
-        "priceNote": "Cena liniowa: 200 baza + 8 za aplikację"
+        "priceNote": "Więcej aplikacji → więcej rozmów. Baza 200 ⭐ + 8 ⭐ za każdą."
       },
       "summary": {
         "title": "Podsumowanie",
@@ -250,7 +250,7 @@
       "campaignSummary": "{title} · {count, plural, one {# aplikacja} few {# aplikacje} many {# aplikacji} other {# aplikacji}}",
       "totalLabel": "Kwota do zapłaty",
       "methodSection": "Metoda płatności",
-      "pay": "Zapłać {amount}",
+      "pay": "Uruchom · {amount}",
       "noteRefund": "Po płatności dane kampanii są zamrożone. Zwroty nie są obsługiwane w MVP.",
       "method": {
         "stars": "Telegram Stars",
@@ -261,14 +261,14 @@
       }
     },
     "payment": {
-      "processing": "Czekamy na\npłatność",
+      "processing": "Już\nprawie",
       "processingStars": "Potwierdź w oknie Telegrama",
       "processingTon": "Potwierdź transakcję w portfelu",
       "processingSecure": "BEZPIECZNIE · {provider}",
-      "success": "Opłacone",
-      "successHint": "Kampania uruchomiona. Pierwsze aplikacje za 2–6 godzin.",
+      "success": "Uruchomione",
+      "successHint": "AI już pracuje — pierwsze odpowiedzi za 2–6 godzin.",
       "fail": "Płatność nieudana",
-      "failHint": "Środki nie zostały pobrane. Spróbuj ponownie.",
+      "failHint": "Brak obciążenia. Spróbuj ponownie.",
       "retry": "Ponów",
       "openCampaign": "Otwórz kampanię",
       "homeCta": "Wróć do kampanii",
@@ -306,7 +306,7 @@
       "code": "Kod błędu",
       "tryAgain": "Spróbuj ponownie",
       "back": "Do strony głównej",
-      "hint": "Środki nie zostały pobrane. Kampania pozostała w wersjach roboczych — spróbuj ponownie.",
+      "hint": "Brak obciążenia. Kampania pozostała w wersjach roboczych — spróbuj ponownie.",
       "defaultTitle": "Coś poszło nie tak",
       "defaultHint": "Nie udało się wczytać ekranu. Spróbuj ponownie lub wróć na stronę główną.",
       "codeLabel": "błąd",
@@ -320,8 +320,8 @@
     "defaultName": "Profil domyślny",
     "loading": "Wczytywanie profilu...",
     "upload": {
-      "label": "✨ Wypełnij AI z CV",
-      "parsing": "AI czyta Twoje CV...",
+      "label": "✨ Wypełnij z CV",
+      "parsing": "AI czyta twoje CV...",
       "success": "Gotowe · {filled} / {total} pól wypełnionych",
       "error": {
         "format": "Nie udało się odczytać PDF. Spróbuj inny plik lub wypełnij ręcznie.",
