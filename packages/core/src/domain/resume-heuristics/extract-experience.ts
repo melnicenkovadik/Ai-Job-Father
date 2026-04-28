@@ -1,19 +1,24 @@
 /**
  * Experience extraction from the `experience` section body.
  *
- * MVP strategy — "find the dates, everything else is role/company":
- *   1. Split the section body by blank lines → entry chunks.
- *   2. For each chunk, find a date range (YYYY-MM or YYYY; "present"-aware
- *      in 5 locales for the end date).
- *   3. Strip the dates out of the header line; split the remainder on
- *      " — " / " - " / " at " / " в " / " у ". Assume the longer fragment
- *      is the company, the shorter one is the role (heuristic that holds
- *      on most CVs — ambiguous cases leave the user to swap the two in
- *      the review step).
- *   4. The rest of the entry (lines after the header) becomes `description`.
+ * Real-world resume formats are highly varied. We support these date forms:
+ *   - `2020 - 2024`, `2020-2024`
+ *   - `Jan 2020 - Mar 2024`, `January 2020 - Present`
+ *   - `01/2020 - 03/2024`, `01/2020-Current`
+ *   - `Apr '18 - Apr '20` (LiveCareer-style)
  *
- * Entries without any date are dropped — they're almost certainly not a
- * work row.
+ * Entry-splitting strategy: a line that contains a date range is an "entry
+ * header"; everything between two header lines belongs to the previous entry.
+ * Bullets (•, *, -) are description; non-bullet lines next to the header
+ * are company/location.
+ *
+ * Two common header layouts we handle:
+ *   A.  Role, MM/YYYY - Current
+ *       Company - City, ST
+ *       • bullets
+ *
+ *   B.  Role | Company | MM/YYYY - Current
+ *       • bullets
  */
 
 import type { ExperienceEntry } from '../profile';
@@ -46,9 +51,7 @@ const MONTH_NAMES: Readonly<Record<string, number>> = {
   mar: 3,
   march: 3,
   mars: 3,
-  mar_it: 3,
   marzo: 3,
-  mar_pl: 3,
   marzec: 3,
   мар: 3,
   март: 3,
@@ -57,7 +60,6 @@ const MONTH_NAMES: Readonly<Record<string, number>> = {
   apr: 4,
   april: 4,
   avr: 4,
-  apr_it: 4,
   aprile: 4,
   kwi: 4,
   kwiecień: 4,
@@ -127,14 +129,12 @@ const MONTH_NAMES: Readonly<Record<string, number>> = {
   жовтень: 10,
   nov: 11,
   november: 11,
-  nov_it: 11,
   novembre: 11,
   lis: 11,
   listopad: 11,
   ноя: 11,
   ноябрь: 11,
   лис: 11,
-  листопад: 11,
   dec: 12,
   december: 12,
   déc: 12,
@@ -151,27 +151,55 @@ const MONTH_NAMES: Readonly<Record<string, number>> = {
 const PRESENT_RE =
   /(?<!\p{L})(present|now|current|нині|зараз|настоящее|attuale|obecnie|oggi|teraz)(?!\p{L})/iu;
 
-/** Horizontal whitespace only — never crosses newlines. */
-const HS = '[ \\t]*';
-/** "YYYY" or "YYYY-MM" / "YYYY/MM" / "YYYY.MM". */
-const ISO_DATE = '(?:\\d{4}(?:[-/.]\\d{1,2})?)';
-/** "Jan 2024" / "January 2024" / "Січ 2024" — letters + hspace + year. */
-const MONTH_YEAR = '(?:[A-Za-zА-Яа-яІіЇїЄєҐґ]+\\.?[ \\t]+\\d{4})';
 const PRESENT_TOKEN = '(?:present|now|current|нині|зараз|настоящее|attuale|obecnie|oggi|teraz)';
-const DATE_ALT = `(?:${ISO_DATE}|${MONTH_YEAR})`;
+
+/** A single date token. Order matters — most specific first. */
+const DATE_TOKEN =
+  '(?:' +
+  // MM/YYYY or MM-YYYY or MM.YYYY
+  '\\d{1,2}[\\/.\\-]\\d{4}' +
+  '|' +
+  // YYYY-MM, YYYY/MM, YYYY.MM
+  '\\d{4}[-/.]\\d{1,2}' +
+  '|' +
+  // Mon 'YY  e.g. Apr '18
+  "[A-Za-zА-Яа-яІіЇїЄєҐґ]+\\.?[ \\t]+'\\d{2}" +
+  '|' +
+  // Mon YYYY  e.g. April 2024 / Січ 2024
+  '[A-Za-zА-Яа-яІіЇїЄєҐґ]+\\.?[ \\t]+\\d{4}' +
+  '|' +
+  // Bare YYYY
+  '\\d{4}' +
+  ')';
 
 const DATE_RANGE_RE = new RegExp(
-  `(${DATE_ALT})${HS}[—–-]${HS}(${DATE_ALT}|${PRESENT_TOKEN})`,
+  `(${DATE_TOKEN})[ \\t]*[—–\\-to]+[ \\t]*(${DATE_TOKEN}|${PRESENT_TOKEN})`,
+  'iu',
+);
+/** Two date tokens separated by whitespace only (e.g. "Apr '18 Apr '20", "02/2014 02/2019"). */
+const DATE_RANGE_SPACE_RE = new RegExp(
+  `(${DATE_TOKEN})[ \\t]+(${DATE_TOKEN}|${PRESENT_TOKEN})(?!\\d)`,
   'iu',
 );
 const SINGLE_YEAR_RE = /\b(\d{4})\b/;
 
 /**
- * Recognised separators between company and role on the header line.
- * Order of alternation matters — the widest-match seps come first so `|`
- * (the most common in modern CV templates) wins over the rest.
+ * "Header line" detector — a line is treated as the start of an experience
+ * entry if it contains a date range or a single MM/YYYY anchor.
  */
-const COMPANY_ROLE_SEPS = /\s*\|\s*|\s*[—–]\s*|\s+at\s+|\s+в\s+|\s+у\s+|\s+@\s+/u;
+const HEADER_LINE_RE = new RegExp(
+  `(?:${DATE_TOKEN}[ \\t]*[—–\\-to]+[ \\t]*(?:${DATE_TOKEN}|${PRESENT_TOKEN}))|(?:\\d{1,2}[\\/.\\-]\\d{4})|(?:[A-Za-zА-Яа-яІіЇїЄєҐґ]+\\.?[ \\t]+'\\d{2})`,
+  'iu',
+);
+
+/**
+ * Recognised separators between company and role on the header line.
+ * The hyphen variant requires surrounding whitespace to avoid splitting
+ * compound words like "Mid-Illinois".
+ */
+const COMPANY_ROLE_SEPS = /\s*\|\s*|\s+[—–]\s+|\s+-\s+|\s+at\s+|\s+в\s+|\s+у\s+|\s+@\s+/u;
+
+const BULLET_RE = /^[\s]*[•·*‣◦▪►▶➤]/;
 
 interface DateRange {
   readonly start: string;
@@ -192,34 +220,161 @@ export function extractExperience(experienceBody: string): readonly ExperienceEn
   return out;
 }
 
+/**
+ * Date-anchored splitter: a line that contains a date pattern starts a new entry.
+ * Lines before the first date-line are dropped (preamble).
+ *
+ * Falls back to the legacy blank-line split if no date anchors are found —
+ * preserves correctness for synthetic CVs the unit tests cover.
+ */
 function splitEntries(body: string): string[] {
-  return body
+  // Prefer blank-line splitting when entries are cleanly separated AND every
+  // chunk contains a date anchor. Templates that scatter blank lines mid-entry
+  // (LiveCareer PDFs do this often) fall through to date-anchored splitting.
+  const blankSplit = body
     .split(/\n\s*\n+/)
     .map((s) => s.trim())
     .filter(Boolean);
+  if (blankSplit.length >= 2 && blankSplit.every((c) => HEADER_LINE_RE.test(c))) {
+    return blankSplit;
+  }
+
+  const lines = body.split('\n').map((l) => l.trim());
+
+  const headerIndices: number[] = [];
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    if (line && HEADER_LINE_RE.test(line)) headerIndices.push(i);
+  }
+
+  if (headerIndices.length === 0) {
+    return blankSplit;
+  }
+
+  const chunks: string[] = [];
+  for (let i = 0; i < headerIndices.length; i++) {
+    // For the FIRST entry, include any preamble before the date line — some
+    // CVs put company+role before the date (e.g. "Daimler AG \n Consultant \n
+    // bullets \n 2016-07 - Present"). Including the preamble lets the parser
+    // pick up role/company from those lines.
+    const start = i === 0 ? 0 : (headerIndices[i] as number);
+    const end = (headerIndices[i + 1] ?? lines.length) as number;
+    const chunk = lines
+      .slice(start, end)
+      .filter((l) => l.length > 0)
+      .join('\n');
+    if (chunk) chunks.push(chunk);
+  }
+  return chunks;
 }
 
 function parseExperienceEntry(chunk: string): ExperienceEntry | null {
   const dates = findDateRange(chunk);
   if (!dates) return null;
 
-  const lines = chunk
+  const allLines = chunk
     .split('\n')
     .map((l) => l.trim())
     .filter(Boolean);
-  const firstLine = lines[0] ?? '';
-  const headerWithoutDates = firstLine
+
+  // Find the first bullet — if present, that's the cleanest header/desc split.
+  let bulletStart = allLines.length;
+  for (let i = 0; i < allLines.length; i++) {
+    if (BULLET_RE.test(allLines[i] as string)) {
+      bulletStart = i;
+      break;
+    }
+  }
+
+  // For chunks without bullets, fall back to a sentence-style heuristic: a line
+  // that starts with an action verb, is unusually long, or contains
+  // sentence-ending punctuation looks like a description, not a header.
+  let descCutoff = bulletStart;
+  if (descCutoff === allLines.length) {
+    for (let i = 0; i < allLines.length; i++) {
+      if (looksLikeDescription(allLines[i] as string)) {
+        descCutoff = i;
+        break;
+      }
+    }
+  }
+
+  const headerLines = allLines.slice(0, descCutoff);
+  const descLines = allLines.slice(descCutoff);
+
+  // Date may live on a header line, or sometimes after the bullets in some
+  // formats. We treat header info as everything in headerLines that isn't
+  // itself a date-only line.
+  const nonDateHeaderLines = headerLines.filter((l) => !looksLikeDate(l) && !DATE_RANGE_RE.test(l));
+  const dateLineIdx = headerLines.findIndex((l) => l.includes(dates.rawMatch));
+  const dateLine = (dateLineIdx >= 0 ? headerLines[dateLineIdx] : '') as string;
+  const dateLineRest = dateLine
     .replace(dates.rawMatch, '')
-    .replace(/^[\s—–\-|,()]+|[\s—–\-|,()]+$/g, '')
+    .replace(/^[\s,—–\-|()]+|[\s,—–\-|()]+$/g, '')
     .trim();
 
-  const { company, role } = splitCompanyRole(headerWithoutDates);
-  if (!company || !role) return null;
+  // 1. Try splitting the date line itself: "Role | Company | dates" or "Role at Company"
+  let { company, role } = dateLineRest
+    ? splitCompanyRole(dateLineRest)
+    : ({} as { company?: string; role?: string });
 
-  const descriptionLines = lines.slice(1);
-  const description = descriptionLines.length
-    ? truncate(descriptionLines.join(' '), MAX_DESCRIPTION)
-    : undefined;
+  // 2. If still missing, parse non-date header lines.
+  //    First try splitting each line by company/role separators (`|`, ` — `,
+  //    ` at `, etc.). Fall back to "Company - Location" dash-prefix.
+  if (!company || !role) {
+    for (const other of nonDateHeaderLines) {
+      if (other === dateLine) continue;
+      const split = splitCompanyRole(other);
+      if (split.company && split.role) {
+        if (!company) company = split.company;
+        if (!role) role = split.role;
+      } else {
+        const m = /^(.+?)\s+[—–\-]\s+/.exec(other);
+        const candidate = m?.[1]?.trim() ?? other.trim();
+        if (!company) {
+          company = candidate;
+          if (!role && dateLineRest && !looksLikeDate(dateLineRest)) {
+            role = stripTrailingPunct(dateLineRest);
+          }
+        } else if (!role) {
+          role = candidate;
+        }
+      }
+      if (company && role) break;
+    }
+  }
+
+  // 3. Two-line header: company on one line, role on the other.
+  if ((!company || !role) && nonDateHeaderLines.length >= 2) {
+    const line1 = (nonDateHeaderLines[0] ?? '') as string;
+    const line2 = (nonDateHeaderLines[1] ?? '') as string;
+    if (looksLikeRole(line1) && !looksLikeRole(line2)) {
+      role = role ?? line1;
+      company = company ?? line2;
+    } else if (looksLikeRole(line2) && !looksLikeRole(line1)) {
+      role = role ?? line2;
+      company = company ?? line1;
+    } else {
+      // Fallback: assume company first, role second
+      company = company ?? line1;
+      role = role ?? line2;
+    }
+  }
+
+  // 4. Single non-date line — call it role, company stays unknown.
+  if (!role && nonDateHeaderLines.length === 1) {
+    role = nonDateHeaderLines[0] as string;
+  }
+  // 5. Last resort: date line had a single fragment, that's the role.
+  if (!role && dateLineRest && !looksLikeDate(dateLineRest)) {
+    role = stripTrailingPunct(dateLineRest);
+  }
+
+  if (!company || !role) return null;
+  // Reject obvious garbage
+  if (role.length > 80 || company.length > 100) return null;
+
+  const description = descLines.length ? truncate(descLines.join(' '), MAX_DESCRIPTION) : undefined;
 
   return {
     company,
@@ -231,8 +386,8 @@ function parseExperienceEntry(chunk: string): ExperienceEntry | null {
 }
 
 function findDateRange(chunk: string): DateRange | null {
-  // Scan per-line to keep the match from bleeding across newlines.
   for (const line of chunk.split('\n')) {
+    // 1. Standard "DATE - DATE / Present"
     const rangeMatch = DATE_RANGE_RE.exec(line);
     if (rangeMatch) {
       const [raw, startRaw, endRaw] = rangeMatch;
@@ -241,11 +396,38 @@ function findDateRange(chunk: string): DateRange | null {
       const end = resolveEnd(endRaw ?? '');
       return { start, end, rawMatch: raw };
     }
+    // 2. Whitespace-separated "Apr '18 Apr '20" or "02/2014 02/2019"
+    const spaceMatch = DATE_RANGE_SPACE_RE.exec(line);
+    if (spaceMatch) {
+      const [raw, startRaw, endRaw] = spaceMatch;
+      const start = normalizeDate(startRaw ?? '');
+      if (!start) continue;
+      const end = resolveEnd(endRaw ?? '');
+      // Sanity: end >= start (otherwise it's two unrelated dates)
+      if (end && end < start) continue;
+      return { start, end, rawMatch: raw };
+    }
+    // 3. Single MM/YYYY anchor
+    const single = /\b(\d{1,2})[\/.\-](\d{4})\b/.exec(line);
+    if (single?.[1] && single[2]) {
+      const month = clampMonth(Number.parseInt(single[1], 10));
+      return {
+        start: `${single[2]}-${pad2(month)}`,
+        end: null,
+        rawMatch: single[0],
+      };
+    }
   }
+  // 4. Single Mon 'YY anywhere in the chunk
+  const monApos = /[A-Za-z]+\.?\s+'\d{2}/.exec(chunk);
+  if (monApos?.[0]) {
+    const norm = normalizeDate(monApos[0]);
+    if (norm) return { start: norm, end: null, rawMatch: monApos[0] };
+  }
+  // 5. Single 4-digit year as last resort
   const single = SINGLE_YEAR_RE.exec(chunk);
   if (single?.[1]) {
-    const year = single[1];
-    return { start: `${year}-01`, end: null, rawMatch: single[0] };
+    return { start: `${single[1]}-01`, end: null, rawMatch: single[0] };
   }
   return null;
 }
@@ -258,37 +440,77 @@ function resolveEnd(endRaw: string): string | null {
 function normalizeDate(raw: string): string | null {
   const trimmed = raw.trim().replace(/\s+/g, ' ');
   if (!trimmed) return null;
-  // Year-only "2024"
+
+  // YYYY only
   const yearOnly = /^(\d{4})$/.exec(trimmed);
   if (yearOnly?.[1]) return `${yearOnly[1]}-01`;
-  // ISO "YYYY-MM" or "YYYY/MM" or "YYYY.MM"
-  const iso = /^(\d{4})[-/.](\d{1,2})$/.exec(trimmed);
-  if (iso?.[1] && iso[2]) {
-    const month = Math.min(Math.max(Number.parseInt(iso[2], 10), 1), 12);
-    return `${iso[1]}-${pad2(month)}`;
+
+  // YYYY[-/.]MM
+  const isoYM = /^(\d{4})[-/.](\d{1,2})$/.exec(trimmed);
+  if (isoYM?.[1] && isoYM[2]) {
+    const month = clampMonth(Number.parseInt(isoYM[2], 10));
+    return `${isoYM[1]}-${pad2(month)}`;
   }
-  // "Jan 2024" / "January 2024" / "Січ 2024" etc.
-  const monthYear = /^([A-Za-zА-Яа-яІіЇїЄєҐґ.]+)\s+(\d{4})$/u.exec(trimmed);
-  if (monthYear?.[1] && monthYear[2]) {
-    const monthKey = monthYear[1].toLowerCase().replace(/\.$/, '');
-    const month = lookupMonth(monthKey);
-    if (month) return `${monthYear[2]}-${pad2(month)}`;
-    return `${monthYear[2]}-01`;
+
+  // MM[/.\-]YYYY  (e.g. 01/2013, 03-2009)
+  const mmYy = /^(\d{1,2})[\/.\-](\d{4})$/.exec(trimmed);
+  if (mmYy?.[1] && mmYy[2]) {
+    const month = clampMonth(Number.parseInt(mmYy[1], 10));
+    return `${mmYy[2]}-${pad2(month)}`;
   }
+
+  // Mon 'YY  (e.g. Apr '18)
+  const monAposYy = /^([A-Za-zА-Яа-яІіЇїЄєҐґ.]+)\s+'(\d{2})$/u.exec(trimmed);
+  if (monAposYy?.[1] && monAposYy[2]) {
+    const month = lookupMonth(monAposYy[1].toLowerCase().replace(/\.$/, ''));
+    const yy = Number.parseInt(monAposYy[2], 10);
+    const year = yy < 50 ? 2000 + yy : 1900 + yy;
+    if (month) return `${year}-${pad2(month)}`;
+    return `${year}-01`;
+  }
+
+  // Mon YYYY  (e.g. April 2024)
+  const monYy = /^([A-Za-zА-Яа-яІіЇїЄєҐґ.]+)\s+(\d{4})$/u.exec(trimmed);
+  if (monYy?.[1] && monYy[2]) {
+    const month = lookupMonth(monYy[1].toLowerCase().replace(/\.$/, ''));
+    if (month) return `${monYy[2]}-${pad2(month)}`;
+    return `${monYy[2]}-01`;
+  }
+
   return null;
 }
 
 function lookupMonth(key: string): number | undefined {
-  if (MONTH_NAMES[key] !== undefined) return MONTH_NAMES[key];
-  for (const [k, v] of Object.entries(MONTH_NAMES)) {
-    const bare = k.replace(/_.*$/, '');
-    if (bare === key) return v;
-  }
-  return undefined;
+  return MONTH_NAMES[key];
+}
+
+function clampMonth(n: number): number {
+  if (!Number.isFinite(n)) return 1;
+  return Math.min(Math.max(n, 1), 12);
 }
 
 function pad2(n: number): string {
   return String(n).padStart(2, '0');
+}
+
+function looksLikeDate(s: string): boolean {
+  return DATE_RANGE_RE.test(s) || /^\d{4}$/.test(s) || /^\d{1,2}[\/.\-]\d{4}$/.test(s);
+}
+
+const DESCRIPTION_VERB_RE =
+  /^(developed?|designed?|implemented|created?|managed?|led|worked|built|achieved|maintained|improved|delivered|coordinated|conducted|established|provided|prepared|reviewed|analy[sz]ed|migrated?|integrated|architected|launched|owned|spearheaded|drove|grew|reduced|increased|optimi[sz]ed|automated|deployed|wrote|presented|trained|mentored|supervised|oversaw|streamlined|negotiated|collaborated|championed|engineered|developed)\b/i;
+
+function looksLikeDescription(line: string): boolean {
+  if (BULLET_RE.test(line)) return true;
+  if (line.length > 80) return true;
+  if (DESCRIPTION_VERB_RE.test(line)) return true;
+  // Multiple sentences or a sentence-ending period followed by space.
+  if (/[.!?]\s/.test(line)) return true;
+  return false;
+}
+
+function stripTrailingPunct(s: string): string {
+  return s.replace(/^[\s,—–\-|()]+|[\s,—–\-|()]+$/g, '').trim();
 }
 
 function splitCompanyRole(line: string): { company?: string; role?: string } {
@@ -301,20 +523,18 @@ function splitCompanyRole(line: string): { company?: string; role?: string } {
 
   const first = parts[0] ?? '';
   const second = parts[1] ?? '';
-  // Heuristic: the fragment containing words like "Developer / Engineer / Designer /
-  // Manager" is the role; the other is company.
+  // Heuristic: the fragment containing role keywords wins.
   if (looksLikeRole(first) && !looksLikeRole(second)) {
     return { role: first, company: second };
   }
   if (looksLikeRole(second) && !looksLikeRole(first)) {
     return { company: first, role: second };
   }
-  // Fallback: assume "Company — Role"
   return { company: first, role: second };
 }
 
 const ROLE_KEYWORDS =
-  /\b(developer|engineer|designer|manager|analyst|consultant|architect|director|owner|specialist|lead|head|officer|founder|marketer|scientist|researcher|розроб|інженер|менеджер|дизайн|аналіт|консультант|архітект|керівник|власник|засновник|разработ|аналит|консультант|руководит|sviluppatore|progettista|consulente|analista|direttore|programista|kierownik|projektant|doradca|specjalista)\b/iu;
+  /\b(developer|engineer|designer|manager|analyst|consultant|architect|director|owner|specialist|lead|head|officer|founder|marketer|scientist|researcher|accountant|advisor|admin|administrator|coordinator|associate|assistant|представник|product|programmer|technician|operator|nurse|teacher|professor|sales|representative|executive|intern|trainee|chief|vp|cto|ceo|coo|cfo|розроб|інженер|менеджер|дизайн|аналіт|консультант|архітект|керівник|власник|засновник|разработ|аналит|консультант|руководит|sviluppatore|progettista|consulente|analista|direttore|programista|kierownik|projektant|doradca|specjalista)\b/iu;
 
 function looksLikeRole(fragment: string): boolean {
   return ROLE_KEYWORDS.test(fragment);

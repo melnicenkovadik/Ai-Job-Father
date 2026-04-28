@@ -6,7 +6,7 @@
 
 export * from './parse-text';
 export type { Section, SectionKey } from './section-split';
-export { splitIntoSections, findSectionBody } from './section-split';
+export { splitIntoSections, findSectionBody, findAllSectionBodies } from './section-split';
 export { extractContacts, type ContactInfo } from './extract-contacts';
 export { extractNameHeadlineSummary, type NameHeadlineSummary } from './extract-name';
 export { extractSkills } from './extract-skills';

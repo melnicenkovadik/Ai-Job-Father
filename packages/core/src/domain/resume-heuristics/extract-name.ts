@@ -30,9 +30,50 @@ export function extractNameHeadlineSummary(
 
   const name = findName(lines);
   const headline = findHeadline(lines, name);
-  const summary = summarySection.trim().length > 0 ? truncateSummary(summarySection) : undefined;
+  const summary =
+    summarySection.trim().length > 0
+      ? truncateSummary(summarySection)
+      : findFallbackSummary(lines, name, headline);
 
   return stripUndefined({ fullName: name, headline, summary });
+}
+
+const MIN_FALLBACK_SUMMARY_LENGTH = 80;
+
+/**
+ * If a CV has no explicit "Summary" heading, look for the longest paragraph
+ * in the header block that isn't the name / contact line / one-line headline.
+ * Most templates put a profile blurb right under the contact info — this lets
+ * us catch it without asking the user.
+ */
+function findFallbackSummary(
+  lines: readonly string[],
+  name: string | undefined,
+  headline: string | undefined,
+): string | undefined {
+  let best = '';
+  let buffer: string[] = [];
+  const flush = () => {
+    if (buffer.length === 0) return;
+    const para = buffer.join(' ').replace(/\s+/g, ' ').trim();
+    buffer = [];
+    if (para.length < MIN_FALLBACK_SUMMARY_LENGTH) return;
+    if (para === name || para === headline) return;
+    if (para.length > best.length) best = para;
+  };
+  for (const line of lines) {
+    if (line === name || line === headline) {
+      flush();
+      continue;
+    }
+    if (looksLikeContactLine(line)) {
+      flush();
+      continue;
+    }
+    buffer.push(line);
+  }
+  flush();
+  return best.length > 0 ? truncateSummary(best) : undefined;
 }
 
 function findName(lines: readonly string[]): string | undefined {

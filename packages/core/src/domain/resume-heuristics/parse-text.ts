@@ -17,7 +17,7 @@ import { extractExperience } from './extract-experience';
 import { extractLanguages } from './extract-languages';
 import { extractNameHeadlineSummary } from './extract-name';
 import { extractSkills } from './extract-skills';
-import { findSectionBody, splitIntoSections } from './section-split';
+import { findAllSectionBodies, findSectionBody, splitIntoSections } from './section-split';
 
 export const HEURISTIC_MODEL_ID = 'heuristic-v1';
 
@@ -30,10 +30,10 @@ export function parseResumeText(text: string): ParsedResume {
   const contacts = extractContacts(normalized);
   const { fullName, headline, summary } = extractNameHeadlineSummary(header, summaryBody);
 
-  const skills = extractSkills(findSectionBody(sections, 'skills'));
-  const languages = extractLanguages(findSectionBody(sections, 'languages'));
-  const experience = extractExperience(findSectionBody(sections, 'experience'));
-  const education = extractEducation(findSectionBody(sections, 'education'));
+  const skills = extractSkills(findAllSectionBodies(sections, 'skills'));
+  const languages = extractLanguages(findAllSectionBodies(sections, 'languages'));
+  const experience = extractExperience(findAllSectionBodies(sections, 'experience'));
+  const education = extractEducation(findAllSectionBodies(sections, 'education'));
   const yearsTotal = computeYearsTotal(experience);
   const englishLevel = languages.find((l) => l.code === 'en')?.level;
 
@@ -44,7 +44,7 @@ export function parseResumeText(text: string): ParsedResume {
     linkedinUrl: contacts.linkedinUrl,
     githubUrl: contacts.githubUrl,
     portfolioUrl: contacts.portfolioUrl,
-    location: undefined,
+    location: contacts.location,
     headline,
     summary,
     yearsTotal,

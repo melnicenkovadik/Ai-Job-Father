@@ -38,14 +38,19 @@ const HEADING_MAP: ReadonlyMap<string, SectionKey> = new Map([
   ['summary', 'summary'],
   ['professional summary', 'summary'],
   ['personal summary', 'summary'],
-  ['career summary', 'summary'],
   ['profile', 'summary'],
   ['professional profile', 'summary'],
+  ['personal profile', 'summary'],
+  ['personal statement', 'summary'],
+  ['career summary', 'summary'],
   ['about', 'summary'],
   ['about me', 'summary'],
   ['objective', 'summary'],
   ['career objective', 'summary'],
+  ['career goal', 'summary'],
+  ['career goals', 'summary'],
   ['bio', 'summary'],
+  ['biography', 'summary'],
   ['про себе', 'summary'],
   ['профіль', 'summary'],
   ['короткий опис', 'summary'],
@@ -62,6 +67,24 @@ const HEADING_MAP: ReadonlyMap<string, SectionKey> = new Map([
   ['tech stack', 'skills'],
   ['key skills', 'skills'],
   ['core skills', 'skills'],
+  ['core competencies', 'skills'],
+  ['competencies', 'skills'],
+  ['areas of expertise', 'skills'],
+  ['areas of strength', 'skills'],
+  ['professional skills', 'skills'],
+  ['expertise', 'skills'],
+  ['highlights', 'skills'],
+  ['qualifications', 'skills'],
+  ['key qualifications', 'skills'],
+  ['additional skills', 'skills'],
+  ['proficiencies', 'skills'],
+  ['strengths', 'skills'],
+  ['skill highlights', 'skills'],
+  ['professional forte', 'skills'],
+  ['professional skills & abilities', 'skills'],
+  ['key strengths', 'skills'],
+  ['core qualifications', 'skills'],
+  ['knowledge', 'skills'],
   ['навички', 'skills'],
   ['ключові навички', 'skills'],
   ['технології', 'skills'],
@@ -77,8 +100,24 @@ const HEADING_MAP: ReadonlyMap<string, SectionKey> = new Map([
   ['experience', 'experience'],
   ['work experience', 'experience'],
   ['employment', 'experience'],
+  ['employment history', 'experience'],
   ['professional experience', 'experience'],
   ['work history', 'experience'],
+  ['career history', 'experience'],
+  ['career experience', 'experience'],
+  ['career', 'experience'],
+  ['previous experience', 'experience'],
+  ['relevant experience', 'experience'],
+  ['professional background', 'experience'],
+  ['internship', 'experience'],
+  ['internships', 'experience'],
+  ['internship experience', 'experience'],
+  ['curatorial experience', 'experience'],
+  ['volunteer experience', 'experience'],
+  ['volunteering', 'experience'],
+  ['projects', 'experience'],
+  ['professional projects', 'experience'],
+  ['key projects', 'experience'],
   ['досвід', 'experience'],
   ['досвід роботи', 'experience'],
   ['професійний досвід', 'experience'],
@@ -92,7 +131,25 @@ const HEADING_MAP: ReadonlyMap<string, SectionKey> = new Map([
   ['doświadczenie zawodowe', 'experience'],
   // ---- education ----
   ['education', 'education'],
+  ['educations', 'education'],
   ['academic background', 'education'],
+  ['academic history', 'education'],
+  ['academics', 'education'],
+  ['academic qualifications', 'education'],
+  ['educational background', 'education'],
+  ['educational qualifications', 'education'],
+  ['education and training', 'education'],
+  ['education & training', 'education'],
+  ['training', 'education'],
+  ['training and education', 'education'],
+  ['qualifications and training', 'education'],
+  ['education and certifications', 'education'],
+  ['certifications and education', 'education'],
+  ['licenses and certifications', 'education'],
+  ['licenses & certifications', 'education'],
+  ['certifications', 'education'],
+  ['certificates', 'education'],
+  ['licensure', 'education'],
   ['освіта', 'education'],
   ['навчання', 'education'],
   ['образование', 'education'],
@@ -147,21 +204,38 @@ function matchHeading(line: string): HeadingMatch | null {
   if (/[.;!?]\s|,.*,/.test(line)) return null;
   const normalized = line
     .toLowerCase()
+    // Strip leading bullets / decorative chars: `• employment history`, `▪ skills`,
+    // `> experience` — common in PDFs that bullet-format their section headers.
+    .replace(/^[\s•·*‣◦▪►▶➤>\-–—_]+/, '')
     .replace(/[:\-–—]+$/, '')
     .trim();
+  if (!normalized) return null;
   const direct = HEADING_MAP.get(normalized);
   if (direct) return { key: direct };
-  // Strip common accents / variants ("skills :" vs "skills" etc. already handled).
   return null;
 }
 
 /**
- * Convenience: return the first section body for a given key, or empty string.
- * Useful in extractors that only care about the most relevant section.
+ * Return the first section body for a given key, or empty string.
+ * Useful when only the topmost block matters (summary, header).
  */
 export function findSectionBody(sections: readonly Section[], key: SectionKey): string {
   for (const s of sections) {
     if (s.key === key && s.body.length > 0) return s.body;
   }
   return '';
+}
+
+/**
+ * Merge ALL section bodies for a given key. Useful for skills (CVs often have
+ * multiple skill-like sections: HIGHLIGHTS + SKILLS + CORE COMPETENCIES) and
+ * for experience (some templates split into multiple "Experience" / "Work
+ * History" / "Career" blocks).
+ */
+export function findAllSectionBodies(sections: readonly Section[], key: SectionKey): string {
+  const bodies: string[] = [];
+  for (const s of sections) {
+    if (s.key === key && s.body.length > 0) bodies.push(s.body);
+  }
+  return bodies.join('\n\n');
 }

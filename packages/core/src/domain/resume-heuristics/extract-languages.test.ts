@@ -57,9 +57,15 @@ describe('extractLanguages', () => {
     expect(r).toEqual([{ code: 'en', level: 'C1' }]);
   });
 
-  it('drops entries without a recognisable level', () => {
+  it('falls back to B2 when a language is mentioned without a level', () => {
+    // Real-world resumes often list languages without grading them (esp. in
+    // English-only sections). Defaulting to B2 keeps the entry instead of
+    // dropping it; the user can adjust on the review screen.
     const r = extractLanguages('English is my best, Italian C1');
-    expect(r).toEqual([{ code: 'it', level: 'C1' }]);
+    expect(r).toEqual([
+      { code: 'en', level: 'B2' },
+      { code: 'it', level: 'C1' },
+    ]);
   });
 
   it('returns empty on empty input', () => {

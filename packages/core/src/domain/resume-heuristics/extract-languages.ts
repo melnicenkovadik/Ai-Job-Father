@@ -94,10 +94,16 @@ const BARE_ISO_CODES = new Set([
  * play.
  */
 const CEFR_TOKEN_RE = /(?<!\p{L})([abcABC][12])(?!\p{L})/u;
-const NATIVE_RE = /(?<!\p{L})(native|рідна|родной|родная|madrelingua|ojczysty|mutter)(?!\p{L})/iu;
-const FLUENT_RE = /(?<!\p{L})(fluent|свободно|fluente|biegle|fließend)(?!\p{L})/iu;
-const INTERMEDIATE_RE = /(?<!\p{L})(intermediate|intermedio|средний|середній|średni)(?!\p{L})/iu;
-const BASIC_RE = /(?<!\p{L})(basic|basico|базовый|базова|podstawowy)(?!\p{L})/iu;
+const NATIVE_RE =
+  /(?<!\p{L})(native|bilingual|mother\s*tongue|рідна|родной|родная|madrelingua|ojczysty|mutter)(?!\p{L})/iu;
+const FLUENT_RE =
+  /(?<!\p{L})(fluent|fluency|full\s+professional|свободно|fluente|biegle|fließend)(?!\p{L})/iu;
+const ADVANCED_RE =
+  /(?<!\p{L})(advanced|professional\s+working|negotiated|professional|просунутий|продвинутый|avanzato|zaawansowany)(?!\p{L})/iu;
+const INTERMEDIATE_RE =
+  /(?<!\p{L})(intermediate|conversational|working|intermedio|средний|середній|średni)(?!\p{L})/iu;
+const BASIC_RE =
+  /(?<!\p{L})(basic|beginner|elementary|limited|basico|базовый|базова|podstawowy)(?!\p{L})/iu;
 
 const ENTRY_DELIMITERS = /[,\n•·|;/]+/;
 const MAX_LANGUAGES = 20;
@@ -154,9 +160,12 @@ function resolveLevel(raw: string, lower: string): CefrLevel | undefined {
     if (isCefrLevel(upper)) return upper;
   }
   if (FLUENT_RE.test(lower)) return 'C1';
+  if (ADVANCED_RE.test(lower)) return 'C1';
   if (INTERMEDIATE_RE.test(lower)) return 'B2';
   if (BASIC_RE.test(lower)) return 'A2';
-  return undefined;
+  // Language name found but no level — default to B2 so the entry doesn't
+  // disappear entirely. The user can adjust on the review screen.
+  return 'B2';
 }
 
 function stripBulletPrefix(s: string): string {
