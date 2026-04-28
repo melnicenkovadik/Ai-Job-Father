@@ -65,15 +65,7 @@ export function CheckoutScreen({ campaignId }: CheckoutScreenProps) {
   const ctaAmount = method === 'stars' ? `${starsAmount} ⭐` : `${tonAmount} TON`;
 
   const onPay = () => {
-    if (method === 'ton') {
-      // TON lands in Wave E. Keep the option visible so users see what's
-      // coming, but don't pretend to charge them.
-      if (typeof window !== 'undefined') {
-        window.alert('TON payments arrive in Wave E. Use Stars for now.');
-      }
-      return;
-    }
-    router.push(`/campaign/${campaignId}/payment?method=stars`);
+    router.push(`/campaign/${campaignId}/payment?method=${method}`);
   };
 
   return (

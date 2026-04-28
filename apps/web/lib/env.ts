@@ -22,7 +22,11 @@ export const env = createEnv({
     ANTHROPIC_MODEL: z.string().default('claude-sonnet-4-5'),
     // Phase 3 — ESCO
     ESCO_API_BASE: z.string().url().default('https://ec.europa.eu/esco/api'),
-    // Phase 4 — TON
+    // Phase 4 — TON. Wave E uses TON_NETWORK to pick TonAPI host
+    // (testnet → testnet.tonapi.io, mainnet → tonapi.io). TON_API_KEY is
+    // optional — TonAPI works on the free tier without a key but rate-limits
+    // hard. TON_PAYMENT_RECIPIENT_ADDRESS receives the user's TON; required
+    // at runtime when /api/payments/init is hit with provider=ton.
     TON_API_KEY: z.string().optional(),
     TON_NETWORK: z.enum(['testnet', 'mainnet']).default('testnet'),
     TON_MANIFEST_URL: z.string().url().optional(),

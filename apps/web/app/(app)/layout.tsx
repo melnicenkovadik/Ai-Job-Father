@@ -1,6 +1,7 @@
 import { GlobalErrorBoundary } from '@/components/global-error-boundary';
 import { LoggerBootstrap } from '@/components/logger-bootstrap';
 import { TelegramProvider } from '@/components/telegram/provider';
+import { TonProvider } from '@/components/ton/ton-provider';
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale, getMessages } from 'next-intl/server';
 import type { ReactNode } from 'react';
@@ -24,7 +25,9 @@ export default async function AppLayout({
     <NextIntlClientProvider locale={locale} messages={messages}>
       <GlobalErrorBoundary>
         <LoggerBootstrap />
-        <TelegramProvider>{children}</TelegramProvider>
+        <TelegramProvider>
+          <TonProvider>{children}</TonProvider>
+        </TelegramProvider>
       </GlobalErrorBoundary>
     </NextIntlClientProvider>
   );

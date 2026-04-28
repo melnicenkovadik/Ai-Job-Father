@@ -9,7 +9,12 @@ import { resolveStarsAmount } from '@/lib/payments/stars-amount';
 import { createStarsInvoiceLink } from '@/lib/payments/stars-invoice';
 import { SupabaseCampaignRepo } from '@/lib/supabase/campaign-repo';
 import { requireAuth } from '@/lib/telegram/auth-middleware';
-import { CampaignId } from '@ai-job-bot/core';
+import {
+  type Campaign,
+  CampaignId,
+  DEFAULT_USD_CENTS_PER_TON,
+  usdCentsToTonNano,
+} from '@ai-job-bot/core';
 import { z } from 'zod';
 
 const bodySchema = z.object({
@@ -17,17 +22,17 @@ const bodySchema = z.object({
   provider: z.enum(['stars', 'ton']),
 });
 
+const TON_VALIDITY_SECONDS = 5 * 60;
+
 /**
  * POST /api/payments/init
  *
- * Stars branch:
- *   - validate campaign ownership + status='draft'
- *   - freeze snapshot via campaignRepo.freezeSnapshot (no-op if already set)
- *   - convert USD cents → Stars
- *   - createInvoiceLink with payload `aijb:{campaignId}:{nonce}`
- *   - returns { provider: 'stars', invoiceLink, starsAmount, nonce }
+ * Branches by provider. Both flows freeze the campaign snapshot, generate a
+ * nonce, and return whatever the matching client SDK needs to send a real
+ * payment.
  *
- * TON branch: returns 501 (Wave E).
+ *   stars → returns invoice link the client opens via Telegram.WebApp.openInvoice
+ *   ton   → returns recipient + amountNano + comment for TonConnect sendTransaction
  */
 export const POST = requireAuth(async (req, { user }) => {
   let body: unknown;
@@ -50,13 +55,6 @@ export const POST = requireAuth(async (req, { user }) => {
     );
   }
 
-  if (parsed.data.provider === 'ton') {
-    return Response.json(
-      { error: 'not_implemented', message: 'TON payments land in Wave E' },
-      { status: 501 },
-    );
-  }
-
   const cid = CampaignId.from(parsed.data.campaignId);
   const repo = new SupabaseCampaignRepo();
 
@@ -75,42 +73,21 @@ export const POST = requireAuth(async (req, { user }) => {
       );
     }
 
-    // Freeze snapshot. Idempotent — adapter only writes when status='draft',
-    // and we just checked that. Subsequent retries from the same screen find
-    // the snapshot already in place.
+    // Freeze snapshot. Idempotent — only writes when status='draft', which we
+    // just checked. Retries from the same screen find the snapshot already there.
     const snapshot = campaign.snapshotData ?? buildCampaignSnapshot(campaign);
     const snapHash = hashSnapshot(snapshot);
     if (!campaign.snapshotData) {
       await repo.freezeSnapshot(cid, snapshot, 1);
     }
 
-    const starsAmount = resolveStarsAmount(campaign.priceAmountCents);
     const nonce = generateNonce();
     const payload = encodePayload({ campaignId: cid.value, nonce });
 
-    const invoiceLink = await createStarsInvoiceLink({
-      title: campaign.title,
-      description: `${campaign.quota} applications · ${campaign.category}`,
-      payload,
-      starsAmount,
-    });
-
-    getServerLogger().info({
-      context: 'api/payments.init',
-      message: 'stars invoice created',
-      data: {
-        campaignId: cid.value,
-        starsAmount,
-        snapshotHash: snapHash,
-      },
-    });
-
-    return Response.json({
-      provider: 'stars',
-      invoiceLink,
-      starsAmount,
-      nonce,
-    });
+    if (parsed.data.provider === 'stars') {
+      return await issueStarsInvoice(campaign, payload, nonce, snapHash);
+    }
+    return await issueTonInstructions(campaign, payload, nonce, snapHash);
   } catch (err) {
     getServerLogger().error({
       context: 'api/payments.init',
@@ -121,3 +98,71 @@ export const POST = requireAuth(async (req, { user }) => {
     return Response.json({ error: 'internal', message }, { status: 500 });
   }
 });
+
+async function issueStarsInvoice(
+  campaign: Campaign,
+  payload: string,
+  nonce: string,
+  snapHash: string,
+): Promise<Response> {
+  const starsAmount = resolveStarsAmount(campaign.priceAmountCents);
+  const invoiceLink = await createStarsInvoiceLink({
+    title: campaign.title,
+    description: `${campaign.quota} applications · ${campaign.category}`,
+    payload,
+    starsAmount,
+  });
+  getServerLogger().info({
+    context: 'api/payments.init',
+    message: 'stars invoice created',
+    data: {
+      campaignId: campaign.id.value,
+      starsAmount,
+      snapshotHash: snapHash,
+    },
+  });
+  return Response.json({
+    provider: 'stars',
+    invoiceLink,
+    starsAmount,
+    nonce,
+  });
+}
+
+async function issueTonInstructions(
+  campaign: Campaign,
+  payload: string,
+  nonce: string,
+  snapHash: string,
+): Promise<Response> {
+  if (!env.TON_PAYMENT_RECIPIENT_ADDRESS) {
+    getServerLogger().error({
+      context: 'api/payments.init',
+      message: 'TON_PAYMENT_RECIPIENT_ADDRESS not set',
+      data: { campaignId: campaign.id.value },
+    });
+    return Response.json(
+      { error: 'ton_not_configured', message: 'TON_PAYMENT_RECIPIENT_ADDRESS not set' },
+      { status: 503 },
+    );
+  }
+  const amountNano = usdCentsToTonNano(campaign.priceAmountCents, DEFAULT_USD_CENTS_PER_TON);
+  const validUntil = Math.floor(Date.now() / 1000) + TON_VALIDITY_SECONDS;
+  getServerLogger().info({
+    context: 'api/payments.init',
+    message: 'ton instructions issued',
+    data: {
+      campaignId: campaign.id.value,
+      amountNano: amountNano.toString(),
+      snapshotHash: snapHash,
+    },
+  });
+  return Response.json({
+    provider: 'ton',
+    recipient: env.TON_PAYMENT_RECIPIENT_ADDRESS,
+    amountNano: amountNano.toString(),
+    comment: payload,
+    validUntil,
+    nonce,
+  });
+}

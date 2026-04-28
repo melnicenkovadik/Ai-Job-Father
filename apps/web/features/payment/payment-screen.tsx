@@ -6,6 +6,7 @@ import { Button, FieldRow, Headline, MainButtonBinding } from '@/components/ui';
 import { Screen, Scroll, Stack } from '@/components/ui/layout';
 import { useCampaignQuery } from '@/features/campaigns/use-campaigns';
 import { usePayWithStars } from '@/features/payment/use-payments';
+import { usePayWithTon } from '@/features/payment/use-ton-payment';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
@@ -14,7 +15,6 @@ type Phase = 'processing' | 'success' | 'fail';
 
 interface PaymentScreenProps {
   campaignId: string;
-  /** 'stars' for now; 'ton' will land in Wave E. */
   method?: 'stars' | 'ton';
 }
 
@@ -23,6 +23,7 @@ export function PaymentScreen({ campaignId, method = 'stars' }: PaymentScreenPro
   const router = useRouter();
   const { data: campaign } = useCampaignQuery(campaignId);
   const stars = usePayWithStars();
+  const ton = usePayWithTon();
   const [phase, setPhase] = useState<Phase>('processing');
   const [errorText, setErrorText] = useState<string | null>(null);
   const startedRef = useRef(false);
@@ -31,18 +32,13 @@ export function PaymentScreen({ campaignId, method = 'stars' }: PaymentScreenPro
 
   useEffect(() => {
     if (startedRef.current) return;
-    if (method !== 'stars') {
-      setPhase('fail');
-      setErrorText('TON payments arrive in Wave E.');
-      return;
-    }
     startedRef.current = true;
-    void stars
-      .pay(campaignId)
+    const runner =
+      method === 'ton' ? ton.pay(campaignId).then((res) => res.status) : stars.pay(campaignId);
+    void runner
       .then((status) => {
         if (status === 'paid') setPhase('success');
         else if (status === 'cancelled') {
-          // user dismissed — bounce back to checkout to retry
           router.replace(`/campaign/${campaignId}/checkout`);
         } else {
           setPhase('fail');
@@ -53,7 +49,7 @@ export function PaymentScreen({ campaignId, method = 'stars' }: PaymentScreenPro
         setPhase('fail');
         setErrorText(err.message);
       });
-  }, [method, campaignId, stars, router]);
+  }, [method, campaignId, stars, ton, router]);
 
   if (!campaign) {
     return (

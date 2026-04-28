@@ -24,6 +24,8 @@
     "@t3-oss/env-nextjs": "^0.11.1",
     "@tanstack/react-query": "^5.99.0",
     "@telegram-apps/sdk-react": "^2.0.25",
+    "@ton/core": "^0.63.1",
+    "@tonconnect/ui-react": "^2.4.4",
     "clsx": "^2.1.1",
     "grammy": "^1.42.0",
     "immer": "^10.2.0",
