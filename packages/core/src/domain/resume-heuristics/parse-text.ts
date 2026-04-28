@@ -28,7 +28,11 @@ export function parseResumeText(text: string): ParsedResume {
   const header = findSectionBody(sections, 'header');
   const summaryBody = findSectionBody(sections, 'summary');
   const contacts = extractContacts(normalized);
-  const { fullName, headline, summary } = extractNameHeadlineSummary(header, summaryBody);
+  // If the section-splitter ate the header (e.g. line 0 is a category label
+  // that matches a section heading), fall back to the first 10 lines of the
+  // text so name+headline can still be extracted.
+  const nameHeaderInput = header.length > 30 ? header : firstNonEmptyLines(normalized, 10);
+  const { fullName, headline, summary } = extractNameHeadlineSummary(nameHeaderInput, summaryBody);
 
   const skills = extractSkills(findAllSectionBodies(sections, 'skills'));
   const languages = extractLanguages(findAllSectionBodies(sections, 'languages'));
@@ -87,4 +91,16 @@ function normalize(text: string): string {
     .replace(/\r\n?/g, '\n')
     .replace(/[ \t\u00A0]+/g, ' ')
     .trim();
+}
+
+/** First N non-empty lines. Used as fallback header when section-split ate it. */
+function firstNonEmptyLines(text: string, n: number): string {
+  const out: string[] = [];
+  for (const line of text.split('\n')) {
+    const trimmed = line.trim();
+    if (!trimmed) continue;
+    out.push(trimmed);
+    if (out.length >= n) break;
+  }
+  return out.join('\n');
 }

@@ -308,9 +308,8 @@ function extractLocation(text: string): string | undefined {
 
   // 1. US "City, ST [ZIP]" — most common in this dataset
   const seenUs: string[] = [];
-  let m: RegExpExecArray | null;
   US_LOCATION_RE.lastIndex = 0;
-  while ((m = US_LOCATION_RE.exec(head)) !== null) {
+  for (const m of head.matchAll(US_LOCATION_RE)) {
     const [, city, state, zip] = m;
     if (city && state && US_STATE_CODES.has(state)) {
       seenUs.push(zip ? `${city}, ${state} ${zip}` : `${city}, ${state}`);
@@ -320,7 +319,7 @@ function extractLocation(text: string): string | undefined {
 
   // 2. US "City, FullStateName" → normalize to "City, ST"
   US_FULL_STATE_RE.lastIndex = 0;
-  while ((m = US_FULL_STATE_RE.exec(head)) !== null) {
+  for (const m of head.matchAll(US_FULL_STATE_RE)) {
     const [, city, state] = m;
     if (!city || !state) continue;
     const code = US_STATE_NAMES.get(state.toLowerCase().trim());
@@ -329,7 +328,7 @@ function extractLocation(text: string): string | undefined {
 
   // 3. International "City, Country"
   INTL_LOCATION_RE.lastIndex = 0;
-  while ((m = INTL_LOCATION_RE.exec(head)) !== null) {
+  for (const m of head.matchAll(INTL_LOCATION_RE)) {
     const [, city, country] = m;
     if (!city || !country) continue;
     const ck = country.toLowerCase().trim();
