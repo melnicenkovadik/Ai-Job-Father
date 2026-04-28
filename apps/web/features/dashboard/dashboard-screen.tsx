@@ -8,6 +8,7 @@ import {
   Headline,
   ProgressBar,
   SectionTitle,
+  Spinner,
   StatCard,
   StatusBadge,
 } from '@/components/ui';
@@ -78,6 +79,12 @@ export function DashboardScreen({ greetingName }: DashboardScreenProps) {
           <CampaignList title={t('section.completed')} items={completed} />
         ) : null}
 
+        {isLoading ? (
+          <Stack gap={2} className="items-center px-4 py-10 text-center">
+            <Spinner size={20} />
+            <p className="text-[13px] text-[var(--color-text-dim)]">{t('loading')}</p>
+          </Stack>
+        ) : null}
         {!isLoading && list.length === 0 ? (
           <div className="px-4 py-12 text-center">
             <p className="text-[16px] font-semibold text-[var(--color-text)]">{t('empty.title')}</p>

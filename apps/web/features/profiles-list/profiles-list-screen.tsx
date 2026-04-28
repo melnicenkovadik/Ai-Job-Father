@@ -2,7 +2,7 @@
 
 import { Icon } from '@/components/icons';
 import { useTelegramBackButton } from '@/components/telegram/use-back-button';
-import { Headline, MainButtonBinding } from '@/components/ui';
+import { Headline, MainButtonBinding, Spinner } from '@/components/ui';
 import { Screen, Scroll, Stack } from '@/components/ui/layout';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
@@ -24,6 +24,12 @@ export function ProfilesListScreen() {
             <p className="text-[13px] text-[var(--color-text-dim)]">{t('subtitle')}</p>
           </Stack>
 
+          {isLoading ? (
+            <Stack gap={2} className="items-center px-6 py-10 text-center">
+              <Spinner size={20} />
+              <p className="text-[13px] text-[var(--color-text-dim)]">{t('loading')}</p>
+            </Stack>
+          ) : null}
           {!isLoading && list.length === 0 ? (
             <p className="rounded-[var(--radius-md)] border border-dashed border-[var(--color-border)] px-3 py-6 text-center text-[13px] text-[var(--color-text-mute)]">
               {t('empty')}

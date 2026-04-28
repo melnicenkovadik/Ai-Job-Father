@@ -6,6 +6,7 @@ import {
   Headline,
   ProgressBar,
   SectionTitle,
+  Spinner,
   StatCard,
   StatusBadge,
   TimelineItem,
@@ -45,8 +46,9 @@ export function CampaignDetailScreen({ campaignId }: CampaignDetailScreenProps) 
     return (
       <Screen>
         <Scroll className="flex-1">
-          <Stack gap={2} className="px-6 py-12 text-center">
-            <p className="text-[14px] text-[var(--color-text-dim)]">…</p>
+          <Stack gap={2} className="items-center px-6 py-12 text-center">
+            <Spinner size={20} />
+            <p className="text-[14px] text-[var(--color-text-dim)]">{t('loading')}</p>
           </Stack>
         </Scroll>
       </Screen>
