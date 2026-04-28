@@ -88,6 +88,10 @@ function parseMonth(ym: string): Date | null {
 
 function normalize(text: string): string {
   return text
+    // Postgres `text` columns reject U+0000; some PDF extractors emit them.
+    // Strip nulls and other C0 control bytes (except \t, \n, \r) before any
+    // downstream consumer can copy them into a Profile field.
+    .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '')
     .replace(/\r\n?/g, '\n')
     .replace(/[ \t\u00A0]+/g, ' ')
     .trim();

@@ -11,12 +11,18 @@ import { z } from 'zod';
  * promote to `packages/core/src/domain/profile-schema.ts`.
  */
 
+/**
+ * Strip C0 control bytes (incl. NUL — Postgres `text` rejects U+0000 with
+ * SQLSTATE 22P05). Applied as a top-level transform on every string field
+ * so the API can't ever try to write a polluted value to Supabase, even if
+ * something upstream slipped through (PDF leak, AI output, manual paste).
+ */
+const C0 = /[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g;
+const sanitizeString = z.string().transform((s) => s.replace(C0, ''));
+
 const optionalString = (min = 0, max = 200) =>
-  z
-    .string()
-    .trim()
-    .min(min)
-    .max(max)
+  sanitizeString
+    .pipe(z.string().trim().min(min).max(max))
     .optional()
     .or(z.literal('').transform(() => undefined));
 
@@ -65,27 +71,32 @@ const endMonthSchema = z.union([z.string(), z.null()]).transform((raw, ctx) => {
 });
 
 const skill = z.object({
-  name: z
-    .string()
-    .trim()
-    .min(1)
-    .transform((s) => s.slice(0, 80)),
+  name: sanitizeString.pipe(
+    z
+      .string()
+      .trim()
+      .min(1)
+      .transform((s) => s.slice(0, 80)),
+  ),
   years: z.number().int().min(0).max(30).optional(),
   level: cefrLevel.optional(),
 });
 
 const experienceEntry = z.object({
-  company: z.string().trim().min(1).max(120),
-  role: z.string().trim().min(1).max(120),
+  company: sanitizeString.pipe(z.string().trim().min(1).max(120)),
+  role: sanitizeString.pipe(z.string().trim().min(1).max(120)),
   startMonth: monthSchema,
   endMonth: endMonthSchema,
-  description: z.string().max(4000).optional(),
-  stack: z.array(z.string().trim().min(1).max(80)).max(50).optional(),
+  description: sanitizeString.pipe(z.string().max(4000)).optional(),
+  stack: z
+    .array(sanitizeString.pipe(z.string().trim().min(1).max(80)))
+    .max(50)
+    .optional(),
 });
 
 const educationEntry = z.object({
-  school: z.string().trim().min(1).max(160),
-  degree: z.string().trim().max(200).optional(),
+  school: sanitizeString.pipe(z.string().trim().min(1).max(160)),
+  degree: sanitizeString.pipe(z.string().trim().max(200)).optional(),
   startMonth: monthSchema.optional(),
   endMonth: monthSchema.optional(),
 });
@@ -99,14 +110,12 @@ const languageEntry = z.object({
 });
 
 export const profileDraftSchema = z.object({
-  name: z.string().trim().min(1).max(40),
+  name: sanitizeString.pipe(z.string().trim().min(1).max(40)),
   isDefault: z.boolean().optional(),
   preferredCategories: z.array(z.enum(JOB_CATEGORIES)).max(12).optional(),
   fullName: optionalString(0, 120),
-  email: z
-    .string()
-    .email()
-    .max(200)
+  email: sanitizeString
+    .pipe(z.string().email().max(200))
     .optional()
     .or(z.literal('').transform(() => undefined)),
   phone: optionalString(0, 60),
@@ -118,9 +127,8 @@ export const profileDraftSchema = z.object({
   twitterUrl: optionalString(0, 500),
   portfolioUrl: optionalString(0, 500),
   headline: optionalString(0, 120),
-  summary: z
-    .string()
-    .max(2000)
+  summary: sanitizeString
+    .pipe(z.string().max(2000))
     .optional()
     .or(z.literal('').transform(() => undefined)),
   yearsTotal: z.number().int().min(0).max(80).optional(),

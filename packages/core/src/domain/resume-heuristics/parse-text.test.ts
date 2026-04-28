@@ -143,3 +143,45 @@ describe('parseResumeText — empty input', () => {
     expect(r.yearsTotal).toBeUndefined();
   });
 });
+
+describe('parseResumeText — null-byte sanitisation', () => {
+  // Some PDFs (and unpdf in particular) leak NUL / C0 control bytes into
+  // extracted text. Postgres `text` columns reject U+0000 with code 22P05
+  // (untranslatable_character), so the parser must strip them before its
+  // output ever reaches the DB. Without this, profile save returns 500.
+  const NUL = String.fromCharCode(0);
+  const BEL = String.fromCharCode(7);
+  const polluted = [
+    `Vadym${NUL} Melnychenko`,
+    `Senior Frontend${BEL} Developer`,
+    '',
+    'Skills',
+    `React${NUL}, TypeScript, Tailwind`,
+  ].join('\n');
+
+  const r = parseResumeText(polluted);
+
+  it('strips null bytes from the parsed name', () => {
+    expect(r.fullName).toBe('Vadym Melnychenko');
+    expect(r.fullName).not.toContain(NUL);
+  });
+
+  it('strips C0 control bytes from headline', () => {
+    expect(r.headline).toBe('Senior Frontend Developer');
+    expect(r.headline).not.toContain(BEL);
+  });
+
+  it('strips null bytes from skill names', () => {
+    expect(r.skills.find((s) => s.name === 'React')).toBeDefined();
+    expect(r.skills.find((s) => s.name === 'TypeScript')).toBeDefined();
+    for (const s of r.skills) {
+      expect(s.name).not.toContain(NUL);
+      expect(s.name).not.toContain(BEL);
+    }
+  });
+
+  it('output is safe to JSON-stringify without escaped NULs', () => {
+    const json = JSON.stringify(r);
+    expect(json).not.toContain('\\u0000');
+  });
+});
