@@ -5,12 +5,17 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { useShallow } from 'zustand/shallow';
 
+export type ExperienceLevel = 'junior' | 'mid' | 'senior' | 'lead';
+
 export interface WizardDraft {
   profileId?: string;
   category?: JobCategory;
   roles: string[];
   countries: string[];
+  /** Salary range in USD. salaryMin is required to advance the salary step. */
   salaryMin?: number;
+  salaryMax?: number;
+  experienceLevel?: ExperienceLevel;
   salaryCurrency: 'STARS' | 'TON' | 'USD';
   stack: string[];
   languages: string[];
@@ -43,7 +48,7 @@ interface WizardState {
  * drafts on shape changes (cheap migration since the wizard only takes a
  * minute to fill out).
  */
-export const WIZARD_STORAGE_VERSION = 1;
+export const WIZARD_STORAGE_VERSION = 2;
 
 export const useWizardStore = create<WizardState>()(
   persist(
