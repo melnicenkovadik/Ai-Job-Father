@@ -5,6 +5,11 @@ import { Headline, MainButtonBinding, WizardProgress } from '@/components/ui';
 import { Screen, Scroll, Stack } from '@/components/ui/layout';
 import { useCreateCampaign } from '@/features/campaigns/use-campaigns';
 import { useProfilesQuery } from '@/features/profiles-list/use-profiles';
+import {
+  STEP_KEYS as BASE_STEP_KEYS,
+  type StepKey,
+  canStepAdvance,
+} from '@/features/wizard/can-step-advance';
 import { categoryNeedsStack } from '@/features/wizard/data/category-stack';
 import { type Complexity, priceCampaign } from '@ai-job-bot/core';
 import { useTranslations } from 'next-intl';
@@ -19,19 +24,6 @@ import { StepRoles } from './steps/step-roles';
 import { StepSalary } from './steps/step-salary';
 import { StepStack } from './steps/step-stack';
 import { StepSummary } from './steps/step-summary';
-
-const BASE_STEP_KEYS = [
-  'category',
-  'roles',
-  'countries',
-  'salary',
-  'stack',
-  'languages',
-  'quota',
-  'checkout',
-] as const;
-
-type StepKey = (typeof BASE_STEP_KEYS)[number];
 
 const CATEGORY_FALLBACK_TITLE: Record<string, string> = {
   tech: 'Tech Specialist',
@@ -236,49 +228,6 @@ function StepBody({
       return <StepSummary stepIndex={stepIndices} onEdit={onJump} />;
     default:
       return null;
-  }
-}
-
-/**
- * Per-step gate. The MainButton is disabled when this returns false; the
- * whole point is that NO step can be skipped with empty required fields.
- *
- * - category: must pick one of the 12.
- * - roles: ≥ 1 role.
- * - countries: ≥ 1 country code.
- * - salary: salaryMin must be set and ≥ 400; salaryMax ≥ salaryMin.
- * - stack: only required when categoryNeedsStack — non-tech skips this step.
- * - languages: ≥ 1 language for the interview funnel.
- * - quota: must be 10..100 (range covers the slider min/max).
- * - checkout: category set (precondition for pricing); profile existence is
- *   checked separately so the user sees a "no profile" warning rather than a
- *   silent disabled button.
- */
-function canStepAdvance(stepKey: StepKey, draft: WizardDraft): boolean {
-  switch (stepKey) {
-    case 'category':
-      return Boolean(draft.category);
-    case 'roles':
-      return draft.roles.length > 0;
-    case 'countries':
-      return draft.countries.length > 0;
-    case 'salary':
-      return (
-        draft.salaryMin !== undefined &&
-        draft.salaryMax !== undefined &&
-        draft.salaryMin >= 400 &&
-        draft.salaryMax >= draft.salaryMin
-      );
-    case 'stack':
-      return draft.stack.length > 0;
-    case 'languages':
-      return draft.languages.length > 0;
-    case 'quota':
-      return draft.quota >= 10 && draft.quota <= 100;
-    case 'checkout':
-      return Boolean(draft.category);
-    default:
-      return false;
   }
 }
 
