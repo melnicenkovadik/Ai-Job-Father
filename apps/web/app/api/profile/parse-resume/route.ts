@@ -26,29 +26,55 @@ import {
 const MAX_PDF_BYTES = 10 * 1024 * 1024;
 
 export const POST = requireAuth(async (req, { user }) => {
+  const log = getServerLogger();
+  log.info({ context: 'api/profile/parse-resume', message: 'route hit' });
+
   let form: FormData;
   try {
     form = await req.formData();
   } catch {
+    log.warn({ context: 'api/profile/parse-resume', message: 'invalid_multipart' });
     return Response.json({ error: 'invalid_multipart' }, { status: 400 });
   }
 
   const file = form.get('file');
   if (!(file instanceof File)) {
+    log.warn({ context: 'api/profile/parse-resume', message: 'missing_file' });
     return Response.json({ error: 'missing_file' }, { status: 400 });
   }
   if (file.size === 0) {
+    log.warn({
+      context: 'api/profile/parse-resume',
+      message: 'empty_file',
+      data: { name: file.name },
+    });
     return Response.json({ error: 'empty_file' }, { status: 400 });
   }
   if (file.size > MAX_PDF_BYTES) {
+    log.warn({
+      context: 'api/profile/parse-resume',
+      message: 'file_too_large',
+      data: { name: file.name, size: file.size, limit: MAX_PDF_BYTES },
+    });
     return Response.json(
       { error: 'file_too_large', limit: MAX_PDF_BYTES, size: file.size },
       { status: 413 },
     );
   }
   if (file.type && file.type !== 'application/pdf') {
+    log.warn({
+      context: 'api/profile/parse-resume',
+      message: 'invalid_mime',
+      data: { mime: file.type },
+    });
     return Response.json({ error: 'invalid_mime', mime: file.type }, { status: 415 });
   }
+
+  log.info({
+    context: 'api/profile/parse-resume',
+    message: 'file received',
+    data: { name: file.name, size: file.size, mime: file.type },
+  });
 
   const bytes = new Uint8Array(await file.arrayBuffer());
   const input = {
@@ -59,7 +85,20 @@ export const POST = requireAuth(async (req, { user }) => {
 
   const parser = createHeuristicResumeParser();
   try {
+    log.info({ context: 'api/profile/parse-resume', message: 'heuristic parser invoked' });
+    const startedAt = Date.now();
     const parsed = await parser.parse(input);
+    log.info({
+      context: 'api/profile/parse-resume',
+      message: 'parsed',
+      data: {
+        durationMs: Date.now() - startedAt,
+        skills: parsed.skills?.length ?? 0,
+        experience: parsed.experience?.length ?? 0,
+        education: parsed.education?.length ?? 0,
+        languages: parsed.languages?.length ?? 0,
+      },
+    });
     return Response.json({ ...parsed, parser: 'heuristic' });
   } catch (err) {
     return mapParserError(err);

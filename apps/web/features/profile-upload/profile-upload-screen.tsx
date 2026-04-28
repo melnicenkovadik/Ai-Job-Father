@@ -213,16 +213,6 @@ export function ProfileUploadScreen({
                 </span>
               </button>
               <p className="text-center text-[12px] text-[var(--color-text-mute)]">{t('aiNote')}</p>
-
-              <label className="flex min-w-0 items-center gap-2.5 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3.5 py-3 focus-within:border-[var(--color-accent)]">
-                <Icon.Globe size={18} className="shrink-0 text-[var(--color-text-dim)]" />
-                <input
-                  type="url"
-                  placeholder={t('linkedinPlaceholder')}
-                  className="min-w-0 flex-1 bg-transparent text-[14px] text-[var(--color-text)] placeholder:text-[var(--color-text-mute)] focus:outline-none"
-                  aria-label={t('linkedinPlaceholder')}
-                />
-              </label>
             </>
           ) : null}
 
@@ -268,7 +258,9 @@ export function ProfileUploadScreen({
               {phase === 'parsing' ? (
                 <div className="mt-4 flex min-w-0 items-center gap-2 rounded-[var(--radius-md)] bg-[var(--color-accent-bg)] px-3 py-2.5 text-[12px] text-[var(--color-accent)]">
                   <Icon.Spark size={14} className="shrink-0" />
-                  <span className="min-w-0">{t('aiHint')}</span>
+                  <span className="min-w-0">
+                    {parseMode === 'ai' ? t('aiHint') : t('heuristicHint')}
+                  </span>
                 </div>
               ) : null}
             </div>

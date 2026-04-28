@@ -121,7 +121,7 @@
     },
     "upload": {
       "title": "CV",
-      "subtitle": "Drop a PDF or paste a LinkedIn URL. AI fills the profile in seconds.",
+      "subtitle": "Drop a PDF — we extract experience, stack and languages automatically.",
       "idle": "Drop a PDF or pick a file",
       "uploading": "Uploading...",
       "parsing": "AI is reading your CV...",
@@ -130,7 +130,6 @@
       "dropzone": "Drop CV or tap",
       "fileTypes": "PDF · up to 10 MB",
       "orSeparator": "or",
-      "linkedinPlaceholder": "linkedin.com/in/...",
       "mainCta": "Upload CV",
       "aiButton": "Parse with AI · {amount} ⭐",
       "aiNote": "Higher accuracy than the free parser. One-time charge.",
@@ -140,7 +139,7 @@
       "step": {
         "upload": "File uploaded",
         "extract": "Extracting text",
-        "ai": "AI is analyzing",
+        "ai": "Analyzing structure",
         "profile": "Preparing your profile"
       },
       "aiHint": "Claude Sonnet 4.5 · pulling experience, stack, languages",
@@ -155,7 +154,8 @@
         "rate_limit": "Too many uploads — try again in a moment.",
         "unavailable": "AI is offline. Try again in a minute.",
         "internal": "Something went wrong. We're looking into it."
-      }
+      },
+      "heuristicHint": "Reading PDF · extracting experience, stack, languages"
     },
     "wizard": {
       "title": "New campaign",

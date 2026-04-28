@@ -121,7 +121,7 @@
     },
     "upload": {
       "title": "CV",
-      "subtitle": "Carica un PDF o incolla un link LinkedIn. L'AI compila il profilo in pochi secondi.",
+      "subtitle": "Carica un PDF — estraiamo esperienza, stack e lingue in automatico.",
       "idle": "Trascina un PDF o scegli un file",
       "uploading": "Caricamento...",
       "parsing": "L'AI sta leggendo il CV...",
@@ -130,7 +130,6 @@
       "dropzone": "Trascina il CV o tocca",
       "fileTypes": "PDF · fino a 10 MB",
       "orSeparator": "oppure",
-      "linkedinPlaceholder": "linkedin.com/in/...",
       "mainCta": "Carica CV",
       "aiButton": "Analizza con AI · {amount} ⭐",
       "aiNote": "Più preciso del parser gratuito. Una tantum.",
@@ -140,7 +139,7 @@
       "step": {
         "upload": "File caricato",
         "extract": "Estrazione testo",
-        "ai": "Analisi AI",
+        "ai": "Analisi struttura",
         "profile": "Preparazione profilo"
       },
       "aiHint": "Claude Sonnet 4.5 · esperienza, stack, lingue",
@@ -155,7 +154,8 @@
         "rate_limit": "Troppe operazioni — riprova tra poco.",
         "unavailable": "AI non disponibile. Riprova tra un minuto.",
         "internal": "Qualcosa è andato storto. Stiamo indagando."
-      }
+      },
+      "heuristicHint": "Lettura PDF · esperienza, stack, lingue"
     },
     "wizard": {
       "title": "Nuova campagna",
