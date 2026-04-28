@@ -34,11 +34,13 @@ export const env = createEnv({
     // Phase 7 — Observability
     SENTRY_DSN: z.string().optional(),
     SENTRY_AUTH_TOKEN: z.string().optional(),
-    // Test-mode override for Stars invoices. When set to a positive integer,
-    // /api/payments/init and the bot's pre_checkout_query both use this Stars
-    // amount instead of the canonical priceCampaign-derived figure. Use for
-    // single-Star verification runs without paying full price; unset in normal
-    // production to fall back to the real conversion.
+    // Test-mode toggle for Stars invoices. When set to "true" or "1", every
+    // Stars invoice charges exactly 1 ⭐ regardless of the campaign price.
+    // Highest-priority override — beats STARS_TEST_AMOUNT.
+    STARS_TEST_MODE: z.string().optional(),
+    // Numeric override for Stars invoices. When set to a positive integer,
+    // every invoice charges that many Stars. Used when you want a fixed
+    // non-1 amount (e.g. 3 ⭐) for tests. Ignored if STARS_TEST_MODE is on.
     STARS_TEST_AMOUNT: z.coerce.number().int().positive().optional(),
   },
   client: {
@@ -75,6 +77,7 @@ export const env = createEnv({
     TON_PAYMENT_RECIPIENT_ADDRESS: process.env.TON_PAYMENT_RECIPIENT_ADDRESS,
     SENTRY_DSN: process.env.SENTRY_DSN,
     SENTRY_AUTH_TOKEN: process.env.SENTRY_AUTH_TOKEN,
+    STARS_TEST_MODE: process.env.STARS_TEST_MODE,
     STARS_TEST_AMOUNT: process.env.STARS_TEST_AMOUNT,
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
     NEXT_PUBLIC_MINI_APP_URL: process.env.NEXT_PUBLIC_MINI_APP_URL,
