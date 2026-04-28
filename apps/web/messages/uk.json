@@ -62,7 +62,8 @@
         "title": "Поки тихо",
         "hint": "Тисни + і AI почне шукати."
       },
-      "newCampaign": "Нова кампанія"
+      "newCampaign": "Нова кампанія",
+      "loading": "Завантажуємо кампанії…"
     },
     "onboarding": {
       "headline": "AI шле\nвідгуки.\nТи ходиш\nна співбесіди.",
@@ -118,7 +119,8 @@
       "subtitle": "Різні ролі — різні профілі. Один за замовчуванням.",
       "newProfile": "Новий профіль",
       "campaigns": "{count, plural, one {# кампанія} few {# кампанії} many {# кампаній} other {# кампанії}}",
-      "edit": "Редагувати"
+      "edit": "Редагувати",
+      "loading": "Завантажуємо профілі…"
     },
     "upload": {
       "title": "CV",
@@ -366,7 +368,8 @@
       "empty": "Подій поки немає.",
       "status": {
         "appliedSent": "Відгуків надіслано"
-      }
+      },
+      "loading": "Завантажуємо кампанію…"
     },
     "error": {
       "title": "Платіж\nне пройшов",
@@ -459,7 +462,14 @@
       "noEducation": "Освіту поки не вказано."
     },
     "validation": {
-      "nameRequired": "Назва профілю обов'язкова."
+      "nameRequired": "Назва профілю обов'язкова.",
+      "invalidEmail": "Не схоже на email.",
+      "invalidPhone": "Номер телефону виглядає некоректно.",
+      "invalidUrl": "Має починатись з http:// чи https://",
+      "notLinkedin": "Треба URL з linkedin.com",
+      "notGithub": "Треба URL з github.com",
+      "tooLong": "Занадто довго.",
+      "required": "Обов'язкове поле."
     },
     "save": {
       "success": "Профіль збережено.",

@@ -62,7 +62,8 @@
         "title": "Пока тихо",
         "hint": "Жми + и AI начнёт искать."
       },
-      "newCampaign": "Новая кампания"
+      "newCampaign": "Новая кампания",
+      "loading": "Загружаем кампании…"
     },
     "onboarding": {
       "headline": "AI шлёт\nотклики.\nТы ходишь\nна собесы.",
@@ -118,7 +119,8 @@
       "subtitle": "Разные роли — разные профили. Один по умолчанию.",
       "newProfile": "Новый профиль",
       "campaigns": "{count, plural, one {# кампания} few {# кампании} many {# кампаний} other {# кампании}}",
-      "edit": "Изменить"
+      "edit": "Изменить",
+      "loading": "Загружаем профили…"
     },
     "upload": {
       "title": "CV",
@@ -366,7 +368,8 @@
       "empty": "Событий пока нет.",
       "status": {
         "appliedSent": "Откликов отправлено"
-      }
+      },
+      "loading": "Загружаем кампанию…"
     },
     "error": {
       "title": "Платёж\nне прошёл",
@@ -459,7 +462,14 @@
       "noEducation": "Образование пока не указано."
     },
     "validation": {
-      "nameRequired": "Название профиля обязательно."
+      "nameRequired": "Название профиля обязательно.",
+      "invalidEmail": "Не похоже на email.",
+      "invalidPhone": "Номер телефона выглядит некорректно.",
+      "invalidUrl": "Должно начинаться с http:// или https://",
+      "notLinkedin": "Должен быть URL c linkedin.com",
+      "notGithub": "Должен быть URL c github.com",
+      "tooLong": "Слишком длинно.",
+      "required": "Обязательное поле."
     },
     "save": {
       "success": "Профиль сохранён.",

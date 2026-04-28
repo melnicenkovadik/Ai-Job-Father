@@ -62,7 +62,8 @@
         "title": "Niente in corso",
         "hint": "Tocca + e l'AI inizia a cercare."
       },
-      "newCampaign": "Nuova campagna"
+      "newCampaign": "Nuova campagna",
+      "loading": "Caricamento campagne…"
     },
     "onboarding": {
       "headline": "L'AI invia\nle candidature.\nTu fai\ni colloqui.",
@@ -118,7 +119,8 @@
       "subtitle": "Ruoli diversi, profili diversi. Uno predefinito.",
       "newProfile": "Nuovo profilo",
       "campaigns": "{count, plural, one {# campagna} other {# campagne}}",
-      "edit": "Modifica"
+      "edit": "Modifica",
+      "loading": "Caricamento profili…"
     },
     "upload": {
       "title": "CV",
@@ -366,7 +368,8 @@
       "empty": "Nessun evento.",
       "status": {
         "appliedSent": "Candidature inviate"
-      }
+      },
+      "loading": "Caricamento campagna…"
     },
     "error": {
       "title": "Pagamento\nnon completato",
@@ -459,7 +462,14 @@
       "noEducation": "Nessuna formazione."
     },
     "validation": {
-      "nameRequired": "Il nome del profilo è obbligatorio."
+      "nameRequired": "Il nome del profilo è obbligatorio.",
+      "invalidEmail": "Non sembra un email valido.",
+      "invalidPhone": "Numero di telefono non valido.",
+      "invalidUrl": "Deve iniziare con http:// o https://",
+      "notLinkedin": "Serve un URL di linkedin.com",
+      "notGithub": "Serve un URL di github.com",
+      "tooLong": "Troppo lungo.",
+      "required": "Obbligatorio."
     },
     "save": {
       "success": "Profilo salvato.",

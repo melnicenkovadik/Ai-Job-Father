@@ -1,5 +1,12 @@
 'use client';
 
+import {
+  validateEmail,
+  validateGithubUrl,
+  validateLinkedinUrl,
+  validatePhone,
+  validateUrl,
+} from '@/lib/forms/validators';
 import type { ProfileDto } from '@/lib/profile/schema';
 import { useCallback, useMemo, useState } from 'react';
 import { type ProfileDraft, dtoToDraft } from './types';
@@ -35,7 +42,22 @@ export function useProfileDraft(initialDto: ProfileDto | null): UseProfileDraftR
   }, [initialDraft]);
 
   const isDirty = useMemo(() => !draftsEqual(draft, initialDraft), [draft, initialDraft]);
-  const isValid = useMemo(() => draft.name.trim().length > 0, [draft.name]);
+  const isValid = useMemo(() => {
+    if (draft.name.trim().length === 0) return false;
+    if (validateEmail(draft.email) !== undefined) return false;
+    if (validatePhone(draft.phone) !== undefined) return false;
+    if (validateLinkedinUrl(draft.linkedinUrl) !== undefined) return false;
+    if (validateGithubUrl(draft.githubUrl) !== undefined) return false;
+    if (validateUrl(draft.portfolioUrl) !== undefined) return false;
+    return true;
+  }, [
+    draft.name,
+    draft.email,
+    draft.phone,
+    draft.linkedinUrl,
+    draft.githubUrl,
+    draft.portfolioUrl,
+  ]);
 
   return { draft, setDraft, replace, patch, reset, discard, isDirty, isValid };
 }
