@@ -1,13 +1,15 @@
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
+import { env } from '@/lib/env';
 import { getServerLogger } from '@/lib/logger/server';
 import { encodePayload, generateNonce } from '@/lib/payments/payload';
 import { buildCampaignSnapshot, hashSnapshot } from '@/lib/payments/snapshot';
+import { resolveStarsAmount } from '@/lib/payments/stars-amount';
 import { createStarsInvoiceLink } from '@/lib/payments/stars-invoice';
 import { SupabaseCampaignRepo } from '@/lib/supabase/campaign-repo';
 import { requireAuth } from '@/lib/telegram/auth-middleware';
-import { CampaignId, DEFAULT_STARS_PER_USD_CENT, usdCentsToStars } from '@ai-job-bot/core';
+import { CampaignId } from '@ai-job-bot/core';
 import { z } from 'zod';
 
 const bodySchema = z.object({
@@ -82,7 +84,7 @@ export const POST = requireAuth(async (req, { user }) => {
       await repo.freezeSnapshot(cid, snapshot, 1);
     }
 
-    const starsAmount = usdCentsToStars(campaign.priceAmountCents, DEFAULT_STARS_PER_USD_CENT);
+    const starsAmount = resolveStarsAmount(campaign.priceAmountCents);
     const nonce = generateNonce();
     const payload = encodePayload({ campaignId: cid.value, nonce });
 

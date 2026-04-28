@@ -2,19 +2,14 @@ import 'server-only';
 import { getServerLogger } from '@/lib/logger/server';
 import { decodePayload } from '@/lib/payments/payload';
 import { hashSnapshot } from '@/lib/payments/snapshot';
+import { resolveStarsAmount } from '@/lib/payments/stars-amount';
 import { getCampaignProgressDriver } from '@/lib/sim/factory';
 import { SupabaseCampaignEventRepo } from '@/lib/supabase/campaign-event-repo';
 import { SupabaseCampaignRepo } from '@/lib/supabase/campaign-repo';
 import { SupabasePaymentRepo } from '@/lib/supabase/payment-repo';
 import { createServiceRoleClient } from '@/lib/supabase/server';
 import { SupabaseUserRepo } from '@/lib/supabase/user-repo';
-import {
-  CampaignId,
-  DEFAULT_STARS_PER_USD_CENT,
-  TelegramId,
-  recordPayment,
-  usdCentsToStars,
-} from '@ai-job-bot/core';
+import { CampaignId, TelegramId, recordPayment } from '@ai-job-bot/core';
 import type { Bot, Context } from 'grammy';
 
 /**
@@ -61,7 +56,7 @@ async function handlePreCheckout(ctx: Context): Promise<void> {
       await ctx.answerPreCheckoutQuery(false, 'Campaign already paid');
       return;
     }
-    const expectedStars = usdCentsToStars(campaign.priceAmountCents, DEFAULT_STARS_PER_USD_CENT);
+    const expectedStars = resolveStarsAmount(campaign.priceAmountCents);
     if (q.total_amount !== expectedStars) {
       log.warn({
         context: 'bot.payments.pre_checkout_query',

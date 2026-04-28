@@ -30,6 +30,12 @@ export const env = createEnv({
     // Phase 7 — Observability
     SENTRY_DSN: z.string().optional(),
     SENTRY_AUTH_TOKEN: z.string().optional(),
+    // Test-mode override for Stars invoices. When set to a positive integer,
+    // /api/payments/init and the bot's pre_checkout_query both use this Stars
+    // amount instead of the canonical priceCampaign-derived figure. Use for
+    // single-Star verification runs without paying full price; unset in normal
+    // production to fall back to the real conversion.
+    STARS_TEST_AMOUNT: z.coerce.number().int().positive().optional(),
   },
   client: {
     NEXT_PUBLIC_APP_URL: z.string().url().optional(),
@@ -65,6 +71,7 @@ export const env = createEnv({
     TON_PAYMENT_RECIPIENT_ADDRESS: process.env.TON_PAYMENT_RECIPIENT_ADDRESS,
     SENTRY_DSN: process.env.SENTRY_DSN,
     SENTRY_AUTH_TOKEN: process.env.SENTRY_AUTH_TOKEN,
+    STARS_TEST_AMOUNT: process.env.STARS_TEST_AMOUNT,
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
     NEXT_PUBLIC_MINI_APP_URL: process.env.NEXT_PUBLIC_MINI_APP_URL,
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
