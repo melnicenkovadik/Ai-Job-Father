@@ -99,6 +99,11 @@ export default function ProfilePage() {
     },
     onSuccess: (saved) => {
       queryClient.setQueryData(PROFILE_QUERY_KEY, saved);
+      // The server flips settings.hasOnboarded on POST/PUT. Invalidate the
+      // settings query so the home page picks up the change before redirect —
+      // otherwise the stale cached value sends the user back to /onboarding.
+      queryClient.invalidateQueries({ queryKey: ['settings'] });
+      queryClient.invalidateQueries({ queryKey: ['profiles', 'list'] });
       draftState.reset(saved);
       setSaveBanner('success');
       setSaveErrorDetail(null);
@@ -179,6 +184,7 @@ export default function ProfilePage() {
       <SaveProfileButton
         text={saveMutation.isPending ? t('actions.saving') : t('actions.save')}
         disabled={!draftState.isDirty || !draftState.isValid || saveMutation.isPending}
+        loading={saveMutation.isPending}
         onClick={() => saveMutation.mutate(draftState.draft)}
       />
     </Screen>

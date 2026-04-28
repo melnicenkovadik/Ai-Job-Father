@@ -5,8 +5,9 @@ import { getServerLogger } from '@/lib/logger/server';
 import { profileDraftSchema, profileToDto } from '@/lib/profile/schema';
 import { SupabaseProfileRepo } from '@/lib/supabase/profile-repo';
 import { createServiceRoleClient } from '@/lib/supabase/server';
+import { SupabaseUserSettingsRepo } from '@/lib/supabase/user-settings-repo';
 import { requireAuth } from '@/lib/telegram/auth-middleware';
-import { createProfile } from '@ai-job-bot/core';
+import { createProfile, markOnboarded } from '@ai-job-bot/core';
 
 /**
  * GET  /api/profile   → default profile for the authed user, or `null`.
@@ -47,6 +48,14 @@ export const POST = requireAuth(async (req, { user }) => {
         ...parsed.data,
       },
       { profileRepo: repo },
+    );
+    // Creating a profile implies the user has completed onboarding. Without
+    // this, the home page may bounce them back to /onboarding because
+    // settings.hasOnboarded only flipped if they clicked the welcome CTA.
+    await markOnboarded(user.id, { userSettingsRepo: new SupabaseUserSettingsRepo() }).catch(
+      (err) => {
+        getServerLogger().warn({ context: 'api/profile.POST.markOnboarded', error: err });
+      },
     );
     return Response.json(profileToDto(profile), { status: 201 });
   } catch (err) {

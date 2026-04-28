@@ -5,8 +5,9 @@ import { getServerLogger } from '@/lib/logger/server';
 import { profileDraftSchema, profileToDto } from '@/lib/profile/schema';
 import { SupabaseProfileRepo } from '@/lib/supabase/profile-repo';
 import { createServiceRoleClient } from '@/lib/supabase/server';
+import { SupabaseUserSettingsRepo } from '@/lib/supabase/user-settings-repo';
 import { requireAuth } from '@/lib/telegram/auth-middleware';
-import { updateProfile } from '@ai-job-bot/core';
+import { markOnboarded, updateProfile } from '@ai-job-bot/core';
 
 /**
  * PUT /api/profile/:id   → partial update. Owner-only (checked via user_id).
@@ -42,6 +43,13 @@ export const PUT = async (
 
     try {
       const updated = await updateProfile({ id, ...parsed.data }, { profileRepo: repo });
+      // Editing a profile is a strong signal the user is past onboarding.
+      // markOnboarded is idempotent so the second call is harmless.
+      await markOnboarded(user.id, {
+        userSettingsRepo: new SupabaseUserSettingsRepo(),
+      }).catch((err) => {
+        getServerLogger().warn({ context: 'api/profile/[id].PUT.markOnboarded', error: err });
+      });
       return Response.json(profileToDto(updated));
     } catch (err) {
       getServerLogger().error({

@@ -1,11 +1,13 @@
 'use client';
 
 import { getWebApp } from '@/components/telegram/webapp';
+import { Spinner } from '@/components/ui';
 import { useEffect } from 'react';
 
 interface SaveProfileButtonProps {
   text: string;
   disabled: boolean;
+  loading?: boolean;
   onClick(): void;
 }
 
@@ -15,9 +17,15 @@ interface SaveProfileButtonProps {
  * (e.g. the `(dev)` fixtures or a direct browser visit during development).
  *
  * Both paths call the same `onClick` handler so the component keeps a single
- * source of truth for "save was triggered".
+ * source of truth for "save was triggered". The Telegram MainButton has its
+ * own native progress indicator (showProgress) — we drive it from `loading`.
  */
-export function SaveProfileButton({ text, disabled, onClick }: SaveProfileButtonProps) {
+export function SaveProfileButton({
+  text,
+  disabled,
+  loading = false,
+  onClick,
+}: SaveProfileButtonProps) {
   useEffect(() => {
     const wa = getWebApp();
     if (!wa) return;
@@ -25,13 +33,16 @@ export function SaveProfileButton({ text, disabled, onClick }: SaveProfileButton
     btn.setText(text);
     if (disabled) btn.disable();
     else btn.enable();
+    if (loading) btn.showProgress?.(false);
+    else btn.hideProgress?.();
     btn.onClick(onClick);
     btn.show();
     return () => {
       btn.offClick(onClick);
       btn.hide();
+      btn.hideProgress?.();
     };
-  }, [text, disabled, onClick]);
+  }, [text, disabled, loading, onClick]);
 
   const insideTelegram = typeof window !== 'undefined' && Boolean(window.Telegram?.WebApp);
 
@@ -46,9 +57,10 @@ export function SaveProfileButton({ text, disabled, onClick }: SaveProfileButton
         type="button"
         onClick={onClick}
         disabled={disabled}
-        className="pointer-events-auto block min-h-[2.75rem] w-full rounded-lg bg-[var(--color-button,#2481CC)] px-4 text-sm font-medium text-[var(--color-button-text,#ffffff)] disabled:opacity-60"
+        className="pointer-events-auto flex min-h-[2.75rem] w-full items-center justify-center gap-2 rounded-lg bg-[var(--color-button,#2481CC)] px-4 text-sm font-medium text-[var(--color-button-text,#ffffff)] disabled:opacity-60"
       >
-        {text}
+        {loading ? <Spinner size={14} /> : null}
+        <span>{text}</span>
       </button>
     </div>
   );
