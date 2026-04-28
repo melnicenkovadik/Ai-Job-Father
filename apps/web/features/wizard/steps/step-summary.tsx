@@ -1,12 +1,30 @@
 'use client';
 
-import { FieldRow } from '@/components/ui';
+import { Icon } from '@/components/icons';
 import { Stack } from '@/components/ui/layout';
+import { COUNTRIES, flagFor } from '@/features/wizard/data/countries';
 import { useWizardDraft } from '@/features/wizard/draft-store';
+import { isStarsTestModeOnClient } from '@/lib/payments/test-mode-client';
 import { type Complexity, priceCampaign } from '@ai-job-bot/core';
 import { useTranslations } from 'next-intl';
 
-export function StepSummary() {
+export interface StepSummaryProps {
+  /** Indices in the active step list — wizard-screen passes them so the
+   *  pencil buttons can jump directly to the correct screen even when the
+   *  stack step is dynamically skipped. */
+  readonly stepIndex: {
+    category: number;
+    roles: number;
+    countries: number;
+    salary: number;
+    stack: number | undefined;
+    languages: number;
+    quota: number;
+  };
+  readonly onEdit: (index: number) => void;
+}
+
+export function StepSummary({ stepIndex, onEdit }: StepSummaryProps) {
   const t = useTranslations('screens.wizard');
   const tCat = useTranslations('screens.wizard.category');
   const draft = useWizardDraft((s) => s.draft);
@@ -19,54 +37,122 @@ export function StepSummary() {
       })
     : null;
 
+  const testMode = isStarsTestModeOnClient();
   const categoryLabel = draft.category ? tCat(draft.category) : '—';
-  const countriesLabel = draft.countries.length > 0 ? draft.countries.join(', ') : '—';
+  const countriesLabel =
+    draft.countries.length > 0
+      ? draft.countries
+          .map((code) => {
+            const entry = COUNTRIES.find((c) => c.code === code);
+            return `${flagFor(code)} ${entry?.name ?? code}`;
+          })
+          .join(', ')
+      : '—';
   const stackLabel = draft.stack.length > 0 ? draft.stack.join(', ') : '—';
   const langsLabel = draft.languages.length > 0 ? draft.languages.join(', ') : '—';
-  const salaryLabel = draft.salaryMin
-    ? t('summary.salaryFrom', { amount: draft.salaryMin.toLocaleString('en-US') })
-    : '—';
+  const salaryLabel =
+    draft.salaryMin !== undefined && draft.salaryMax !== undefined
+      ? `$${draft.salaryMin.toLocaleString('en-US')} – $${draft.salaryMax.toLocaleString('en-US')}`
+      : draft.salaryMin
+        ? t('summary.salaryFrom', { amount: draft.salaryMin.toLocaleString('en-US') })
+        : '—';
+
+  const fmtCents = (cents: number) => `$${(cents / 100).toFixed(2)}`;
+  const subtotalAfterCategoryCents = breakdown
+    ? Math.round(breakdown.baseRateCents * breakdown.quota * breakdown.categoryMultiplier)
+    : 0;
 
   return (
     <Stack gap={4}>
-      <div className="rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] px-4">
-        <FieldRow label={t('summary.category')} value={categoryLabel} />
-        <FieldRow
-          label={t('summary.roles')}
-          value={t('summary.rolesCount', { count: draft.roles.length })}
+      <div className="overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)]">
+        <SummaryRow
+          label={t('summary.category')}
+          value={categoryLabel}
+          onEdit={() => onEdit(stepIndex.category)}
         />
-        <FieldRow label={t('summary.countries')} value={countriesLabel} />
-        <FieldRow label={t('summary.salary')} value={salaryLabel} mono />
-        <FieldRow label={t('summary.stack')} value={stackLabel} />
-        <FieldRow label={t('summary.languages')} value={langsLabel} />
-        <FieldRow label={t('summary.quota')} value={String(draft.quota)} mono />
+        <SummaryRow
+          label={t('summary.roles')}
+          value={
+            draft.roles.length > 0 ? draft.roles.join(', ') : t('summary.rolesCount', { count: 0 })
+          }
+          onEdit={() => onEdit(stepIndex.roles)}
+        />
+        <SummaryRow
+          label={t('summary.countries')}
+          value={countriesLabel}
+          onEdit={() => onEdit(stepIndex.countries)}
+        />
+        <SummaryRow
+          label={t('summary.salary')}
+          value={salaryLabel}
+          mono
+          onEdit={() => onEdit(stepIndex.salary)}
+        />
+        {stepIndex.stack !== undefined ? (
+          <SummaryRow
+            label={t('summary.stack')}
+            value={stackLabel}
+            onEdit={() => onEdit(stepIndex.stack as number)}
+          />
+        ) : null}
+        <SummaryRow
+          label={t('summary.languages')}
+          value={langsLabel}
+          onEdit={() => onEdit(stepIndex.languages)}
+        />
+        <SummaryRow
+          label={t('summary.quota')}
+          value={String(draft.quota)}
+          mono
+          onEdit={() => onEdit(stepIndex.quota)}
+        />
       </div>
 
       {breakdown ? (
         <div className="rounded-[var(--radius-lg)] border border-[var(--color-accent)] bg-[var(--color-accent-bg)] px-4 py-4">
           <Stack gap={2}>
             <BreakdownRow
-              label={t('summary.basePrice')}
-              amount={`${formatCents(breakdown.baseRateCents)}/app`}
+              label={t('breakdown.base')}
+              hint={t('breakdown.baseHint')}
+              amount={`${fmtCents(breakdown.baseRateCents)}/app`}
             />
             <BreakdownRow
-              label={t('summary.quotaRow', { count: draft.quota })}
-              amount={`× ${draft.quota}`}
+              label={t('breakdown.quota', { count: draft.quota })}
+              hint={t('breakdown.quotaHint')}
+              amount={`= ${fmtCents(breakdown.baseRateCents * draft.quota)}`}
             />
             <BreakdownRow
-              label={`× ${breakdown.categoryMultiplier} (${draft.category})`}
-              amount=""
+              label={t('breakdown.category', {
+                category: draft.category ?? '—',
+                mult: breakdown.categoryMultiplier,
+              })}
+              hint={t('breakdown.categoryHint')}
+              amount={`= ${fmtCents(subtotalAfterCategoryCents)}`}
             />
-            <BreakdownRow label={`× ${breakdown.complexityMultiplier} (medium)`} amount="" />
+            <BreakdownRow
+              label={t('breakdown.complexity', {
+                mult: breakdown.complexityMultiplier,
+              })}
+              hint={t('breakdown.complexityHint')}
+              amount={`= ${fmtCents(breakdown.amountCents)}`}
+            />
             <div className="my-1 h-px bg-[var(--color-accent)]/30" />
             <div className="flex items-baseline justify-between">
               <span className="text-[15px] font-bold text-[var(--color-text)]">
                 {t('summary.total')}
               </span>
               <span className="font-mono text-[22px] font-bold text-[var(--color-accent)]">
-                {formatCents(breakdown.amountCents)}
+                {fmtCents(breakdown.amountCents)}
               </span>
             </div>
+            <p className="text-[11px] text-[var(--color-text-mute)]">
+              {testMode
+                ? t('breakdown.testMode')
+                : t('breakdown.equivalent', {
+                    stars: Math.round(breakdown.amountCents * 0.5),
+                    ton: (breakdown.amountCents * 0.0004).toFixed(2),
+                  })}
+            </p>
           </Stack>
         </div>
       ) : null}
@@ -74,15 +160,57 @@ export function StepSummary() {
   );
 }
 
-function formatCents(cents: number): string {
-  return `$${(cents / 100).toFixed(2)}`;
+function SummaryRow({
+  label,
+  value,
+  mono,
+  onEdit,
+}: {
+  label: string;
+  value: string;
+  mono?: boolean;
+  onEdit: () => void;
+}) {
+  return (
+    <div className="flex min-w-0 items-center gap-2 border-b border-[var(--color-border)] px-4 py-3 last:border-b-0">
+      <div className="min-w-0 flex-1">
+        <p className="text-[11px] uppercase tracking-wider text-[var(--color-text-dim)]">{label}</p>
+        <p
+          className={`mt-0.5 truncate text-[14px] text-[var(--color-text)] ${
+            mono ? 'font-mono' : ''
+          }`}
+        >
+          {value}
+        </p>
+      </div>
+      <button
+        type="button"
+        onClick={onEdit}
+        aria-label={`Edit ${label}`}
+        className="inline-flex size-8 shrink-0 items-center justify-center rounded-full text-[var(--color-text-dim)] hover:bg-[var(--color-bg-2)] hover:text-[var(--color-accent)]"
+      >
+        <Icon.Pencil size={14} />
+      </button>
+    </div>
+  );
 }
 
-function BreakdownRow({ label, amount }: { label: string; amount: string }) {
+function BreakdownRow({
+  label,
+  hint,
+  amount,
+}: {
+  label: string;
+  hint: string;
+  amount: string;
+}) {
   return (
-    <div className="flex min-w-0 items-baseline justify-between gap-3 text-[13px] text-[var(--color-text)]">
-      <span className="min-w-0 truncate">{label}</span>
-      <span className="shrink-0 font-mono text-[var(--color-text-dim)]">{amount}</span>
+    <div className="min-w-0">
+      <div className="flex min-w-0 items-baseline justify-between gap-3 text-[13px] text-[var(--color-text)]">
+        <span className="min-w-0 truncate font-medium">{label}</span>
+        <span className="shrink-0 font-mono text-[var(--color-text-dim)]">{amount}</span>
+      </div>
+      <p className="text-[11px] leading-tight text-[var(--color-text-mute)]">{hint}</p>
     </div>
   );
 }

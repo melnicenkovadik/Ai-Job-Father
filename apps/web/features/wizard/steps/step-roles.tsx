@@ -3,24 +3,18 @@
 import { Icon } from '@/components/icons';
 import { Pill, SectionTitle } from '@/components/ui';
 import { Stack } from '@/components/ui/layout';
+import { rolesFor } from '@/features/wizard/data/role-suggestions';
 import { useWizardDraft } from '@/features/wizard/draft-store';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
-
-const SUGGESTIONS = [
-  'Senior Frontend Developer',
-  'Full-stack Engineer',
-  'React Native Developer',
-  'Backend Engineer',
-  'Mobile Engineer',
-];
 
 const MAX_ROLES = 5;
 
 export function StepRoles() {
   const t = useTranslations('screens.wizard.roles');
-  const { roles, patchDraft } = useWizardDraft((s) => ({
+  const { roles, category, patchDraft } = useWizardDraft((s) => ({
     roles: s.draft.roles,
+    category: s.draft.category,
     patchDraft: s.patchDraft,
   }));
   const [input, setInput] = useState('');
@@ -36,11 +30,17 @@ export function StepRoles() {
     patchDraft({ roles: roles.filter((r) => r !== value) });
   };
 
-  const remaining = SUGGESTIONS.filter((s) => !roles.includes(s));
+  const suggestions = rolesFor(category);
+  const remaining = suggestions.filter((s) => !roles.includes(s));
+  const showError = roles.length === 0;
 
   return (
     <Stack gap={4}>
-      <div className="flex min-w-0 items-center gap-2.5 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2.5">
+      <div
+        className={`flex min-w-0 items-center gap-2.5 rounded-[var(--radius-md)] border bg-[var(--color-surface)] px-3 py-2.5 ${
+          showError ? 'border-[var(--color-danger)]/60' : 'border-[var(--color-border)]'
+        }`}
+      >
         <Icon.Search size={18} className="shrink-0 text-[var(--color-text-dim)]" />
         <input
           value={input}
@@ -70,7 +70,13 @@ export function StepRoles() {
           {t('selected', { count: roles.length })}
         </p>
         {roles.length === 0 ? (
-          <p className="rounded-[var(--radius-md)] border border-dashed border-[var(--color-border)] px-3 py-3 text-[13px] text-[var(--color-text-mute)]">
+          <p
+            className={`rounded-[var(--radius-md)] border border-dashed px-3 py-3 text-[13px] ${
+              showError
+                ? 'border-[var(--color-danger)]/60 text-[var(--color-danger)]'
+                : 'border-[var(--color-border)] text-[var(--color-text-mute)]'
+            }`}
+          >
             {t('empty')}
           </p>
         ) : (
@@ -90,7 +96,11 @@ export function StepRoles() {
         )}
       </Stack>
 
-      {remaining.length > 0 ? (
+      {!category ? (
+        <p className="rounded-[var(--radius-md)] border border-dashed border-[var(--color-border)] px-3 py-3 text-[13px] text-[var(--color-text-mute)]">
+          {t('pickCategoryFirst')}
+        </p>
+      ) : remaining.length > 0 ? (
         <Stack gap={2}>
           <SectionTitle>{t('suggestions')}</SectionTitle>
           <Stack gap={1}>
