@@ -42,6 +42,9 @@ export const env = createEnv({
     // every invoice charges that many Stars. Used when you want a fixed
     // non-1 amount (e.g. 3 ⭐) for tests. Ignored if STARS_TEST_MODE is on.
     STARS_TEST_AMOUNT: z.coerce.number().int().positive().optional(),
+    // Stars price for one AI re-parse credit. Default 5 ⭐ (~$0.07). Test mode
+    // (STARS_TEST_MODE) overrides to 1 ⭐ regardless.
+    STARS_AI_PARSE_PRICE: z.coerce.number().int().positive().optional(),
   },
   client: {
     NEXT_PUBLIC_APP_URL: z.string().url().optional(),
@@ -79,6 +82,7 @@ export const env = createEnv({
     SENTRY_AUTH_TOKEN: process.env.SENTRY_AUTH_TOKEN,
     STARS_TEST_MODE: process.env.STARS_TEST_MODE,
     STARS_TEST_AMOUNT: process.env.STARS_TEST_AMOUNT,
+    STARS_AI_PARSE_PRICE: process.env.STARS_AI_PARSE_PRICE,
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
     NEXT_PUBLIC_MINI_APP_URL: process.env.NEXT_PUBLIC_MINI_APP_URL,
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,

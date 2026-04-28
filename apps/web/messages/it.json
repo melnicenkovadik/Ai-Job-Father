@@ -132,6 +132,10 @@
       "orSeparator": "oppure",
       "linkedinPlaceholder": "linkedin.com/in/...",
       "mainCta": "Carica CV",
+      "aiButton": "Analizza con AI · {amount} ⭐",
+      "aiNote": "Più preciso del parser gratuito. Una tantum.",
+      "aiPaymentCancelled": "Pagamento annullato.",
+      "aiPaymentFailed": "Pagamento fallito. Riprova.",
       "reviewCta": "Apri profilo",
       "step": {
         "upload": "File caricato",

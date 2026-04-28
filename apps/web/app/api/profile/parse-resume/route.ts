@@ -1,9 +1,7 @@
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-import { env } from '@/lib/env';
 import { getServerLogger } from '@/lib/logger/server';
-import { createOpenAIResumeParser } from '@/lib/openai/resume-parser';
 import { createHeuristicResumeParser } from '@/lib/resume/heuristic-parser';
 import { requireAuth } from '@/lib/telegram/auth-middleware';
 import {
@@ -14,16 +12,15 @@ import {
 } from '@ai-job-bot/core';
 
 /**
- * Resume parse endpoint.
+ * Free-tier resume parse — pure heuristics, no AI.
  *
- * Primary tier: OpenAI gpt-5.1 via the adapter from ADR 0006 (paid with
- * Stars in Phase 4 — currently free because the payment wall isn't wired
- * yet). If `OPENAI_API_KEY` is missing or the AI call fails with a
- * "parser unavailable" error, we fall back to the in-house heuristic
- * parser (ADR 0007) so the UX never dead-ends.
+ * Pipeline: PDF text extraction (`unpdf`) → multilingual regex extractors in
+ * `packages/core/domain/resume-heuristics`. Always free.
+ *
+ * For higher-accuracy AI parse the user explicitly opts in via Stars-gated
+ * `POST /api/profile/parse-resume/ai` (separate route).
  *
  * multipart/form-data with `file` (PDF, ≤ 10 MB).
- * Auth'd via the existing initData header flow.
  */
 
 const MAX_PDF_BYTES = 10 * 1024 * 1024;
@@ -60,23 +57,12 @@ export const POST = requireAuth(async (req, { user }) => {
     filename: file.name,
   };
 
-  const aiParser = createOpenAIResumeParser(env.OPENAI_API_KEY, env.OPENAI_RESUME_MODEL);
-
+  const parser = createHeuristicResumeParser();
   try {
-    const parsed = await aiParser.parse(input);
-    return Response.json(parsed);
-  } catch (aiErr) {
-    if (aiErr instanceof ResumeParserUnavailableError) {
-      // OPENAI_API_KEY missing on this deployment — degrade to heuristics.
-      const heuristic = createHeuristicResumeParser();
-      try {
-        const parsed = await heuristic.parse(input);
-        return Response.json(parsed);
-      } catch (hErr) {
-        return mapParserError(hErr);
-      }
-    }
-    return mapParserError(aiErr);
+    const parsed = await parser.parse(input);
+    return Response.json({ ...parsed, parser: 'heuristic' });
+  } catch (err) {
+    return mapParserError(err);
   }
 });
 

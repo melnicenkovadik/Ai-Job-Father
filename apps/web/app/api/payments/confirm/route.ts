@@ -138,9 +138,15 @@ export const POST = requireAuth(async (req, { user }) => {
       throw err;
     }
 
-    // Sanity: payload nonce must match what we issued in /init.
+    // Sanity: payload nonce must match what we issued in /init. TON flow is
+    // campaign-only — reject ai_parse payloads outright.
     const decoded = decodePayload(verified.comment);
-    if (!decoded || decoded.campaignId !== cid.value || decoded.nonce !== parsed.data.nonce) {
+    if (
+      !decoded ||
+      decoded.purpose !== 'campaign' ||
+      decoded.campaignId !== cid.value ||
+      decoded.nonce !== parsed.data.nonce
+    ) {
       return Response.json(
         { error: 'comment_mismatch', message: 'payload mismatch in tx comment' },
         { status: 400 },

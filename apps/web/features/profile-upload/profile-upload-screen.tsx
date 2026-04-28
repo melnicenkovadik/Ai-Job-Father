@@ -4,6 +4,7 @@ import { Icon } from '@/components/icons';
 import { useTelegramBackButton } from '@/components/telegram/use-back-button';
 import { Headline, MainButtonBinding, Spinner } from '@/components/ui';
 import { Screen, Scroll, Stack } from '@/components/ui/layout';
+import { openStarsInvoice } from '@/features/payment/use-payments';
 import { authedFetch } from '@/lib/http/authed-fetch';
 import type { ParsedResume } from '@ai-job-bot/core';
 import { useMutation } from '@tanstack/react-query';
@@ -11,7 +12,8 @@ import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 
-type Phase = 'idle' | 'uploading' | 'parsing' | 'done' | 'error';
+type Phase = 'idle' | 'paying' | 'uploading' | 'parsing' | 'done' | 'error';
+type ParseMode = 'free' | 'ai';
 
 interface ProfileUploadScreenProps {
   initialPhase?: Phase;
@@ -33,6 +35,9 @@ const ACCEPTED_ERROR_CODES = new Set([
   'empty_file',
   'rate_limit',
   'unavailable',
+  'no_credit',
+  'aiPaymentCancelled',
+  'aiPaymentFailed',
 ]);
 
 export function ProfileUploadScreen({
@@ -46,17 +51,17 @@ export function ProfileUploadScreen({
   const [errorCode, setErrorCode] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string>(t('sampleFile'));
   const [fileSize, setFileSize] = useState<string>(t('sampleSize'));
+  const [parseMode, setParseMode] = useState<ParseMode>('free');
+  const [aiPriceStars, setAiPriceStars] = useState<number | null>(null);
 
   useTelegramBackButton('/profile');
 
-  const mutation = useMutation<ParsedResume, UploadError, File>({
-    mutationFn: async (file) => {
+  const mutation = useMutation<ParsedResume, UploadError, { file: File; mode: ParseMode }>({
+    mutationFn: async ({ file, mode }) => {
       const fd = new FormData();
       fd.append('file', file);
-      const res = await authedFetch('/api/profile/parse-resume', {
-        method: 'POST',
-        body: fd,
-      });
+      const url = mode === 'ai' ? '/api/profile/parse-resume/ai' : '/api/profile/parse-resume';
+      const res = await authedFetch(url, { method: 'POST', body: fd });
       if (!res.ok) {
         const body = (await res.json().catch(() => ({}))) as { error?: string };
         throw new UploadError(body.error ?? 'internal');
@@ -91,19 +96,74 @@ export function ProfileUploadScreen({
     return undefined;
   }, [phase, simulate]);
 
-  const onPickFile = () => inputRef.current?.click();
+  const onPickFile = () => {
+    setParseMode('free');
+    inputRef.current?.click();
+  };
+
   const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.currentTarget.files?.[0];
     if (file) {
       setFileName(file.name);
       setFileSize(`${Math.round(file.size / 1024)} KB`);
-      mutation.mutate(file);
+      mutation.mutate({ file, mode: parseMode });
     }
     e.currentTarget.value = '';
   };
 
+  /**
+   * AI re-parse flow: init invoice → openInvoice → on `paid` open file picker
+   * with mode='ai'. If init returns alreadyHasCredit, skip straight to picker.
+   */
+  const onClickAi = async () => {
+    setErrorCode(null);
+    setPhase('paying');
+    try {
+      const initRes = await authedFetch('/api/profile/parse-resume/ai-init', {
+        method: 'POST',
+      });
+      if (!initRes.ok) {
+        setPhase('error');
+        setErrorCode('aiPaymentFailed');
+        return;
+      }
+      const data = (await initRes.json()) as {
+        invoiceLink?: string;
+        starsAmount?: number;
+        alreadyHasCredit?: boolean;
+      };
+      if (data.starsAmount) setAiPriceStars(data.starsAmount);
+      if (data.alreadyHasCredit) {
+        setPhase('idle');
+        setParseMode('ai');
+        inputRef.current?.click();
+        return;
+      }
+      if (!data.invoiceLink) {
+        setPhase('error');
+        setErrorCode('aiPaymentFailed');
+        return;
+      }
+      const status = await openStarsInvoice(data.invoiceLink);
+      if (status === 'paid') {
+        setPhase('idle');
+        setParseMode('ai');
+        // Slight delay so the bot's successful_payment handler has time to insert
+        // the credit row before the parse endpoint checks for it.
+        setTimeout(() => inputRef.current?.click(), 500);
+        return;
+      }
+      setPhase('error');
+      setErrorCode(status === 'cancelled' ? 'aiPaymentCancelled' : 'aiPaymentFailed');
+    } catch {
+      setPhase('error');
+      setErrorCode('aiPaymentFailed');
+    }
+  };
+
   const isIdle = phase === 'idle';
   const isError = phase === 'error';
+  const isPaying = phase === 'paying';
 
   return (
     <Screen reserveMainButton={isIdle}>
@@ -114,12 +174,13 @@ export function ProfileUploadScreen({
             <p className="text-[14px] text-[var(--color-text-dim)]">{t('subtitle')}</p>
           </Stack>
 
-          {isIdle ? (
+          {isIdle || isPaying ? (
             <>
               <button
                 type="button"
                 onClick={onPickFile}
-                className="rounded-[var(--radius-lg)] border-2 border-dashed border-[var(--color-border-hi)] bg-[var(--color-surface)] p-8 text-center transition-colors hover:border-[var(--color-accent)]"
+                disabled={isPaying}
+                className="rounded-[var(--radius-lg)] border-2 border-dashed border-[var(--color-border-hi)] bg-[var(--color-surface)] p-8 text-center transition-colors hover:border-[var(--color-accent)] disabled:opacity-50"
               >
                 <span className="mx-auto mb-4 inline-flex size-16 items-center justify-center rounded-full bg-[var(--color-accent-bg)] text-[var(--color-accent)]">
                   <Icon.Upload size={28} />
@@ -140,6 +201,19 @@ export function ProfileUploadScreen({
                 <span className="h-px flex-1 bg-[var(--color-border)]" />
               </div>
 
+              <button
+                type="button"
+                onClick={onClickAi}
+                disabled={isPaying}
+                className="flex min-w-0 items-center justify-center gap-2 rounded-[var(--radius-md)] border border-[var(--color-accent)] bg-[var(--color-accent-bg)] px-4 py-3 text-[14px] font-semibold text-[var(--color-accent)] transition-opacity hover:opacity-90 disabled:opacity-50"
+              >
+                <Icon.Spark size={16} className="shrink-0" />
+                <span className="min-w-0 truncate">
+                  {isPaying ? '…' : t('aiButton', { amount: aiPriceStars ?? 5 })}
+                </span>
+              </button>
+              <p className="text-center text-[12px] text-[var(--color-text-mute)]">{t('aiNote')}</p>
+
               <label className="flex min-w-0 items-center gap-2.5 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3.5 py-3 focus-within:border-[var(--color-accent)]">
                 <Icon.Globe size={18} className="shrink-0 text-[var(--color-text-dim)]" />
                 <input
@@ -152,7 +226,7 @@ export function ProfileUploadScreen({
             </>
           ) : null}
 
-          {!isIdle ? (
+          {!isIdle && !isPaying ? (
             <div className="rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] p-5">
               <div className="mb-4 flex min-w-0 items-center gap-3 rounded-[var(--radius-md)] bg-[var(--color-bg-2)] p-3.5">
                 <span className="inline-flex h-11 w-9 shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-[var(--color-accent-bg)] text-[var(--color-accent)]">
@@ -205,7 +279,7 @@ export function ProfileUploadScreen({
               role="alert"
               className="rounded-[var(--radius-md)] bg-[var(--color-danger)]/15 px-3 py-3 text-[13px] text-[var(--color-danger)]"
             >
-              {t(`error.${resolveErrorCode(errorCode)}`)}
+              {resolveErrorMessage(t, errorCode)}
             </p>
           ) : null}
         </Stack>
@@ -268,7 +342,11 @@ function UploadStep({
   );
 }
 
-function resolveErrorCode(code: string | null): string {
-  if (!code) return 'internal';
-  return ACCEPTED_ERROR_CODES.has(code) ? code : 'internal';
+function resolveErrorMessage(t: ReturnType<typeof useTranslations>, code: string | null): string {
+  if (!code) return t('error.internal');
+  if (code === 'aiPaymentCancelled') return t('aiPaymentCancelled');
+  if (code === 'aiPaymentFailed') return t('aiPaymentFailed');
+  if (code === 'no_credit') return t('aiPaymentFailed');
+  if (ACCEPTED_ERROR_CODES.has(code)) return t(`error.${code}`);
+  return t('error.internal');
 }

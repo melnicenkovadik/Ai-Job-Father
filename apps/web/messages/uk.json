@@ -132,6 +132,10 @@
       "orSeparator": "або",
       "linkedinPlaceholder": "linkedin.com/in/...",
       "mainCta": "Завантажити CV",
+      "aiButton": "Розпізнати з AI · {amount} ⭐",
+      "aiNote": "Точніше за безкоштовну обробку. Одноразова оплата.",
+      "aiPaymentCancelled": "Оплату скасовано.",
+      "aiPaymentFailed": "Оплата не пройшла. Спробуй ще раз.",
       "reviewCta": "Відкрити профіль",
       "step": {
         "upload": "Файл завантажено",

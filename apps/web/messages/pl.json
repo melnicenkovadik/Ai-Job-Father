@@ -132,6 +132,10 @@
       "orSeparator": "lub",
       "linkedinPlaceholder": "linkedin.com/in/...",
       "mainCta": "Wgraj CV",
+      "aiButton": "Przetwórz z AI · {amount} ⭐",
+      "aiNote": "Dokładniej niż darmowy parser. Jednorazowa opłata.",
+      "aiPaymentCancelled": "Płatność anulowana.",
+      "aiPaymentFailed": "Płatność nieudana. Spróbuj ponownie.",
       "reviewCta": "Otwórz profil",
       "step": {
         "upload": "Plik wgrany",

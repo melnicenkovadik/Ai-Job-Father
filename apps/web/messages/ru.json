@@ -132,6 +132,10 @@
       "orSeparator": "или",
       "linkedinPlaceholder": "linkedin.com/in/...",
       "mainCta": "Загрузить CV",
+      "aiButton": "Распознать с AI · {amount} ⭐",
+      "aiNote": "Точнее бесплатной обработки. Разовый платёж.",
+      "aiPaymentCancelled": "Оплата отменена.",
+      "aiPaymentFailed": "Оплата не прошла. Попробуй ещё раз.",
       "reviewCta": "Открыть профиль",
       "step": {
         "upload": "Файл загружен",

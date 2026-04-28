@@ -23,3 +23,12 @@ export function isTestModeOn(): boolean {
   const raw = env.STARS_TEST_MODE?.toLowerCase().trim();
   return raw === 'true' || raw === '1' || raw === 'yes' || raw === 'on';
 }
+
+/**
+ * Stars price for one AI re-parse credit. Same test-mode discipline as campaigns
+ * (1 ⭐ when STARS_TEST_MODE is on). Otherwise uses STARS_AI_PARSE_PRICE env (default 5).
+ */
+export function resolveAiParseStarsAmount(): number {
+  if (isTestModeOn()) return 1;
+  return env.STARS_AI_PARSE_PRICE ?? 5;
+}

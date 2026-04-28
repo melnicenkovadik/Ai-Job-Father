@@ -132,6 +132,10 @@
       "orSeparator": "or",
       "linkedinPlaceholder": "linkedin.com/in/...",
       "mainCta": "Upload CV",
+      "aiButton": "Parse with AI · {amount} ⭐",
+      "aiNote": "Higher accuracy than the free parser. One-time charge.",
+      "aiPaymentCancelled": "Payment cancelled.",
+      "aiPaymentFailed": "Payment failed. Try again.",
       "reviewCta": "Open profile",
       "step": {
         "upload": "File uploaded",
