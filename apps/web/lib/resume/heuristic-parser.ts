@@ -37,14 +37,23 @@ export function createHeuristicResumeParser(): ResumeParser {
 
 async function extractPdfText(bytes: Uint8Array): Promise<string> {
   try {
-    const { text } = await extractText(bytes, { mergePages: true });
-    const trimmed = text.trim();
-    if (trimmed.length < 200) {
+    // mergePages:false keeps intra-page line breaks (so section headers like
+    // "EXPERIENCE", "EDUCATION" stay on their own lines and the section-splitter
+    // can find them). mergePages:true collapses every line into one — bad for
+    // section detection on real PDFs. We rejoin pages with a blank line so the
+    // splitter can still treat the doc as a single text blob.
+    const { text } = await extractText(bytes, { mergePages: false });
+    const pages = Array.isArray(text) ? text : [text];
+    const joined = pages
+      .map((p) => String(p).trim())
+      .join('\n\n')
+      .trim();
+    if (joined.length < 200) {
       throw new ResumeFormatError(
-        `Extracted only ${trimmed.length} chars — likely a scanned PDF. Upload a text-based CV or enable AI parse (Stars).`,
+        `Extracted only ${joined.length} chars — likely a scanned PDF. Upload a text-based CV or enable AI parse (Stars).`,
       );
     }
-    return trimmed;
+    return joined;
   } catch (err) {
     if (err instanceof ResumeParseError) throw err;
     throw new ResumeFormatError(`PDF text extraction failed: ${(err as Error).message}`);

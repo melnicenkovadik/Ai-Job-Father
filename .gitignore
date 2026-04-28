@@ -22,3 +22,6 @@ next-env.d.ts
 .claude/
 
 .superpowers/
+
+# Bulk PDF test fixtures — kept local only, regeneratable via scripts/
+samples/resumes-test/
