@@ -102,8 +102,11 @@ export function WizardScreen({ initialStep }: WizardScreenProps = {}) {
       },
       {
         onSuccess: (campaign) => {
-          resetDraft();
+          // Push first, reset second. If we reset before navigation and the
+          // route load briefly fails, the user lands on a blank wizard with
+          // no draft — looks like being thrown back to main.
           router.push(`/campaign/${campaign.id}/checkout`);
+          resetDraft();
         },
       },
     );

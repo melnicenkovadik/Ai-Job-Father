@@ -140,7 +140,12 @@ export function useCreateCampaign() {
   const qc = useQueryClient();
   return useMutation<CampaignDto, Error, CreateCampaignBody>({
     mutationFn: postCampaign,
-    onSuccess: () => {
+    onSuccess: (campaign) => {
+      // Pre-seed the per-campaign cache before the wizard pushes to checkout —
+      // otherwise useCampaignQuery on the checkout screen sees no data and
+      // briefly renders its 404 fallback (which the user perceives as being
+      // bounced to main).
+      qc.setQueryData(['campaigns', campaign.id], campaign);
       qc.invalidateQueries({ queryKey: ['campaigns'] });
     },
     onError: (err) => {
