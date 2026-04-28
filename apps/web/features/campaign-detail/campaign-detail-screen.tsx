@@ -18,6 +18,7 @@ import {
   isCampaignActive,
   useCampaignEventsQuery,
   useCampaignQuery,
+  useCancelCampaign,
 } from '@/features/campaigns/use-campaigns';
 import { useTranslations } from 'next-intl';
 
@@ -25,9 +26,17 @@ interface CampaignDetailScreenProps {
   campaignId: string;
 }
 
+const CANCELLABLE_STATUSES: ReadonlyArray<CampaignDto['status']> = [
+  'draft',
+  'paid',
+  'searching',
+  'applying',
+];
+
 export function CampaignDetailScreen({ campaignId }: CampaignDetailScreenProps) {
   const t = useTranslations('screens.detail');
   const { data: campaign, isLoading, isError } = useCampaignQuery(campaignId);
+  const cancel = useCancelCampaign();
   const { data: events = [] } = useCampaignEventsQuery(campaignId);
 
   useTelegramBackButton('/');
@@ -167,6 +176,28 @@ export function CampaignDetailScreen({ campaignId }: CampaignDetailScreenProps) 
             ))}
           </div>
         </Section>
+
+        {CANCELLABLE_STATUSES.includes(campaign.status) ? (
+          <div className="px-4 pb-8 pt-2">
+            <button
+              type="button"
+              disabled={cancel.isPending}
+              onClick={() => {
+                if (typeof window === 'undefined') return;
+                if (!window.confirm(t('cancelConfirm'))) return;
+                cancel.mutate(campaignId);
+              }}
+              className="inline-flex min-h-[2.5rem] w-full items-center justify-center rounded-[var(--radius-md)] border border-[var(--color-danger)]/30 bg-transparent px-4 text-[13px] font-medium text-[var(--color-danger)] transition-colors hover:bg-[var(--color-danger)]/10 disabled:opacity-50"
+            >
+              {cancel.isPending ? t('cancelling') : t('cancel')}
+            </button>
+            {cancel.isError ? (
+              <p className="mt-2 text-center text-[12px] text-[var(--color-danger)] [overflow-wrap:anywhere]">
+                {cancel.error.message}
+              </p>
+            ) : null}
+          </div>
+        ) : null}
       </Scroll>
     </Screen>
   );

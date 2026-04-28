@@ -1,39 +1,45 @@
 {
   "home": {
-    "greeting": "[RU] Hi, {name}!",
-    "description": "[RU] AI Job Bot helps you find the right role — across tech, design, marketing, and more.",
-    "fallbackName": "[RU] friend",
-    "phaseNote": "[RU] Phase 1 skeleton. Profile, campaign wizard and payments land in the next phases.",
+    "greeting": "Привет, {name}!",
+    "description": "AI Job Bot подбирает релевантные вакансии — IT, дизайн, маркетинг и не только.",
+    "fallbackName": "друг",
+    "phaseNote": "Профиль, мастер кампаний и оплата уже работают.",
     "cta": {
-      "create_campaign": "[RU] Create a campaign"
+      "create_campaign": "Создать кампанию"
     }
   },
+  "nav": {
+    "aria": "Главная навигация",
+    "dashboard": "Кампании",
+    "profiles": "Профиль",
+    "settings": "Настройки"
+  },
   "auth": {
-    "loading": "[RU] Authenticating...",
+    "loading": "Авторизация...",
     "error": {
-      "generic": "[RU] Something went wrong. Tap Retry.",
-      "missing_init_data": "[RU] Please open this app from Telegram.",
-      "stale_init_data": "[RU] Session expired. Reloading...",
-      "invalid_signature": "[RU] Invalid Telegram session.",
-      "malformed_init_data": "[RU] Malformed session data.",
-      "telegram_env_missing": "[RU] Server isn't configured for Telegram auth.",
-      "vercel_protection": "[RU] Deployment is blocked by Vercel Authentication. Disable it in Project Settings → Deployment Protection.",
-      "internal": "[RU] Server error. Tap Retry.",
-      "network_error": "[RU] Network error. Check your connection."
+      "generic": "Что-то пошло не так. Нажмите «Повторить».",
+      "missing_init_data": "Откройте приложение из Telegram.",
+      "stale_init_data": "Сессия истекла. Перезагружаем...",
+      "invalid_signature": "Невалидная сессия Telegram.",
+      "malformed_init_data": "Повреждённые данные сессии.",
+      "telegram_env_missing": "Сервер не настроен для Telegram-авторизации.",
+      "vercel_protection": "Деплой заблокирован Vercel Authentication. Отключите её в Project Settings → Deployment Protection.",
+      "internal": "Ошибка сервера. Нажмите «Повторить».",
+      "network_error": "Ошибка сети. Проверьте соединение."
     },
-    "retry": "[RU] Retry",
+    "retry": "Повторить",
     "diagnostics": {
-      "title": "[RU] Diagnostics"
+      "title": "Диагностика"
     }
   },
   "common": {
-    "loading": "[RU] Loading...",
-    "error": "[RU] Something went wrong",
-    "retry": "[RU] Retry",
-    "save": "[RU] Save",
-    "cancel": "[RU] Cancel",
-    "remove": "[RU] Remove",
-    "add": "[RU] Add"
+    "loading": "Загрузка...",
+    "error": "Что-то пошло не так",
+    "retry": "Повторить",
+    "save": "Сохранить",
+    "cancel": "Отмена",
+    "remove": "Удалить",
+    "add": "Добавить"
   },
   "screens": {
     "dashboard": {
@@ -53,17 +59,17 @@
         "completed": "Завершённые"
       },
       "empty": {
-        "title": "Пока нет кампаний",
+        "title": "Кампаний пока нет",
         "hint": "Нажмите +, чтобы создать первую."
       },
       "newCampaign": "Новая кампания"
     },
     "onboarding": {
       "headline": "AI находит\nвакансии.\nВы получаете\nответы.",
-      "description": "Загрузите резюме — мы сами ищем по 12 категориям и сами откликаемся. Вы видите прогресс в реальном времени.",
+      "description": "Загрузите резюме — мы ищем по 12 категориям и откликаемся за вас. Прогресс виден в реальном времени.",
       "feature": {
         "parse": {
-          "title": "AI-парсинг резюме",
+          "title": "AI-разбор резюме",
           "subtitle": "PDF или LinkedIn — заполним профиль"
         },
         "search": {
@@ -72,7 +78,7 @@
         },
         "pay": {
           "title": "Оплата ⭐ Stars или TON",
-          "subtitle": "Без карт — нативно в Telegram"
+          "subtitle": "Без карт — нативно для Telegram"
         }
       },
       "start": "Начать"
@@ -87,14 +93,14 @@
       "notification": {
         "push": {
           "label": "Push",
-          "description": "Изменения статусов кампаний"
+          "description": "Изменения статуса ваших кампаний"
         },
         "email": {
           "label": "Email",
           "description": "Еженедельная сводка"
         },
         "weeklyDigest": {
-          "label": "Еженедельный дайджест",
+          "label": "Дайджест за неделю",
           "description": "Топ вакансий в Telegram"
         }
       },
@@ -106,26 +112,26 @@
     "profiles": {
       "title": "Профили",
       "default": "По умолчанию",
-      "empty": "Пока нет профилей. Загрузите резюме, чтобы начать.",
-      "addCv": "Добавить резюме",
+      "empty": "Профилей пока нет. Загрузите CV, чтобы начать.",
+      "addCv": "Загрузить CV",
       "subtitle": "Разные роли — разные профили. Один по умолчанию.",
       "newProfile": "Новый профиль",
       "campaigns": "{count, plural, one {# кампания} few {# кампании} many {# кампаний} other {# кампании}}",
-      "edit": "Править"
+      "edit": "Изменить"
     },
     "upload": {
-      "title": "Резюме",
-      "subtitle": "Загрузите PDF или вставьте ссылку на LinkedIn. AI заполнит профиль автоматически.",
+      "title": "CV",
+      "subtitle": "Загрузите PDF или вставьте ссылку на LinkedIn. AI сам заполнит профиль.",
       "idle": "Перетащите PDF или выберите файл",
       "uploading": "Загружаем...",
       "parsing": "AI читает резюме...",
-      "done": "Готово — проверьте профиль",
-      "errorRetry": "Попробуйте другой файл",
+      "done": "Готово — посмотрите профиль",
+      "errorRetry": "Попробовать другой файл",
       "dropzone": "Перетащите CV или нажмите",
       "fileTypes": "PDF · до 10 МБ",
       "orSeparator": "или",
       "linkedinPlaceholder": "linkedin.com/in/...",
-      "mainCta": "Загрузить резюме",
+      "mainCta": "Загрузить CV",
       "reviewCta": "Открыть профиль",
       "step": {
         "upload": "Файл загружен",
@@ -133,18 +139,18 @@
         "ai": "AI анализирует",
         "profile": "Готовим профиль"
       },
-      "aiHint": "Claude Sonnet 4.5 · извлекает опыт, стек, языки",
+      "aiHint": "Claude Sonnet 4.5 · опыт, стек, языки",
       "sampleFile": "cv.pdf",
       "sampleSize": "248 КБ",
       "error": {
-        "format": "Не получилось прочитать PDF. Попробуйте другой файл.",
-        "file_too_large": "Файл больше 10 МБ. Пожалуйста, загрузите меньший.",
-        "invalid_mime": "Пожалуйста, загрузите PDF-файл.",
+        "format": "Не удалось прочитать PDF. Попробуйте другой файл.",
+        "file_too_large": "Файл больше 10 МБ. Загрузите файл поменьше.",
+        "invalid_mime": "Загрузите файл в формате PDF.",
         "missing_file": "Файл не выбран.",
-        "empty_file": "Файл пуст.",
-        "rate_limit": "Слишком много загрузок — попробуйте через минуту.",
-        "unavailable": "AI недоступен. Попробуйте через минуту.",
-        "internal": "Что-то пошло не так. Мы разбираемся."
+        "empty_file": "Файл пустой.",
+        "rate_limit": "Слишком много загрузок — попробуйте чуть позже.",
+        "unavailable": "AI временно недоступен. Попробуйте через минуту.",
+        "internal": "Что-то пошло не так. Уже разбираемся."
       }
     },
     "wizard": {
@@ -158,32 +164,32 @@
         "stack": "Стек",
         "languages": "Языки",
         "quota": "Объём",
-        "checkout": "Чек"
+        "checkout": "Проверка"
       },
       "description": {
-        "category": "Выберите категорию — определит форму и цену",
-        "roles": "ESCO-роли · до 5 штук",
-        "countries": "Где искать · мульти-выбор",
-        "salary": "Минимальная зарплата",
-        "stack": "Обязательный стек",
-        "languages": "Языки собеседования",
-        "quota": "Сколько откликов хотите · прямо влияет на цену",
-        "checkout": "Проверьте и оплатите"
+        "category": "Выберите категорию — определит формулу цены",
+        "roles": "Роли ESCO · до 5 штук",
+        "countries": "Куда откликаемся · можно несколько",
+        "salary": "Минимальная зарплата в месяц",
+        "stack": "Требуемый технологический стек",
+        "languages": "Языки для собеседований",
+        "quota": "Сколько откликов · влияет на цену",
+        "checkout": "Проверка и оплата"
       },
       "next": "Далее",
       "submit": "К оплате · {amount}",
       "category": {
         "tech": "IT / Tech",
-        "design": "Design",
-        "marketing": "Marketing",
-        "sales": "Sales",
-        "product": "Product",
-        "finance": "Finance",
+        "design": "Дизайн",
+        "marketing": "Маркетинг",
+        "sales": "Продажи",
+        "product": "Продукт",
+        "finance": "Финансы",
         "hr": "HR",
-        "support": "Support",
-        "content": "Content",
-        "ops": "Operations",
-        "data": "Data",
+        "support": "Поддержка",
+        "content": "Контент",
+        "ops": "Операции",
+        "data": "Данные",
         "web3": "Web3"
       },
       "roles": {
@@ -203,7 +209,7 @@
         "max": "$15k"
       },
       "stack": {
-        "hint": "Касание — отметить как жёсткое требование",
+        "hint": "Тапните, чтобы пометить как обязательный",
         "selected": "Выбрано · {count}"
       },
       "langs": {
@@ -219,50 +225,51 @@
       "quota": {
         "label": "Квота откликов",
         "hint": "≈ {min}–{max} вакансий просмотрено",
-        "priceNote": "Цена растёт линейно: 200 ⭐ базово + 8 ⭐ за каждый отклик"
+        "priceNote": "Цена линейна: 200 базы + 8 за отклик"
       },
       "summary": {
-        "title": "Итог",
+        "title": "Сводка",
         "category": "Категория",
         "roles": "Роли",
-        "rolesCount": "{count, plural, one {# роль} few {# роли} many {# ролей} other {# ролей}}",
+        "rolesCount": "{count, plural, one {# роль} few {# роли} many {# ролей} other {# роли}}",
         "countries": "Страны",
         "salary": "Зарплата",
         "salaryFrom": "${amount}+",
         "stack": "Стек",
         "languages": "Языки",
-        "quota": "Квота откликов",
+        "quota": "Квота",
+        "noProfile": "Сначала создайте профиль.",
         "basePrice": "Базовая цена",
         "quotaRow": "Квота × {count}",
         "countriesRow": "Страны × {count}",
-        "total": "К оплате"
+        "total": "Итого"
       }
     },
     "checkout": {
-      "title": "Оплата",
-      "campaignSummary": "{title} · {count, plural, one {# отклик} few {# отклика} many {# откликов} other {# откликов}}",
-      "totalLabel": "К оплате",
+      "title": "Способ оплаты",
+      "campaignSummary": "{title} · {count, plural, one {# отклик} few {# отклика} many {# откликов} other {# отклика}}",
+      "totalLabel": "Сумма к оплате",
       "methodSection": "Способ оплаты",
       "pay": "Оплатить {amount}",
-      "noteRefund": "После оплаты данные кампании не редактируются. Возврат средств в MVP не предусмотрен.",
+      "noteRefund": "После оплаты данные кампании заморожены. Возвраты в MVP не поддерживаются.",
       "method": {
         "stars": "Telegram Stars",
-        "starsHint": "Нативная оплата · мгновенно",
+        "starsHint": "Нативно · мгновенно",
         "starsBadge": "Рекомендуем",
         "ton": "TON Connect",
-        "tonHint": "Оплата через крипто-кошелёк"
+        "tonHint": "Через крипто-кошелёк"
       }
     },
     "payment": {
-      "processing": "Ожидаем\nоплату",
+      "processing": "Ждём\nоплату",
       "processingStars": "Подтвердите в окне Telegram",
       "processingTon": "Подтвердите транзакцию в кошельке",
-      "processingSecure": "SECURE · {provider}",
+      "processingSecure": "ЗАЩИЩЕНО · {provider}",
       "success": "Оплачено",
-      "successHint": "Кампания запущена. Первые отклики за 2–6 часов.",
-      "fail": "Оплата не прошла",
+      "successHint": "Кампания запущена. Первые отклики через 2–6 часов.",
+      "fail": "Платёж не прошёл",
       "failHint": "Деньги не списаны. Попробуйте ещё раз.",
-      "retry": "Попробовать снова",
+      "retry": "Повторить",
       "openCampaign": "Открыть кампанию",
       "homeCta": "К кампаниям",
       "rows": {
@@ -274,7 +281,10 @@
     "detail": {
       "paidAt": "оплачено {when}",
       "appliedOf": "{applied} из {quota}",
-      "liveSearch": "живой поиск",
+      "liveSearch": "поиск идёт",
+      "cancel": "Отменить кампанию",
+      "cancelling": "Отменяем...",
+      "cancelConfirm": "Отменить эту кампанию? Уже потраченные средства не возвращаются.",
       "metric": {
         "found": "Найдено",
         "foundHint": "вакансий",
@@ -283,110 +293,110 @@
       },
       "section": {
         "progress": "Прогресс",
-        "events": "Лента событий",
-        "snapshot": "Снэпшот кампании"
+        "events": "Активность",
+        "snapshot": "Снимок кампании"
       },
       "empty": "Событий пока нет.",
       "status": {
-        "appliedSent": "Отклики отправлены"
+        "appliedSent": "Откликов отправлено"
       }
     },
     "error": {
-      "title": "Оплата не\nпрошла",
+      "title": "Платёж\nне прошёл",
       "code": "Код ошибки",
       "tryAgain": "Попробовать снова",
       "back": "На главную",
-      "hint": "Средства не списаны. Кампания осталась в черновиках — попробуйте снова.",
+      "hint": "Деньги не списаны. Кампания осталась в черновиках — попробуйте ещё раз.",
       "defaultTitle": "Что-то пошло не так",
-      "defaultHint": "Не получилось загрузить экран. Попробуйте снова или вернитесь на главную.",
-      "codeLabel": "error",
-      "detail": "wallet did not respond in 60s",
+      "defaultHint": "Не удалось загрузить экран. Попробуйте ещё раз или вернитесь на главную.",
+      "codeLabel": "ошибка",
+      "detail": "кошелёк не ответил за 60 секунд",
       "retry": "Попробовать снова",
-      "home": "Вернуться к кампаниям"
+      "home": "К кампаниям"
     }
   },
   "profile": {
-    "title": "[RU] Profile",
-    "defaultName": "[RU] Default profile",
-    "loading": "[RU] Loading profile...",
+    "title": "Профиль",
+    "defaultName": "Профиль по умолчанию",
+    "loading": "Загружаем профиль...",
     "upload": {
-      "label": "[RU] ✨ AI-fill from CV",
-      "parsing": "[RU] AI is reading your CV...",
-      "success": "[RU] Done · {filled} / {total} fields filled",
+      "label": "✨ AI-заполнение из CV",
+      "parsing": "AI читает ваше резюме...",
+      "success": "Готово · {filled} / {total} полей заполнено",
       "error": {
-        "format": "[RU] Couldn't read the PDF. Try another file or fill the form manually.",
-        "file_too_large": "[RU] File is over 10 MB. Please upload a smaller one.",
-        "invalid_mime": "[RU] Please upload a PDF file.",
-        "missing_file": "[RU] No file selected.",
-        "empty_file": "[RU] The file is empty.",
-        "rate_limit": "[RU] Too many uploads — try again in a moment.",
-        "unavailable": "[RU] Parser temporarily unavailable.",
-        "internal": "[RU] Parse failed. Please try again."
+        "format": "Не удалось прочитать PDF. Попробуйте другой файл или заполните форму вручную.",
+        "file_too_large": "Файл больше 10 МБ. Загрузите файл поменьше.",
+        "invalid_mime": "Загрузите файл в формате PDF.",
+        "missing_file": "Файл не выбран.",
+        "empty_file": "Файл пустой.",
+        "rate_limit": "Слишком много загрузок — попробуйте чуть позже.",
+        "unavailable": "Парсер временно недоступен.",
+        "internal": "Не удалось распарсить. Попробуйте снова."
       }
     },
     "section": {
-      "identity": "[RU] Identity",
-      "experience": "[RU] Experience & Education",
-      "experienceInner": "[RU] Work experience",
-      "educationInner": "[RU] Education",
-      "skillsLangs": "[RU] Skills & Languages",
-      "skills": "[RU] Skills",
-      "languages": "[RU] Languages",
-      "links": "[RU] Contacts & Links"
+      "identity": "Личные данные",
+      "experience": "Опыт и образование",
+      "experienceInner": "Опыт работы",
+      "educationInner": "Образование",
+      "skillsLangs": "Навыки и языки",
+      "skills": "Навыки",
+      "languages": "Языки",
+      "links": "Контакты и ссылки"
     },
     "field": {
-      "name": "[RU] Profile name",
-      "fullName": "[RU] Full name",
-      "headline": "[RU] Headline",
-      "headlineHint": "[RU] Short role description",
-      "summary": "[RU] Summary",
-      "location": "[RU] Location",
-      "timezone": "[RU] Timezone",
-      "yearsTotal": "[RU] Years of experience",
-      "englishLevel": "[RU] English level",
-      "email": "[RU] Email",
-      "phone": "[RU] Phone",
-      "linkedin": "[RU] LinkedIn",
-      "github": "[RU] GitHub",
-      "portfolio": "[RU] Portfolio URL",
-      "company": "[RU] Company",
-      "role": "[RU] Role",
-      "startMonth": "[RU] Start",
-      "endMonth": "[RU] End",
-      "description": "[RU] Description",
-      "stack": "[RU] Stack",
-      "school": "[RU] School",
-      "degree": "[RU] Degree",
-      "skillName": "[RU] Skill",
-      "years": "[RU] Years",
-      "language": "[RU] Language",
-      "level": "[RU] Level",
-      "present": "[RU] Current",
-      "optional": "[RU] optional"
+      "name": "Название профиля",
+      "fullName": "Полное имя",
+      "headline": "Заголовок",
+      "headlineHint": "Краткое описание роли",
+      "summary": "О себе",
+      "location": "Локация",
+      "timezone": "Часовой пояс",
+      "yearsTotal": "Лет опыта",
+      "englishLevel": "Уровень английского",
+      "email": "Email",
+      "phone": "Телефон",
+      "linkedin": "LinkedIn",
+      "github": "GitHub",
+      "portfolio": "Портфолио URL",
+      "company": "Компания",
+      "role": "Должность",
+      "startMonth": "С",
+      "endMonth": "По",
+      "description": "Описание",
+      "stack": "Стек",
+      "school": "Учебное заведение",
+      "degree": "Степень",
+      "skillName": "Навык",
+      "years": "Лет",
+      "language": "Язык",
+      "level": "Уровень",
+      "present": "Сейчас",
+      "optional": "необязательно"
     },
     "actions": {
-      "save": "[RU] Save profile",
-      "saving": "[RU] Saving...",
-      "saved": "[RU] Saved ✓",
-      "discard": "[RU] Discard changes",
-      "addSkill": "[RU] Add skill",
-      "addLanguage": "[RU] Add language",
-      "addExperience": "[RU] Add experience",
-      "addEducation": "[RU] Add education",
-      "moreSkills": "[RU] + {count} more skills"
+      "save": "Сохранить профиль",
+      "saving": "Сохраняем...",
+      "saved": "Сохранено ✓",
+      "discard": "Отменить изменения",
+      "addSkill": "Добавить навык",
+      "addLanguage": "Добавить язык",
+      "addExperience": "Добавить опыт",
+      "addEducation": "Добавить образование",
+      "moreSkills": "+ ещё {count} навыков"
     },
     "empty": {
-      "noSkills": "[RU] No skills yet. Type one above to add.",
-      "noLanguages": "[RU] No languages yet. Type one above to add.",
-      "noExperience": "[RU] No work experience yet.",
-      "noEducation": "[RU] No education yet."
+      "noSkills": "Навыков пока нет. Введите выше, чтобы добавить.",
+      "noLanguages": "Языков пока нет. Введите выше, чтобы добавить.",
+      "noExperience": "Опыта работы пока нет.",
+      "noEducation": "Образование пока не указано."
     },
     "validation": {
-      "nameRequired": "[RU] Profile name is required."
+      "nameRequired": "Название профиля обязательно."
     },
     "save": {
-      "success": "[RU] Profile saved.",
-      "error": "[RU] Couldn't save profile. Please try again."
+      "success": "Профиль сохранён.",
+      "error": "Не удалось сохранить профиль. Попробуйте ещё раз."
     }
   }
 }

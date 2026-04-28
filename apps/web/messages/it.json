@@ -1,392 +1,402 @@
 {
   "home": {
-    "greeting": "[IT] Hi, {name}!",
-    "description": "[IT] AI Job Bot helps you find the right role — across tech, design, marketing, and more.",
-    "fallbackName": "[IT] friend",
-    "phaseNote": "[IT] Phase 1 skeleton. Profile, campaign wizard and payments land in the next phases.",
+    "greeting": "Ciao, {name}!",
+    "description": "AI Job Bot ti aiuta a trovare il ruolo giusto — tech, design, marketing e altro.",
+    "fallbackName": "amico",
+    "phaseNote": "Profilo, creazione campagna e pagamenti sono attivi.",
     "cta": {
-      "create_campaign": "[IT] Create a campaign"
+      "create_campaign": "Crea una campagna"
     }
   },
+  "nav": {
+    "aria": "Navigazione principale",
+    "dashboard": "Campagne",
+    "profiles": "Profilo",
+    "settings": "Impostazioni"
+  },
   "auth": {
-    "loading": "[IT] Authenticating...",
+    "loading": "Autenticazione...",
     "error": {
-      "generic": "[IT] Something went wrong. Tap Retry.",
-      "missing_init_data": "[IT] Please open this app from Telegram.",
-      "stale_init_data": "[IT] Session expired. Reloading...",
-      "invalid_signature": "[IT] Invalid Telegram session.",
-      "malformed_init_data": "[IT] Malformed session data.",
-      "telegram_env_missing": "[IT] Server isn't configured for Telegram auth.",
-      "vercel_protection": "[IT] Deployment is blocked by Vercel Authentication. Disable it in Project Settings → Deployment Protection.",
-      "internal": "[IT] Server error. Tap Retry.",
-      "network_error": "[IT] Network error. Check your connection."
+      "generic": "Qualcosa è andato storto. Tocca «Riprova».",
+      "missing_init_data": "Apri questa app da Telegram.",
+      "stale_init_data": "Sessione scaduta. Ricaricamento...",
+      "invalid_signature": "Sessione Telegram non valida.",
+      "malformed_init_data": "Dati di sessione non validi.",
+      "telegram_env_missing": "Server non configurato per l'autenticazione Telegram.",
+      "vercel_protection": "Deploy bloccato da Vercel Authentication. Disattivala in Project Settings → Deployment Protection.",
+      "internal": "Errore del server. Tocca «Riprova».",
+      "network_error": "Errore di rete. Controlla la connessione."
     },
-    "retry": "[IT] Retry",
+    "retry": "Riprova",
     "diagnostics": {
-      "title": "[IT] Diagnostics"
+      "title": "Diagnostica"
     }
   },
   "common": {
-    "loading": "[IT] Loading...",
-    "error": "[IT] Something went wrong",
-    "retry": "[IT] Retry",
-    "save": "[IT] Save",
-    "cancel": "[IT] Cancel",
-    "remove": "[IT] Remove",
-    "add": "[IT] Add"
+    "loading": "Caricamento...",
+    "error": "Qualcosa è andato storto",
+    "retry": "Riprova",
+    "save": "Salva",
+    "cancel": "Annulla",
+    "remove": "Rimuovi",
+    "add": "Aggiungi"
   },
   "screens": {
     "dashboard": {
-      "greeting": "[IT] Good morning, {name}",
-      "summary": "[IT] {count, plural, one {# campaign} other {# campaigns}}",
+      "greeting": "Buongiorno, {name}",
+      "summary": "{count, plural, one {# campagna} other {# campagne}}",
       "stats": {
-        "found": "[IT] Found",
-        "foundHint": "[IT] vacancies",
-        "applied": "[IT] Applies",
-        "appliedHint": "[IT] sent",
-        "responses": "[IT] Replies",
-        "responsesHint": "[IT] received"
+        "found": "Trovate",
+        "foundHint": "annunci",
+        "applied": "Candidature",
+        "appliedHint": "inviate",
+        "responses": "Risposte",
+        "responsesHint": "ricevute"
       },
       "section": {
-        "active": "[IT] Active",
-        "drafts": "[IT] Drafts",
-        "completed": "[IT] Completed"
+        "active": "Attive",
+        "drafts": "Bozze",
+        "completed": "Completate"
       },
       "empty": {
-        "title": "[IT] No campaigns yet",
-        "hint": "[IT] Tap + to create the first one."
+        "title": "Nessuna campagna",
+        "hint": "Tocca + per creare la prima."
       },
-      "newCampaign": "[IT] New campaign"
+      "newCampaign": "Nuova campagna"
     },
     "onboarding": {
-      "headline": "[IT] AI finds\nvacancies.\nYou get\nreplies.",
-      "description": "[IT] Upload your CV — we search across 12 categories and apply for you. You see progress in real time.",
+      "headline": "L'AI trova\nofferte.\nTu ricevi\nrisposte.",
+      "description": "Carica il CV — cerchiamo in 12 categorie e ci candidiamo per te. Puoi seguire i progressi in tempo reale.",
       "feature": {
         "parse": {
-          "title": "[IT] AI CV parsing",
-          "subtitle": "[IT] PDF or LinkedIn — we fill the profile"
+          "title": "Analisi AI del CV",
+          "subtitle": "PDF o LinkedIn — compiliamo il profilo"
         },
         "search": {
-          "title": "[IT] Search across 12 categories",
-          "subtitle": "[IT] Tech, Design, Product, Finance..."
+          "title": "Ricerca in 12 categorie",
+          "subtitle": "Tech, Design, Product, Finance..."
         },
         "pay": {
-          "title": "[IT] Pay with ⭐ Stars or TON",
-          "subtitle": "[IT] No cards — native to Telegram"
+          "title": "Paga con ⭐ Stars o TON",
+          "subtitle": "Senza carte — nativo per Telegram"
         }
       },
-      "start": "[IT] Start"
+      "start": "Inizia"
     },
     "settings": {
-      "title": "[IT] Settings",
+      "title": "Impostazioni",
       "section": {
-        "language": "[IT] Language",
-        "notifications": "[IT] Notifications",
-        "about": "[IT] About"
+        "language": "Lingua",
+        "notifications": "Notifiche",
+        "about": "Informazioni"
       },
       "notification": {
         "push": {
-          "label": "[IT] Push",
-          "description": "[IT] Status updates from your campaigns"
+          "label": "Push",
+          "description": "Aggiornamenti di stato delle tue campagne"
         },
         "email": {
-          "label": "[IT] Email",
-          "description": "[IT] Weekly summary"
+          "label": "Email",
+          "description": "Riepilogo settimanale"
         },
         "weeklyDigest": {
-          "label": "[IT] Weekly digest",
-          "description": "[IT] Top vacancies in Telegram"
+          "label": "Digest settimanale",
+          "description": "Le migliori offerte in Telegram"
         }
       },
       "about": {
-        "version": "[IT] Version",
-        "support": "[IT] Support"
+        "version": "Versione",
+        "support": "Assistenza"
       }
     },
     "profiles": {
-      "title": "[LOCALE] Profiles",
-      "default": "[LOCALE] Default",
-      "empty": "[LOCALE] No profiles yet. Upload your CV to start.",
-      "addCv": "[LOCALE] Add a CV",
-      "subtitle": "[LOCALE] Different roles, different profiles. One default.",
-      "newProfile": "[LOCALE] New profile",
-      "campaigns": "[LOCALE] {count, plural, one {# campaign} other {# campaigns}}",
-      "edit": "[LOCALE] Edit"
+      "title": "Profili",
+      "default": "Predefinito",
+      "empty": "Nessun profilo. Carica il CV per iniziare.",
+      "addCv": "Aggiungi CV",
+      "subtitle": "Ruoli diversi, profili diversi. Uno predefinito.",
+      "newProfile": "Nuovo profilo",
+      "campaigns": "{count, plural, one {# campagna} other {# campagne}}",
+      "edit": "Modifica"
     },
     "upload": {
-      "title": "[LOCALE] CV",
-      "subtitle": "[LOCALE] Upload a PDF or paste a LinkedIn URL. AI will fill the profile automatically.",
-      "idle": "[LOCALE] Drop a PDF or pick a file",
-      "uploading": "[LOCALE] Uploading...",
-      "parsing": "[LOCALE] AI is reading the CV...",
-      "done": "[LOCALE] Done — review the profile",
-      "errorRetry": "[LOCALE] Try another file",
-      "dropzone": "[LOCALE] Drop CV or tap",
-      "fileTypes": "[LOCALE] PDF · up to 10 MB",
-      "orSeparator": "[LOCALE] or",
-      "linkedinPlaceholder": "[LOCALE] linkedin.com/in/...",
-      "mainCta": "[LOCALE] Upload CV",
-      "reviewCta": "[LOCALE] Open profile",
+      "title": "CV",
+      "subtitle": "Carica un PDF o incolla un URL LinkedIn. L'AI compilerà il profilo automaticamente.",
+      "idle": "Trascina un PDF o scegli un file",
+      "uploading": "Caricamento...",
+      "parsing": "L'AI sta leggendo il CV...",
+      "done": "Fatto — controlla il profilo",
+      "errorRetry": "Prova un altro file",
+      "dropzone": "Trascina il CV o tocca",
+      "fileTypes": "PDF · fino a 10 MB",
+      "orSeparator": "oppure",
+      "linkedinPlaceholder": "linkedin.com/in/...",
+      "mainCta": "Carica CV",
+      "reviewCta": "Apri profilo",
       "step": {
-        "upload": "[LOCALE] File uploaded",
-        "extract": "[LOCALE] Extracting text",
-        "ai": "[LOCALE] AI is analyzing",
-        "profile": "[LOCALE] Preparing the profile"
+        "upload": "File caricato",
+        "extract": "Estrazione testo",
+        "ai": "Analisi AI",
+        "profile": "Preparazione profilo"
       },
-      "aiHint": "[LOCALE] Claude Sonnet 4.5 · pulling experience, stack, languages",
-      "sampleFile": "[LOCALE] cv.pdf",
-      "sampleSize": "[LOCALE] 248 KB",
+      "aiHint": "Claude Sonnet 4.5 · esperienza, stack, lingue",
+      "sampleFile": "cv.pdf",
+      "sampleSize": "248 KB",
       "error": {
-        "format": "[LOCALE] Couldn't read the PDF. Try another file.",
-        "file_too_large": "[LOCALE] File is over 10 MB. Please upload a smaller one.",
-        "invalid_mime": "[LOCALE] Please upload a PDF file.",
-        "missing_file": "[LOCALE] No file selected.",
-        "empty_file": "[LOCALE] The file is empty.",
-        "rate_limit": "[LOCALE] Too many uploads — try again in a moment.",
-        "unavailable": "[LOCALE] AI is offline. Try again in a minute.",
-        "internal": "[LOCALE] Something went wrong. We're looking into it."
+        "format": "Impossibile leggere il PDF. Prova un altro file.",
+        "file_too_large": "File oltre i 10 MB. Caricane uno più piccolo.",
+        "invalid_mime": "Carica un file PDF.",
+        "missing_file": "Nessun file selezionato.",
+        "empty_file": "Il file è vuoto.",
+        "rate_limit": "Troppe operazioni — riprova tra poco.",
+        "unavailable": "AI non disponibile. Riprova tra un minuto.",
+        "internal": "Qualcosa è andato storto. Stiamo indagando."
       }
     },
     "wizard": {
-      "title": "[IT] New campaign",
-      "step": "[IT] STEP {current} / {total}",
+      "title": "Nuova campagna",
+      "step": "PASSO {current} / {total}",
       "label": {
-        "category": "[IT] Category",
-        "roles": "[IT] Roles",
-        "countries": "[IT] Countries",
-        "salary": "[IT] Salary",
-        "stack": "[IT] Stack",
-        "languages": "[IT] Languages",
-        "quota": "[IT] Volume",
-        "checkout": "[IT] Review"
+        "category": "Categoria",
+        "roles": "Ruoli",
+        "countries": "Paesi",
+        "salary": "Stipendio",
+        "stack": "Stack",
+        "languages": "Lingue",
+        "quota": "Volume",
+        "checkout": "Riepilogo"
       },
       "description": {
-        "category": "[IT] Pick a category — sets pricing form",
-        "roles": "[IT] ESCO roles · up to 5",
-        "countries": "[IT] Where to apply · multi-select",
-        "salary": "[IT] Minimum monthly salary",
-        "stack": "[IT] Required tech stack",
-        "languages": "[IT] Interview languages",
-        "quota": "[IT] How many applications · drives price",
-        "checkout": "[IT] Review and pay"
+        "category": "Scegli una categoria — definisce la formula del prezzo",
+        "roles": "Ruoli ESCO · fino a 5",
+        "countries": "Dove candidarsi · selezione multipla",
+        "salary": "Stipendio mensile minimo",
+        "stack": "Stack tecnologico richiesto",
+        "languages": "Lingue per i colloqui",
+        "quota": "Quante candidature · influenza il prezzo",
+        "checkout": "Riepilogo e pagamento"
       },
-      "next": "[IT] Next",
-      "submit": "[IT] To checkout · {amount}",
+      "next": "Avanti",
+      "submit": "Al pagamento · {amount}",
       "category": {
-        "tech": "[IT] IT / Tech",
-        "design": "[IT] Design",
-        "marketing": "[IT] Marketing",
-        "sales": "[IT] Sales",
-        "product": "[IT] Product",
-        "finance": "[IT] Finance",
-        "hr": "[IT] HR",
-        "support": "[IT] Support",
-        "content": "[IT] Content",
-        "ops": "[IT] Operations",
-        "data": "[IT] Data",
-        "web3": "[IT] Web3"
+        "tech": "IT / Tech",
+        "design": "Design",
+        "marketing": "Marketing",
+        "sales": "Vendite",
+        "product": "Prodotto",
+        "finance": "Finanza",
+        "hr": "HR",
+        "support": "Assistenza",
+        "content": "Contenuti",
+        "ops": "Operazioni",
+        "data": "Dati",
+        "web3": "Web3"
       },
       "roles": {
-        "placeholder": "[IT] Type a role...",
-        "selected": "[IT] Selected · {count}/5",
-        "suggestions": "[IT] ESCO suggestions",
-        "add": "[IT] Add",
-        "empty": "[IT] Pick a role from the suggestions"
+        "placeholder": "Inserisci un ruolo...",
+        "selected": "Selezionati · {count}/5",
+        "suggestions": "Suggerimenti ESCO",
+        "add": "Aggiungi",
+        "empty": "Scegli un ruolo dai suggerimenti"
       },
       "countries": {
-        "selected": "[IT] Selected · {count}",
-        "empty": "[IT] Pick at least one country"
+        "selected": "Selezionati · {count}",
+        "empty": "Seleziona almeno un paese"
       },
       "salary": {
-        "label": "[IT] Minimum, USD / month",
-        "min": "[IT] $1k",
-        "max": "[IT] $15k"
+        "label": "Minimo, USD / mese",
+        "min": "$1k",
+        "max": "$15k"
       },
       "stack": {
-        "hint": "[IT] Tap to mark as required",
-        "selected": "[IT] Selected · {count}"
+        "hint": "Tocca per contrassegnare come obbligatorio",
+        "selected": "Selezionati · {count}"
       },
       "langs": {
-        "EN": "[IT] English",
-        "DE": "[IT] German",
-        "FR": "[IT] French",
-        "ES": "[IT] Spanish",
-        "PL": "[IT] Polish",
-        "UK": "[IT] Ukrainian",
-        "RU": "[IT] Russian",
-        "IT": "[IT] Italian"
+        "EN": "Inglese",
+        "DE": "Tedesco",
+        "FR": "Francese",
+        "ES": "Spagnolo",
+        "PL": "Polacco",
+        "UK": "Ucraino",
+        "RU": "Russo",
+        "IT": "Italiano"
       },
       "quota": {
-        "label": "[IT] Applications quota",
-        "hint": "[IT] ≈ {min}–{max} vacancies reviewed",
-        "priceNote": "[IT] Price scales linearly: 200 base + 8 per application"
+        "label": "Quota candidature",
+        "hint": "≈ {min}–{max} annunci esaminati",
+        "priceNote": "Prezzo lineare: 200 base + 8 per candidatura"
       },
       "summary": {
-        "title": "[IT] Summary",
-        "category": "[IT] Category",
-        "roles": "[IT] Roles",
-        "rolesCount": "[IT] {count, plural, one {# role} other {# roles}}",
-        "countries": "[IT] Countries",
-        "salary": "[IT] Salary",
-        "salaryFrom": "[IT] ${amount}+",
-        "stack": "[IT] Stack",
-        "languages": "[IT] Languages",
-        "quota": "[IT] Quota",
-        "basePrice": "[IT] Base price",
-        "quotaRow": "[IT] Quota × {count}",
-        "countriesRow": "[IT] Countries × {count}",
-        "total": "[IT] Total"
+        "title": "Riepilogo",
+        "category": "Categoria",
+        "roles": "Ruoli",
+        "rolesCount": "{count, plural, one {# ruolo} other {# ruoli}}",
+        "countries": "Paesi",
+        "salary": "Stipendio",
+        "salaryFrom": "${amount}+",
+        "stack": "Stack",
+        "languages": "Lingue",
+        "quota": "Quota",
+        "noProfile": "Crea prima un profilo.",
+        "basePrice": "Prezzo base",
+        "quotaRow": "Quota × {count}",
+        "countriesRow": "Paesi × {count}",
+        "total": "Totale"
       }
     },
     "checkout": {
-      "title": "[IT] Choose payment",
-      "campaignSummary": "[IT] {title} · {count, plural, one {# application} other {# applications}}",
-      "totalLabel": "[IT] Total amount",
-      "methodSection": "[IT] Payment method",
-      "pay": "[IT] Pay {amount}",
-      "noteRefund": "[IT] After payment the campaign data is frozen. Refunds are not supported in MVP.",
+      "title": "Scegli il pagamento",
+      "campaignSummary": "{title} · {count, plural, one {# candidatura} other {# candidature}}",
+      "totalLabel": "Importo totale",
+      "methodSection": "Metodo di pagamento",
+      "pay": "Paga {amount}",
+      "noteRefund": "Dopo il pagamento i dati della campagna sono congelati. I rimborsi non sono supportati nell'MVP.",
       "method": {
-        "stars": "[IT] Telegram Stars",
-        "starsHint": "[IT] Native payment · instant",
-        "starsBadge": "[IT] Recommended",
-        "ton": "[IT] TON Connect",
-        "tonHint": "[IT] Pay via crypto wallet"
+        "stars": "Telegram Stars",
+        "starsHint": "Pagamento nativo · istantaneo",
+        "starsBadge": "Consigliato",
+        "ton": "TON Connect",
+        "tonHint": "Paga con wallet crypto"
       }
     },
     "payment": {
-      "processing": "[IT] Waiting for\npayment",
-      "processingStars": "[IT] Confirm in the Telegram window",
-      "processingTon": "[IT] Confirm the transaction in your wallet",
-      "processingSecure": "[IT] SECURE · {provider}",
-      "success": "[IT] Paid",
-      "successHint": "[IT] Campaign launched. First applications in 2–6 hours.",
-      "fail": "[IT] Payment failed",
-      "failHint": "[IT] Money was not charged. Try again.",
-      "retry": "[IT] Retry",
-      "openCampaign": "[IT] Open campaign",
-      "homeCta": "[IT] Back to campaigns",
+      "processing": "In attesa\ndel pagamento",
+      "processingStars": "Conferma nella finestra Telegram",
+      "processingTon": "Conferma la transazione nel wallet",
+      "processingSecure": "SICURO · {provider}",
+      "success": "Pagato",
+      "successHint": "Campagna avviata. Prime candidature in 2–6 ore.",
+      "fail": "Pagamento fallito",
+      "failHint": "Nessun addebito. Riprova.",
+      "retry": "Riprova",
+      "openCampaign": "Apri campagna",
+      "homeCta": "Torna alle campagne",
       "rows": {
-        "amount": "[IT] Amount",
-        "transaction": "[IT] Transaction",
-        "when": "[IT] Time"
+        "amount": "Importo",
+        "transaction": "Transazione",
+        "when": "Ora"
       }
     },
     "detail": {
-      "paidAt": "[IT] paid {when}",
-      "appliedOf": "[IT] {applied} of {quota}",
-      "liveSearch": "[IT] live search",
+      "paidAt": "pagato {when}",
+      "appliedOf": "{applied} di {quota}",
+      "liveSearch": "ricerca in corso",
+      "cancel": "Annulla campagna",
+      "cancelling": "Annullamento...",
+      "cancelConfirm": "Annullare questa campagna? I fondi già spesi non vengono rimborsati.",
       "metric": {
-        "found": "[IT] Found",
-        "foundHint": "[IT] vacancies",
-        "responses": "[IT] Replies",
-        "responsesHint": "[IT] received"
+        "found": "Trovate",
+        "foundHint": "annunci",
+        "responses": "Risposte",
+        "responsesHint": "ricevute"
       },
       "section": {
-        "progress": "[IT] Progress",
-        "events": "[IT] Activity",
-        "snapshot": "[IT] Campaign snapshot"
+        "progress": "Progressi",
+        "events": "Attività",
+        "snapshot": "Snapshot della campagna"
       },
-      "empty": "[IT] No events yet.",
+      "empty": "Nessun evento.",
       "status": {
-        "appliedSent": "[IT] Applications sent"
+        "appliedSent": "Candidature inviate"
       }
     },
     "error": {
-      "title": "[LOCALE] Payment\ndid not go through",
-      "code": "[IT] Error code",
-      "tryAgain": "[IT] Try again",
-      "back": "[IT] Back home",
-      "hint": "[LOCALE] Funds were not charged. The campaign stays in drafts — try again.",
-      "defaultTitle": "[LOCALE] Something went wrong",
-      "defaultHint": "[LOCALE] We couldn't load this screen. Try again or go back home.",
-      "codeLabel": "[LOCALE] error",
-      "detail": "[LOCALE] wallet did not respond in 60s",
-      "retry": "[LOCALE] Try again",
-      "home": "[LOCALE] Back to campaigns"
+      "title": "Pagamento\nnon completato",
+      "code": "Codice errore",
+      "tryAgain": "Riprova",
+      "back": "Torna alla home",
+      "hint": "Nessun addebito. La campagna resta nelle bozze — riprova.",
+      "defaultTitle": "Qualcosa è andato storto",
+      "defaultHint": "Impossibile caricare la schermata. Riprova o torna alla home.",
+      "codeLabel": "errore",
+      "detail": "il wallet non ha risposto in 60s",
+      "retry": "Riprova",
+      "home": "Torna alle campagne"
     }
   },
   "profile": {
-    "title": "[IT] Profile",
-    "defaultName": "[IT] Default profile",
-    "loading": "[IT] Loading profile...",
+    "title": "Profilo",
+    "defaultName": "Profilo predefinito",
+    "loading": "Caricamento profilo...",
     "upload": {
-      "label": "[IT] ✨ AI-fill from CV",
-      "parsing": "[IT] AI is reading your CV...",
-      "success": "[IT] Done · {filled} / {total} fields filled",
+      "label": "✨ Compilazione AI dal CV",
+      "parsing": "L'AI sta leggendo il tuo CV...",
+      "success": "Fatto · {filled} / {total} campi compilati",
       "error": {
-        "format": "[IT] Couldn't read the PDF. Try another file or fill the form manually.",
-        "file_too_large": "[IT] File is over 10 MB. Please upload a smaller one.",
-        "invalid_mime": "[IT] Please upload a PDF file.",
-        "missing_file": "[IT] No file selected.",
-        "empty_file": "[IT] The file is empty.",
-        "rate_limit": "[IT] Too many uploads — try again in a moment.",
-        "unavailable": "[IT] Parser temporarily unavailable.",
-        "internal": "[IT] Parse failed. Please try again."
+        "format": "Impossibile leggere il PDF. Prova un altro file o compila manualmente.",
+        "file_too_large": "File oltre i 10 MB. Caricane uno più piccolo.",
+        "invalid_mime": "Carica un file PDF.",
+        "missing_file": "Nessun file selezionato.",
+        "empty_file": "Il file è vuoto.",
+        "rate_limit": "Troppe operazioni — riprova tra poco.",
+        "unavailable": "Parser temporaneamente non disponibile.",
+        "internal": "Analisi fallita. Riprova."
       }
     },
     "section": {
-      "identity": "[IT] Identity",
-      "experience": "[IT] Experience & Education",
-      "experienceInner": "[IT] Work experience",
-      "educationInner": "[IT] Education",
-      "skillsLangs": "[IT] Skills & Languages",
-      "skills": "[IT] Skills",
-      "languages": "[IT] Languages",
-      "links": "[IT] Contacts & Links"
+      "identity": "Identità",
+      "experience": "Esperienza e formazione",
+      "experienceInner": "Esperienza lavorativa",
+      "educationInner": "Formazione",
+      "skillsLangs": "Competenze e lingue",
+      "skills": "Competenze",
+      "languages": "Lingue",
+      "links": "Contatti e link"
     },
     "field": {
-      "name": "[IT] Profile name",
-      "fullName": "[IT] Full name",
-      "headline": "[IT] Headline",
-      "headlineHint": "[IT] Short role description",
-      "summary": "[IT] Summary",
-      "location": "[IT] Location",
-      "timezone": "[IT] Timezone",
-      "yearsTotal": "[IT] Years of experience",
-      "englishLevel": "[IT] English level",
-      "email": "[IT] Email",
-      "phone": "[IT] Phone",
-      "linkedin": "[IT] LinkedIn",
-      "github": "[IT] GitHub",
-      "portfolio": "[IT] Portfolio URL",
-      "company": "[IT] Company",
-      "role": "[IT] Role",
-      "startMonth": "[IT] Start",
-      "endMonth": "[IT] End",
-      "description": "[IT] Description",
-      "stack": "[IT] Stack",
-      "school": "[IT] School",
-      "degree": "[IT] Degree",
-      "skillName": "[IT] Skill",
-      "years": "[IT] Years",
-      "language": "[IT] Language",
-      "level": "[IT] Level",
-      "present": "[IT] Current",
-      "optional": "[IT] optional"
+      "name": "Nome profilo",
+      "fullName": "Nome completo",
+      "headline": "Titolo",
+      "headlineHint": "Breve descrizione del ruolo",
+      "summary": "Su di te",
+      "location": "Località",
+      "timezone": "Fuso orario",
+      "yearsTotal": "Anni di esperienza",
+      "englishLevel": "Livello di inglese",
+      "email": "Email",
+      "phone": "Telefono",
+      "linkedin": "LinkedIn",
+      "github": "GitHub",
+      "portfolio": "URL portfolio",
+      "company": "Azienda",
+      "role": "Ruolo",
+      "startMonth": "Inizio",
+      "endMonth": "Fine",
+      "description": "Descrizione",
+      "stack": "Stack",
+      "school": "Istituto",
+      "degree": "Titolo",
+      "skillName": "Competenza",
+      "years": "Anni",
+      "language": "Lingua",
+      "level": "Livello",
+      "present": "Attuale",
+      "optional": "facoltativo"
     },
     "actions": {
-      "save": "[IT] Save profile",
-      "saving": "[IT] Saving...",
-      "saved": "[IT] Saved ✓",
-      "discard": "[IT] Discard changes",
-      "addSkill": "[IT] Add skill",
-      "addLanguage": "[IT] Add language",
-      "addExperience": "[IT] Add experience",
-      "addEducation": "[IT] Add education",
-      "moreSkills": "[IT] + {count} more skills"
+      "save": "Salva profilo",
+      "saving": "Salvataggio...",
+      "saved": "Salvato ✓",
+      "discard": "Annulla modifiche",
+      "addSkill": "Aggiungi competenza",
+      "addLanguage": "Aggiungi lingua",
+      "addExperience": "Aggiungi esperienza",
+      "addEducation": "Aggiungi formazione",
+      "moreSkills": "+ {count} altre competenze"
     },
     "empty": {
-      "noSkills": "[IT] No skills yet. Type one above to add.",
-      "noLanguages": "[IT] No languages yet. Type one above to add.",
-      "noExperience": "[IT] No work experience yet.",
-      "noEducation": "[IT] No education yet."
+      "noSkills": "Nessuna competenza. Inseriscine una sopra per aggiungerla.",
+      "noLanguages": "Nessuna lingua. Inseriscine una sopra per aggiungerla.",
+      "noExperience": "Nessuna esperienza lavorativa.",
+      "noEducation": "Nessuna formazione."
     },
     "validation": {
-      "nameRequired": "[IT] Profile name is required."
+      "nameRequired": "Il nome del profilo è obbligatorio."
     },
     "save": {
-      "success": "[IT] Profile saved.",
-      "error": "[IT] Couldn't save profile. Please try again."
+      "success": "Profilo salvato.",
+      "error": "Impossibile salvare il profilo. Riprova."
     }
   }
 }

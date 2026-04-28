@@ -1,392 +1,402 @@
 {
   "home": {
-    "greeting": "[UK] Hi, {name}!",
-    "description": "[UK] AI Job Bot helps you find the right role — across tech, design, marketing, and more.",
-    "fallbackName": "[UK] friend",
-    "phaseNote": "[UK] Phase 1 skeleton. Profile, campaign wizard and payments land in the next phases.",
+    "greeting": "Привіт, {name}!",
+    "description": "AI Job Bot допомагає знайти потрібну роль — IT, дизайн, маркетинг тощо.",
+    "fallbackName": "друже",
+    "phaseNote": "Профіль, майстер кампаній та оплата вже працюють.",
     "cta": {
-      "create_campaign": "[UK] Create a campaign"
+      "create_campaign": "Створити кампанію"
     }
   },
+  "nav": {
+    "aria": "Головна навігація",
+    "dashboard": "Кампанії",
+    "profiles": "Профіль",
+    "settings": "Налаштування"
+  },
   "auth": {
-    "loading": "[UK] Authenticating...",
+    "loading": "Авторизація...",
     "error": {
-      "generic": "[UK] Something went wrong. Tap Retry.",
-      "missing_init_data": "[UK] Please open this app from Telegram.",
-      "stale_init_data": "[UK] Session expired. Reloading...",
-      "invalid_signature": "[UK] Invalid Telegram session.",
-      "malformed_init_data": "[UK] Malformed session data.",
-      "telegram_env_missing": "[UK] Server isn't configured for Telegram auth.",
-      "vercel_protection": "[UK] Deployment is blocked by Vercel Authentication. Disable it in Project Settings → Deployment Protection.",
-      "internal": "[UK] Server error. Tap Retry.",
-      "network_error": "[UK] Network error. Check your connection."
+      "generic": "Щось пішло не так. Натисніть «Повторити».",
+      "missing_init_data": "Відкрийте застосунок з Telegram.",
+      "stale_init_data": "Сесія застаріла. Перезавантажуємо...",
+      "invalid_signature": "Невалідна сесія Telegram.",
+      "malformed_init_data": "Пошкоджені дані сесії.",
+      "telegram_env_missing": "Сервер не налаштовано для Telegram-авторизації.",
+      "vercel_protection": "Деплой заблоковано Vercel Authentication. Вимкніть її в Project Settings → Deployment Protection.",
+      "internal": "Помилка сервера. Натисніть «Повторити».",
+      "network_error": "Мережева помилка. Перевірте з'єднання."
     },
-    "retry": "[UK] Retry",
+    "retry": "Повторити",
     "diagnostics": {
-      "title": "[UK] Diagnostics"
+      "title": "Діагностика"
     }
   },
   "common": {
-    "loading": "[UK] Loading...",
-    "error": "[UK] Something went wrong",
-    "retry": "[UK] Retry",
-    "save": "[UK] Save",
-    "cancel": "[UK] Cancel",
-    "remove": "[UK] Remove",
-    "add": "[UK] Add"
+    "loading": "Завантаження...",
+    "error": "Щось пішло не так",
+    "retry": "Повторити",
+    "save": "Зберегти",
+    "cancel": "Скасувати",
+    "remove": "Видалити",
+    "add": "Додати"
   },
   "screens": {
     "dashboard": {
-      "greeting": "[UK] Good morning, {name}",
-      "summary": "[UK] {count, plural, one {# campaign} other {# campaigns}}",
+      "greeting": "Доброго ранку, {name}",
+      "summary": "{count, plural, one {# кампанія} few {# кампанії} many {# кампаній} other {# кампанії}}",
       "stats": {
-        "found": "[UK] Found",
-        "foundHint": "[UK] vacancies",
-        "applied": "[UK] Applies",
-        "appliedHint": "[UK] sent",
-        "responses": "[UK] Replies",
-        "responsesHint": "[UK] received"
+        "found": "Знайдено",
+        "foundHint": "вакансій",
+        "applied": "Відгуків",
+        "appliedHint": "надіслано",
+        "responses": "Відповідей",
+        "responsesHint": "отримано"
       },
       "section": {
-        "active": "[UK] Active",
-        "drafts": "[UK] Drafts",
-        "completed": "[UK] Completed"
+        "active": "Активні",
+        "drafts": "Чернетки",
+        "completed": "Завершені"
       },
       "empty": {
-        "title": "[UK] No campaigns yet",
-        "hint": "[UK] Tap + to create the first one."
+        "title": "Кампаній поки немає",
+        "hint": "Натисніть +, щоб створити першу."
       },
-      "newCampaign": "[UK] New campaign"
+      "newCampaign": "Нова кампанія"
     },
     "onboarding": {
-      "headline": "[UK] AI finds\nvacancies.\nYou get\nreplies.",
-      "description": "[UK] Upload your CV — we search across 12 categories and apply for you. You see progress in real time.",
+      "headline": "AI шукає\nвакансії.\nВи отримуєте\nвідповіді.",
+      "description": "Завантажте резюме — ми шукаємо за 12 категоріями та відгукуємось за вас. Прогрес видно в реальному часі.",
       "feature": {
         "parse": {
-          "title": "[UK] AI CV parsing",
-          "subtitle": "[UK] PDF or LinkedIn — we fill the profile"
+          "title": "AI-аналіз резюме",
+          "subtitle": "PDF або LinkedIn — заповнимо профіль"
         },
         "search": {
-          "title": "[UK] Search across 12 categories",
-          "subtitle": "[UK] Tech, Design, Product, Finance..."
+          "title": "Пошук за 12 категоріями",
+          "subtitle": "Tech, Design, Product, Finance..."
         },
         "pay": {
-          "title": "[UK] Pay with ⭐ Stars or TON",
-          "subtitle": "[UK] No cards — native to Telegram"
+          "title": "Оплата ⭐ Stars або TON",
+          "subtitle": "Без карток — нативно для Telegram"
         }
       },
-      "start": "[UK] Start"
+      "start": "Почати"
     },
     "settings": {
-      "title": "[UK] Settings",
+      "title": "Налаштування",
       "section": {
-        "language": "[UK] Language",
-        "notifications": "[UK] Notifications",
-        "about": "[UK] About"
+        "language": "Мова",
+        "notifications": "Сповіщення",
+        "about": "Про застосунок"
       },
       "notification": {
         "push": {
-          "label": "[UK] Push",
-          "description": "[UK] Status updates from your campaigns"
+          "label": "Push",
+          "description": "Зміни статусу ваших кампаній"
         },
         "email": {
-          "label": "[UK] Email",
-          "description": "[UK] Weekly summary"
+          "label": "Email",
+          "description": "Тижнева зведення"
         },
         "weeklyDigest": {
-          "label": "[UK] Weekly digest",
-          "description": "[UK] Top vacancies in Telegram"
+          "label": "Тижневий дайджест",
+          "description": "Топ вакансій у Telegram"
         }
       },
       "about": {
-        "version": "[UK] Version",
-        "support": "[UK] Support"
+        "version": "Версія",
+        "support": "Підтримка"
       }
     },
     "profiles": {
-      "title": "[LOCALE] Profiles",
-      "default": "[LOCALE] Default",
-      "empty": "[LOCALE] No profiles yet. Upload your CV to start.",
-      "addCv": "[LOCALE] Add a CV",
-      "subtitle": "[LOCALE] Different roles, different profiles. One default.",
-      "newProfile": "[LOCALE] New profile",
-      "campaigns": "[LOCALE] {count, plural, one {# campaign} other {# campaigns}}",
-      "edit": "[LOCALE] Edit"
+      "title": "Профілі",
+      "default": "За замовчуванням",
+      "empty": "Профілів поки немає. Завантажте CV, щоб почати.",
+      "addCv": "Завантажити CV",
+      "subtitle": "Різні ролі — різні профілі. Один за замовчуванням.",
+      "newProfile": "Новий профіль",
+      "campaigns": "{count, plural, one {# кампанія} few {# кампанії} many {# кампаній} other {# кампанії}}",
+      "edit": "Редагувати"
     },
     "upload": {
-      "title": "[LOCALE] CV",
-      "subtitle": "[LOCALE] Upload a PDF or paste a LinkedIn URL. AI will fill the profile automatically.",
-      "idle": "[LOCALE] Drop a PDF or pick a file",
-      "uploading": "[LOCALE] Uploading...",
-      "parsing": "[LOCALE] AI is reading the CV...",
-      "done": "[LOCALE] Done — review the profile",
-      "errorRetry": "[LOCALE] Try another file",
-      "dropzone": "[LOCALE] Drop CV or tap",
-      "fileTypes": "[LOCALE] PDF · up to 10 MB",
-      "orSeparator": "[LOCALE] or",
-      "linkedinPlaceholder": "[LOCALE] linkedin.com/in/...",
-      "mainCta": "[LOCALE] Upload CV",
-      "reviewCta": "[LOCALE] Open profile",
+      "title": "CV",
+      "subtitle": "Завантажте PDF або вставте посилання на LinkedIn. AI заповнить профіль автоматично.",
+      "idle": "Перетягніть PDF або виберіть файл",
+      "uploading": "Завантажуємо...",
+      "parsing": "AI читає резюме...",
+      "done": "Готово — перегляньте профіль",
+      "errorRetry": "Спробувати інший файл",
+      "dropzone": "Перетягніть CV або натисніть",
+      "fileTypes": "PDF · до 10 МБ",
+      "orSeparator": "або",
+      "linkedinPlaceholder": "linkedin.com/in/...",
+      "mainCta": "Завантажити CV",
+      "reviewCta": "Відкрити профіль",
       "step": {
-        "upload": "[LOCALE] File uploaded",
-        "extract": "[LOCALE] Extracting text",
-        "ai": "[LOCALE] AI is analyzing",
-        "profile": "[LOCALE] Preparing the profile"
+        "upload": "Файл завантажено",
+        "extract": "Витягуємо текст",
+        "ai": "AI аналізує",
+        "profile": "Готуємо профіль"
       },
-      "aiHint": "[LOCALE] Claude Sonnet 4.5 · pulling experience, stack, languages",
-      "sampleFile": "[LOCALE] cv.pdf",
-      "sampleSize": "[LOCALE] 248 KB",
+      "aiHint": "Claude Sonnet 4.5 · досвід, стек, мови",
+      "sampleFile": "cv.pdf",
+      "sampleSize": "248 КБ",
       "error": {
-        "format": "[LOCALE] Couldn't read the PDF. Try another file.",
-        "file_too_large": "[LOCALE] File is over 10 MB. Please upload a smaller one.",
-        "invalid_mime": "[LOCALE] Please upload a PDF file.",
-        "missing_file": "[LOCALE] No file selected.",
-        "empty_file": "[LOCALE] The file is empty.",
-        "rate_limit": "[LOCALE] Too many uploads — try again in a moment.",
-        "unavailable": "[LOCALE] AI is offline. Try again in a minute.",
-        "internal": "[LOCALE] Something went wrong. We're looking into it."
+        "format": "Не вдалося прочитати PDF. Спробуйте інший файл.",
+        "file_too_large": "Файл більше 10 МБ. Завантажте менший файл.",
+        "invalid_mime": "Завантажте файл у форматі PDF.",
+        "missing_file": "Файл не вибрано.",
+        "empty_file": "Файл порожній.",
+        "rate_limit": "Забагато завантажень — спробуйте трохи пізніше.",
+        "unavailable": "AI тимчасово недоступний. Спробуйте за хвилину.",
+        "internal": "Щось пішло не так. Уже розбираємось."
       }
     },
     "wizard": {
-      "title": "[UK] New campaign",
-      "step": "[UK] STEP {current} / {total}",
+      "title": "Нова кампанія",
+      "step": "КРОК {current} / {total}",
       "label": {
-        "category": "[UK] Category",
-        "roles": "[UK] Roles",
-        "countries": "[UK] Countries",
-        "salary": "[UK] Salary",
-        "stack": "[UK] Stack",
-        "languages": "[UK] Languages",
-        "quota": "[UK] Volume",
-        "checkout": "[UK] Review"
+        "category": "Категорія",
+        "roles": "Ролі",
+        "countries": "Країни",
+        "salary": "Зарплата",
+        "stack": "Стек",
+        "languages": "Мови",
+        "quota": "Обсяг",
+        "checkout": "Перегляд"
       },
       "description": {
-        "category": "[UK] Pick a category — sets pricing form",
-        "roles": "[UK] ESCO roles · up to 5",
-        "countries": "[UK] Where to apply · multi-select",
-        "salary": "[UK] Minimum monthly salary",
-        "stack": "[UK] Required tech stack",
-        "languages": "[UK] Interview languages",
-        "quota": "[UK] How many applications · drives price",
-        "checkout": "[UK] Review and pay"
+        "category": "Виберіть категорію — задає формулу ціни",
+        "roles": "Ролі ESCO · до 5",
+        "countries": "Куди відгукуємось · можна кілька",
+        "salary": "Мінімальна зарплата на місяць",
+        "stack": "Потрібний стек технологій",
+        "languages": "Мови для співбесід",
+        "quota": "Скільки відгуків · впливає на ціну",
+        "checkout": "Перегляд та оплата"
       },
-      "next": "[UK] Next",
-      "submit": "[UK] To checkout · {amount}",
+      "next": "Далі",
+      "submit": "До оплати · {amount}",
       "category": {
-        "tech": "[UK] IT / Tech",
-        "design": "[UK] Design",
-        "marketing": "[UK] Marketing",
-        "sales": "[UK] Sales",
-        "product": "[UK] Product",
-        "finance": "[UK] Finance",
-        "hr": "[UK] HR",
-        "support": "[UK] Support",
-        "content": "[UK] Content",
-        "ops": "[UK] Operations",
-        "data": "[UK] Data",
-        "web3": "[UK] Web3"
+        "tech": "IT / Tech",
+        "design": "Дизайн",
+        "marketing": "Маркетинг",
+        "sales": "Продажі",
+        "product": "Продукт",
+        "finance": "Фінанси",
+        "hr": "HR",
+        "support": "Підтримка",
+        "content": "Контент",
+        "ops": "Операції",
+        "data": "Дані",
+        "web3": "Web3"
       },
       "roles": {
-        "placeholder": "[UK] Type a role...",
-        "selected": "[UK] Selected · {count}/5",
-        "suggestions": "[UK] ESCO suggestions",
-        "add": "[UK] Add",
-        "empty": "[UK] Pick a role from the suggestions"
+        "placeholder": "Введіть роль...",
+        "selected": "Вибрано · {count}/5",
+        "suggestions": "Підказки ESCO",
+        "add": "Додати",
+        "empty": "Виберіть роль із підказок"
       },
       "countries": {
-        "selected": "[UK] Selected · {count}",
-        "empty": "[UK] Pick at least one country"
+        "selected": "Вибрано · {count}",
+        "empty": "Виберіть хоча б одну країну"
       },
       "salary": {
-        "label": "[UK] Minimum, USD / month",
-        "min": "[UK] $1k",
-        "max": "[UK] $15k"
+        "label": "Мінімум, USD / місяць",
+        "min": "$1k",
+        "max": "$15k"
       },
       "stack": {
-        "hint": "[UK] Tap to mark as required",
-        "selected": "[UK] Selected · {count}"
+        "hint": "Натисніть, щоб позначити як обов'язковий",
+        "selected": "Вибрано · {count}"
       },
       "langs": {
-        "EN": "[UK] English",
-        "DE": "[UK] German",
-        "FR": "[UK] French",
-        "ES": "[UK] Spanish",
-        "PL": "[UK] Polish",
-        "UK": "[UK] Ukrainian",
-        "RU": "[UK] Russian",
-        "IT": "[UK] Italian"
+        "EN": "Англійська",
+        "DE": "Німецька",
+        "FR": "Французька",
+        "ES": "Іспанська",
+        "PL": "Польська",
+        "UK": "Українська",
+        "RU": "Російська",
+        "IT": "Італійська"
       },
       "quota": {
-        "label": "[UK] Applications quota",
-        "hint": "[UK] ≈ {min}–{max} vacancies reviewed",
-        "priceNote": "[UK] Price scales linearly: 200 base + 8 per application"
+        "label": "Квота відгуків",
+        "hint": "≈ {min}–{max} вакансій переглянуто",
+        "priceNote": "Ціна лінійна: 200 базова + 8 за відгук"
       },
       "summary": {
-        "title": "[UK] Summary",
-        "category": "[UK] Category",
-        "roles": "[UK] Roles",
-        "rolesCount": "[UK] {count, plural, one {# role} other {# roles}}",
-        "countries": "[UK] Countries",
-        "salary": "[UK] Salary",
-        "salaryFrom": "[UK] ${amount}+",
-        "stack": "[UK] Stack",
-        "languages": "[UK] Languages",
-        "quota": "[UK] Quota",
-        "basePrice": "[UK] Base price",
-        "quotaRow": "[UK] Quota × {count}",
-        "countriesRow": "[UK] Countries × {count}",
-        "total": "[UK] Total"
+        "title": "Зведення",
+        "category": "Категорія",
+        "roles": "Ролі",
+        "rolesCount": "{count, plural, one {# роль} few {# ролі} many {# ролей} other {# ролі}}",
+        "countries": "Країни",
+        "salary": "Зарплата",
+        "salaryFrom": "${amount}+",
+        "stack": "Стек",
+        "languages": "Мови",
+        "quota": "Квота",
+        "noProfile": "Спочатку створіть профіль.",
+        "basePrice": "Базова ціна",
+        "quotaRow": "Квота × {count}",
+        "countriesRow": "Країни × {count}",
+        "total": "Разом"
       }
     },
     "checkout": {
-      "title": "[UK] Choose payment",
-      "campaignSummary": "[UK] {title} · {count, plural, one {# application} other {# applications}}",
-      "totalLabel": "[UK] Total amount",
-      "methodSection": "[UK] Payment method",
-      "pay": "[UK] Pay {amount}",
-      "noteRefund": "[UK] After payment the campaign data is frozen. Refunds are not supported in MVP.",
+      "title": "Спосіб оплати",
+      "campaignSummary": "{title} · {count, plural, one {# відгук} few {# відгуки} many {# відгуків} other {# відгуки}}",
+      "totalLabel": "Сума до оплати",
+      "methodSection": "Спосіб оплати",
+      "pay": "Сплатити {amount}",
+      "noteRefund": "Після оплати дані кампанії заморожено. Повернення коштів у MVP не підтримується.",
       "method": {
-        "stars": "[UK] Telegram Stars",
-        "starsHint": "[UK] Native payment · instant",
-        "starsBadge": "[UK] Recommended",
-        "ton": "[UK] TON Connect",
-        "tonHint": "[UK] Pay via crypto wallet"
+        "stars": "Telegram Stars",
+        "starsHint": "Нативно · миттєво",
+        "starsBadge": "Рекомендуємо",
+        "ton": "TON Connect",
+        "tonHint": "Через крипто-гаманець"
       }
     },
     "payment": {
-      "processing": "[UK] Waiting for\npayment",
-      "processingStars": "[UK] Confirm in the Telegram window",
-      "processingTon": "[UK] Confirm the transaction in your wallet",
-      "processingSecure": "[UK] SECURE · {provider}",
-      "success": "[UK] Paid",
-      "successHint": "[UK] Campaign launched. First applications in 2–6 hours.",
-      "fail": "[UK] Payment failed",
-      "failHint": "[UK] Money was not charged. Try again.",
-      "retry": "[UK] Retry",
-      "openCampaign": "[UK] Open campaign",
-      "homeCta": "[UK] Back to campaigns",
+      "processing": "Чекаємо\nоплату",
+      "processingStars": "Підтвердьте у вікні Telegram",
+      "processingTon": "Підтвердьте транзакцію в гаманці",
+      "processingSecure": "ЗАХИЩЕНО · {provider}",
+      "success": "Сплачено",
+      "successHint": "Кампанію запущено. Перші відгуки через 2–6 годин.",
+      "fail": "Платіж не пройшов",
+      "failHint": "Гроші не списано. Спробуйте ще раз.",
+      "retry": "Повторити",
+      "openCampaign": "Відкрити кампанію",
+      "homeCta": "До кампаній",
       "rows": {
-        "amount": "[UK] Amount",
-        "transaction": "[UK] Transaction",
-        "when": "[UK] Time"
+        "amount": "Сума",
+        "transaction": "Транзакція",
+        "when": "Час"
       }
     },
     "detail": {
-      "paidAt": "[UK] paid {when}",
-      "appliedOf": "[UK] {applied} of {quota}",
-      "liveSearch": "[UK] live search",
+      "paidAt": "сплачено {when}",
+      "appliedOf": "{applied} з {quota}",
+      "liveSearch": "пошук триває",
+      "cancel": "Скасувати кампанію",
+      "cancelling": "Скасовуємо...",
+      "cancelConfirm": "Скасувати цю кампанію? Витрачені кошти не повертаються.",
       "metric": {
-        "found": "[UK] Found",
-        "foundHint": "[UK] vacancies",
-        "responses": "[UK] Replies",
-        "responsesHint": "[UK] received"
+        "found": "Знайдено",
+        "foundHint": "вакансій",
+        "responses": "Відповідей",
+        "responsesHint": "отримано"
       },
       "section": {
-        "progress": "[UK] Progress",
-        "events": "[UK] Activity",
-        "snapshot": "[UK] Campaign snapshot"
+        "progress": "Прогрес",
+        "events": "Активність",
+        "snapshot": "Знімок кампанії"
       },
-      "empty": "[UK] No events yet.",
+      "empty": "Подій поки немає.",
       "status": {
-        "appliedSent": "[UK] Applications sent"
+        "appliedSent": "Відгуків надіслано"
       }
     },
     "error": {
-      "title": "[LOCALE] Payment\ndid not go through",
-      "code": "[UK] Error code",
-      "tryAgain": "[UK] Try again",
-      "back": "[UK] Back home",
-      "hint": "[LOCALE] Funds were not charged. The campaign stays in drafts — try again.",
-      "defaultTitle": "[LOCALE] Something went wrong",
-      "defaultHint": "[LOCALE] We couldn't load this screen. Try again or go back home.",
-      "codeLabel": "[LOCALE] error",
-      "detail": "[LOCALE] wallet did not respond in 60s",
-      "retry": "[LOCALE] Try again",
-      "home": "[LOCALE] Back to campaigns"
+      "title": "Платіж\nне пройшов",
+      "code": "Код помилки",
+      "tryAgain": "Спробувати ще раз",
+      "back": "На головну",
+      "hint": "Гроші не списано. Кампанія залишилась у чернетках — спробуйте ще раз.",
+      "defaultTitle": "Щось пішло не так",
+      "defaultHint": "Не вдалося завантажити екран. Спробуйте ще раз або поверніться на головну.",
+      "codeLabel": "помилка",
+      "detail": "гаманець не відповів за 60 секунд",
+      "retry": "Спробувати ще раз",
+      "home": "До кампаній"
     }
   },
   "profile": {
-    "title": "[UK] Profile",
-    "defaultName": "[UK] Default profile",
-    "loading": "[UK] Loading profile...",
+    "title": "Профіль",
+    "defaultName": "Профіль за замовчуванням",
+    "loading": "Завантажуємо профіль...",
     "upload": {
-      "label": "[UK] ✨ AI-fill from CV",
-      "parsing": "[UK] AI is reading your CV...",
-      "success": "[UK] Done · {filled} / {total} fields filled",
+      "label": "✨ AI-заповнення з CV",
+      "parsing": "AI читає ваше резюме...",
+      "success": "Готово · {filled} / {total} полів заповнено",
       "error": {
-        "format": "[UK] Couldn't read the PDF. Try another file or fill the form manually.",
-        "file_too_large": "[UK] File is over 10 MB. Please upload a smaller one.",
-        "invalid_mime": "[UK] Please upload a PDF file.",
-        "missing_file": "[UK] No file selected.",
-        "empty_file": "[UK] The file is empty.",
-        "rate_limit": "[UK] Too many uploads — try again in a moment.",
-        "unavailable": "[UK] Parser temporarily unavailable.",
-        "internal": "[UK] Parse failed. Please try again."
+        "format": "Не вдалося прочитати PDF. Спробуйте інший файл або заповніть форму вручну.",
+        "file_too_large": "Файл більше 10 МБ. Завантажте менший файл.",
+        "invalid_mime": "Завантажте файл у форматі PDF.",
+        "missing_file": "Файл не вибрано.",
+        "empty_file": "Файл порожній.",
+        "rate_limit": "Забагато завантажень — спробуйте трохи пізніше.",
+        "unavailable": "Парсер тимчасово недоступний.",
+        "internal": "Не вдалося розпарсити. Спробуйте знову."
       }
     },
     "section": {
-      "identity": "[UK] Identity",
-      "experience": "[UK] Experience & Education",
-      "experienceInner": "[UK] Work experience",
-      "educationInner": "[UK] Education",
-      "skillsLangs": "[UK] Skills & Languages",
-      "skills": "[UK] Skills",
-      "languages": "[UK] Languages",
-      "links": "[UK] Contacts & Links"
+      "identity": "Особисті дані",
+      "experience": "Досвід та освіта",
+      "experienceInner": "Досвід роботи",
+      "educationInner": "Освіта",
+      "skillsLangs": "Навички та мови",
+      "skills": "Навички",
+      "languages": "Мови",
+      "links": "Контакти та посилання"
     },
     "field": {
-      "name": "[UK] Profile name",
-      "fullName": "[UK] Full name",
-      "headline": "[UK] Headline",
-      "headlineHint": "[UK] Short role description",
-      "summary": "[UK] Summary",
-      "location": "[UK] Location",
-      "timezone": "[UK] Timezone",
-      "yearsTotal": "[UK] Years of experience",
-      "englishLevel": "[UK] English level",
-      "email": "[UK] Email",
-      "phone": "[UK] Phone",
-      "linkedin": "[UK] LinkedIn",
-      "github": "[UK] GitHub",
-      "portfolio": "[UK] Portfolio URL",
-      "company": "[UK] Company",
-      "role": "[UK] Role",
-      "startMonth": "[UK] Start",
-      "endMonth": "[UK] End",
-      "description": "[UK] Description",
-      "stack": "[UK] Stack",
-      "school": "[UK] School",
-      "degree": "[UK] Degree",
-      "skillName": "[UK] Skill",
-      "years": "[UK] Years",
-      "language": "[UK] Language",
-      "level": "[UK] Level",
-      "present": "[UK] Current",
-      "optional": "[UK] optional"
+      "name": "Назва профілю",
+      "fullName": "Повне ім'я",
+      "headline": "Заголовок",
+      "headlineHint": "Короткий опис ролі",
+      "summary": "Про себе",
+      "location": "Локація",
+      "timezone": "Часовий пояс",
+      "yearsTotal": "Років досвіду",
+      "englishLevel": "Рівень англійської",
+      "email": "Email",
+      "phone": "Телефон",
+      "linkedin": "LinkedIn",
+      "github": "GitHub",
+      "portfolio": "Портфоліо URL",
+      "company": "Компанія",
+      "role": "Посада",
+      "startMonth": "З",
+      "endMonth": "По",
+      "description": "Опис",
+      "stack": "Стек",
+      "school": "Навчальний заклад",
+      "degree": "Ступінь",
+      "skillName": "Навичка",
+      "years": "Років",
+      "language": "Мова",
+      "level": "Рівень",
+      "present": "Зараз",
+      "optional": "необов'язково"
     },
     "actions": {
-      "save": "[UK] Save profile",
-      "saving": "[UK] Saving...",
-      "saved": "[UK] Saved ✓",
-      "discard": "[UK] Discard changes",
-      "addSkill": "[UK] Add skill",
-      "addLanguage": "[UK] Add language",
-      "addExperience": "[UK] Add experience",
-      "addEducation": "[UK] Add education",
-      "moreSkills": "[UK] + {count} more skills"
+      "save": "Зберегти профіль",
+      "saving": "Зберігаємо...",
+      "saved": "Збережено ✓",
+      "discard": "Скасувати зміни",
+      "addSkill": "Додати навичку",
+      "addLanguage": "Додати мову",
+      "addExperience": "Додати досвід",
+      "addEducation": "Додати освіту",
+      "moreSkills": "+ ще {count} навичок"
     },
     "empty": {
-      "noSkills": "[UK] No skills yet. Type one above to add.",
-      "noLanguages": "[UK] No languages yet. Type one above to add.",
-      "noExperience": "[UK] No work experience yet.",
-      "noEducation": "[UK] No education yet."
+      "noSkills": "Навичок поки немає. Введіть вище, щоб додати.",
+      "noLanguages": "Мов поки немає. Введіть вище, щоб додати.",
+      "noExperience": "Досвіду роботи поки немає.",
+      "noEducation": "Освіту поки не вказано."
     },
     "validation": {
-      "nameRequired": "[UK] Profile name is required."
+      "nameRequired": "Назва профілю обов'язкова."
     },
     "save": {
-      "success": "[UK] Profile saved.",
-      "error": "[UK] Couldn't save profile. Please try again."
+      "success": "Профіль збережено.",
+      "error": "Не вдалося зберегти профіль. Спробуйте ще раз."
     }
   }
 }

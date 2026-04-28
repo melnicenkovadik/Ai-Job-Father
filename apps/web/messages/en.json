@@ -3,10 +3,16 @@
     "greeting": "Hi, {name}!",
     "description": "AI Job Bot helps you find the right role — across tech, design, marketing, and more.",
     "fallbackName": "friend",
-    "phaseNote": "Phase 1 skeleton. Profile, campaign wizard and payments land in the next phases.",
+    "phaseNote": "Profile, the campaign wizard and payments are live.",
     "cta": {
       "create_campaign": "Create a campaign"
     }
+  },
+  "nav": {
+    "aria": "Main navigation",
+    "dashboard": "Campaigns",
+    "profiles": "Profile",
+    "settings": "Settings"
   },
   "auth": {
     "loading": "Authenticating...",
@@ -232,6 +238,7 @@
         "stack": "Stack",
         "languages": "Languages",
         "quota": "Quota",
+        "noProfile": "Create a profile first.",
         "basePrice": "Base price",
         "quotaRow": "Quota × {count}",
         "countriesRow": "Countries × {count}",
@@ -275,6 +282,9 @@
       "paidAt": "paid {when}",
       "appliedOf": "{applied} of {quota}",
       "liveSearch": "live search",
+      "cancel": "Cancel campaign",
+      "cancelling": "Cancelling...",
+      "cancelConfirm": "Cancel this campaign? Funds already spent are not refundable.",
       "metric": {
         "found": "Found",
         "foundHint": "vacancies",
