@@ -89,7 +89,13 @@
       "section": {
         "language": "Język",
         "notifications": "Powiadomienia",
+        "theme": "Motyw",
         "about": "O aplikacji"
+      },
+      "theme": {
+        "auto": "Auto",
+        "light": "Jasny",
+        "dark": "Ciemny"
       },
       "notification": {
         "push": {

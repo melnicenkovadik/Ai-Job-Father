@@ -89,7 +89,13 @@
       "section": {
         "language": "Мова",
         "notifications": "Сповіщення",
+        "theme": "Тема",
         "about": "Про застосунок"
+      },
+      "theme": {
+        "auto": "Авто",
+        "light": "Світла",
+        "dark": "Темна"
       },
       "notification": {
         "push": {

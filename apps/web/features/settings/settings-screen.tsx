@@ -1,9 +1,16 @@
 'use client';
 
+import {
+  THEME_PREF_EVENT,
+  THEME_PREF_STORAGE_KEY,
+  type ThemePref,
+} from '@/components/telegram/theme-bridge';
 import { BottomTabBar, FieldRow, LanguageTile, SectionTitle, Toggle } from '@/components/ui';
 import { Screen, Scroll, Section, Stack } from '@/components/ui/layout';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
+import type React from 'react';
+import { useEffect, useState } from 'react';
 import { type SettingsDto, useSettingsQuery, useUpdateSettings } from './use-settings';
 
 const LOCALES: { code: SettingsDto['locale']; label: string; native: string }[] = [
@@ -97,6 +104,10 @@ export function SettingsScreen() {
           </div>
         </Section>
 
+        <Section title={<SectionTitle>{t('section.theme')}</SectionTitle>}>
+          <ThemePicker />
+        </Section>
+
         <Section title={<SectionTitle>{t('section.about')}</SectionTitle>}>
           <div className="rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] px-4">
             <FieldRow label={t('about.version')} value="0.1.0" mono />
@@ -106,5 +117,56 @@ export function SettingsScreen() {
       </Scroll>
       <BottomTabBar />
     </Screen>
+  );
+}
+
+function ThemePicker(): React.ReactElement {
+  const t = useTranslations('screens.settings.theme');
+  const [pref, setPref] = useState<ThemePref>('auto');
+
+  useEffect(() => {
+    try {
+      const v = localStorage.getItem(THEME_PREF_STORAGE_KEY);
+      if (v === 'light' || v === 'dark') setPref(v);
+    } catch {
+      // Storage unavailable; keep 'auto'.
+    }
+  }, []);
+
+  const choose = (next: ThemePref): void => {
+    setPref(next);
+    try {
+      if (next === 'auto') localStorage.removeItem(THEME_PREF_STORAGE_KEY);
+      else localStorage.setItem(THEME_PREF_STORAGE_KEY, next);
+    } catch {
+      // ignore
+    }
+    window.dispatchEvent(new CustomEvent(THEME_PREF_EVENT));
+  };
+
+  const options: { value: ThemePref; label: string }[] = [
+    { value: 'auto', label: t('auto') },
+    { value: 'light', label: t('light') },
+    { value: 'dark', label: t('dark') },
+  ];
+
+  return (
+    <div className="grid grid-cols-3 gap-2">
+      {options.map((o) => (
+        <button
+          key={o.value}
+          type="button"
+          onClick={() => choose(o.value)}
+          aria-pressed={pref === o.value}
+          className={`min-h-[2.75rem] rounded-[var(--radius-md)] border px-3 py-2 text-[13px] font-medium transition-colors ${
+            pref === o.value
+              ? 'border-[var(--color-accent)] bg-[var(--color-accent-bg)] text-[var(--color-accent)]'
+              : 'border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text)] hover:bg-[var(--color-surface-hi)]'
+          }`}
+        >
+          {o.label}
+        </button>
+      ))}
+    </div>
   );
 }

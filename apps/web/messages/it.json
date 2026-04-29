@@ -89,7 +89,13 @@
       "section": {
         "language": "Lingua",
         "notifications": "Notifiche",
+        "theme": "Tema",
         "about": "Informazioni"
+      },
+      "theme": {
+        "auto": "Auto",
+        "light": "Chiaro",
+        "dark": "Scuro"
       },
       "notification": {
         "push": {
