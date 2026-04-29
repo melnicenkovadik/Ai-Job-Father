@@ -56,7 +56,11 @@ export function ProfileUploadScreen({
 
   useTelegramBackButton('/profile');
 
-  const mutation = useMutation<ParsedResume, UploadError, { file: File; mode: ParseMode }>({
+  const mutation = useMutation<
+    { parsed: ParsedResume; file: File },
+    UploadError,
+    { file: File; mode: ParseMode }
+  >({
     mutationFn: async ({ file, mode }) => {
       const fd = new FormData();
       fd.append('file', file);
@@ -66,15 +70,28 @@ export function ProfileUploadScreen({
         const body = (await res.json().catch(() => ({}))) as { error?: string };
         throw new UploadError(body.error ?? 'internal');
       }
-      return (await res.json()) as ParsedResume;
+      const parsed = (await res.json()) as ParsedResume;
+      return { parsed, file };
     },
     onMutate: () => {
       setPhase('uploading');
       setTimeout(() => setPhase((p) => (p === 'uploading' ? 'parsing' : p)), 800);
     },
-    onSuccess: () => {
+    onSuccess: async ({ parsed, file }) => {
       setPhase('done');
-      setTimeout(() => router.push('/profile'), 900);
+      // Stash parsed result + raw PDF in sessionStorage so /profile?new=1 can
+      // hydrate the form without re-uploading. The blob is also useful for the
+      // "Re-parse with AI" button on the profile screen.
+      try {
+        sessionStorage.setItem('pendingParsedResume', JSON.stringify(parsed));
+        const dataUrl = await fileToDataUrl(file);
+        sessionStorage.setItem('pendingResumeBlob', dataUrl);
+        sessionStorage.setItem('pendingResumeName', file.name);
+      } catch {
+        // sessionStorage may be unavailable / quota-exceeded — proceed anyway,
+        // /profile will just start blank.
+      }
+      setTimeout(() => router.push('/profile?new=1'), 900);
     },
     onError: (err) => {
       setPhase('error');
@@ -287,7 +304,7 @@ export function ProfileUploadScreen({
 
       {isIdle ? <MainButtonBinding text={t('mainCta')} onClick={onPickFile} /> : null}
       {phase === 'done' ? (
-        <MainButtonBinding text={t('reviewCta')} onClick={() => router.push('/profile')} />
+        <MainButtonBinding text={t('reviewCta')} onClick={() => router.push('/profile?new=1')} />
       ) : null}
       {isError ? (
         <MainButtonBinding text={t('errorRetry')} onClick={() => setPhase('idle')} />
@@ -341,4 +358,15 @@ function resolveErrorMessage(t: ReturnType<typeof useTranslations>, code: string
   if (code === 'no_credit') return t('aiPaymentFailed');
   if (ACCEPTED_ERROR_CODES.has(code)) return t(`error.${code}`);
   return t('error.internal');
+}
+
+/** Encode a File as a base64 data URL — used to stash the resume PDF for later
+ *  AI re-parse without re-upload. */
+function fileToDataUrl(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = () => reject(new Error('file_read_failed'));
+    reader.readAsDataURL(file);
+  });
 }

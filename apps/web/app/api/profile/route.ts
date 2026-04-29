@@ -41,11 +41,18 @@ export const POST = requireAuth(async (req, { user }) => {
 
   const repo = new SupabaseProfileRepo(createServiceRoleClient());
   try {
+    // Auto-determine isDefault: first profile becomes default, subsequent
+    // profiles are alternates (the existing default keeps its flag). The
+    // client may override with an explicit `isDefault: true` in the body
+    // when intentionally promoting an alternate.
+    const existing = await repo.findByUserId(user.id.value);
+    const autoDefault = existing.length === 0;
+    const isDefault = parsed.data.isDefault ?? autoDefault;
     const profile = await createProfile(
       {
-        userId: user.id.value,
-        isDefault: true,
         ...parsed.data,
+        userId: user.id.value,
+        isDefault,
       },
       { profileRepo: repo },
     );

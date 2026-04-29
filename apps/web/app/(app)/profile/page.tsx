@@ -9,7 +9,12 @@ import { LanguagesSection } from '@/features/profile/languages-section';
 import { LinksSection } from '@/features/profile/links-section';
 import { SaveProfileButton } from '@/features/profile/save-profile-button';
 import { SkillsSection } from '@/features/profile/skills-section';
-import { type ProfileDraft, draftToWire, mergeParsedResume } from '@/features/profile/types';
+import {
+  EMPTY_DRAFT,
+  type ProfileDraft,
+  draftToWire,
+  mergeParsedResume,
+} from '@/features/profile/types';
 import { UploadCvButton } from '@/features/profile/upload-cv-button';
 import { useProfileDraft } from '@/features/profile/use-profile-draft';
 import { authedFetch } from '@/lib/http/authed-fetch';
@@ -17,8 +22,8 @@ import type { ProfileDto } from '@/lib/profile/schema';
 import type { ParsedResume } from '@ai-job-bot/core';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useRef, useState } from 'react';
 
 const PROFILE_QUERY_KEY = ['profile', 'me'] as const;
 
@@ -49,9 +54,14 @@ function formatSaveError(err: SaveError): string {
 export default function ProfilePage() {
   const t = useTranslations('profile');
   const router = useRouter();
+  const searchParams = useSearchParams();
   const queryClient = useQueryClient();
   const [saveBanner, setSaveBanner] = useState<'success' | 'error' | null>(null);
   useTelegramBackButton('/');
+
+  // "New profile" mode: came in from /profile/upload, want a blank form
+  // hydrated from the just-parsed resume — NOT the user's existing default.
+  const isNewMode = searchParams?.get('new') === '1';
 
   const query = useQuery<ProfileDto | null>({
     queryKey: PROFILE_QUERY_KEY,
@@ -60,26 +70,47 @@ export default function ProfilePage() {
       if (!res.ok) throw new Error(`profile_fetch_${res.status}`);
       return (await res.json()) as ProfileDto | null;
     },
+    enabled: !isNewMode,
   });
 
-  const draftState = useProfileDraft(query.data ?? null);
+  // In new-mode, treat the draft as null (start blank). Outside new-mode, use
+  // the fetched default profile.
+  const draftState = useProfileDraft(isNewMode ? null : (query.data ?? null));
 
-  // Reset form when the initial profile loads after first paint. We deliberately
-  // depend only on the server payload — not the local draft — so typing into a
-  // field never re-seeds from the snapshot.
+  // Reset form when the initial profile loads after first paint. Skipped in
+  // new-mode — the form should stay blank until we hydrate from sessionStorage.
   // biome-ignore lint/correctness/useExhaustiveDependencies: draftState.reset is stable but intentionally not in the dep list.
   useEffect(() => {
+    if (isNewMode) return;
     if (query.data !== undefined) {
       draftState.reset(query.data);
     }
-  }, [query.data]);
+  }, [query.data, isNewMode]);
+
+  // Hydrate new-mode form from sessionStorage on mount. The /profile/upload
+  // screen stashes the parsed JSON + raw PDF there before navigating here.
+  const hydratedRef = useRef(false);
+  useEffect(() => {
+    if (!isNewMode || hydratedRef.current) return;
+    hydratedRef.current = true;
+    try {
+      const raw = sessionStorage.getItem('pendingParsedResume');
+      if (!raw) return;
+      const parsed = JSON.parse(raw) as ParsedResume;
+      draftState.replace(mergeParsedResume(EMPTY_DRAFT, parsed));
+    } catch {
+      // Bad JSON or storage unavailable — leave the form blank.
+    }
+  }, [isNewMode, draftState]);
 
   const [saveErrorDetail, setSaveErrorDetail] = useState<string | null>(null);
   const saveMutation = useMutation<ProfileDto, SaveError, ProfileDraft>({
     mutationFn: async (draft) => {
-      const body = draftToWire(draft);
-      const existing = query.data;
+      const existing = isNewMode ? null : (query.data ?? null);
       const isNew = !existing;
+      // The server decides isDefault on POST: first profile → default,
+      // subsequent → alternate. Keep the client out of that policy.
+      const body = draftToWire(draft);
       const url = isNew ? '/api/profile' : `/api/profile/${existing.id}`;
       const method = isNew ? 'POST' : 'PUT';
       const res = await authedFetch(url, {
@@ -107,9 +138,18 @@ export default function ProfilePage() {
       draftState.reset(saved);
       setSaveBanner('success');
       setSaveErrorDetail(null);
-      // Auto-return to home so the user doesn't feel stuck on a "saved"
-      // screen with no exit. Brief delay keeps the green confirmation visible.
-      setTimeout(() => router.push('/'), 1500);
+      // Drop the pending blob/parse — they served their purpose.
+      try {
+        sessionStorage.removeItem('pendingParsedResume');
+        sessionStorage.removeItem('pendingResumeBlob');
+        sessionStorage.removeItem('pendingResumeName');
+      } catch {
+        // ignore
+      }
+      // Land on the profile list after creating a new one (so the user sees
+      // their new profile alongside the existing default), home otherwise.
+      const next = isNewMode ? '/profiles' : '/';
+      setTimeout(() => router.push(next), 1500);
     },
     onError: (err) => {
       setSaveBanner('error');
@@ -127,7 +167,9 @@ export default function ProfilePage() {
     draftState.replace(mergeParsedResume(draftState.draft, parsed));
   }
 
-  if (query.isLoading) {
+  // In edit mode wait for the GET. In new mode there's no fetch — render
+  // straight away so the freshly hydrated draft is visible.
+  if (!isNewMode && query.isLoading) {
     return (
       <Screen>
         <Stack gap={2} className="flex-1 items-center justify-center px-6 py-12 text-center">
@@ -144,9 +186,15 @@ export default function ProfilePage() {
     <Screen>
       <Scroll>
         <Stack gap={3} className="py-3">
-          <Section>
-            <UploadCvButton onParsed={handleParsed} />
-          </Section>
+          {/* Inline "Upload CV" button only on edit mode — re-import from a
+              new PDF replaces the form. In new-mode the form was just
+              hydrated from the upload screen; showing the button there is
+              the duplicate-upload UX bug we're killing. */}
+          {!isNewMode && (
+            <Section>
+              <UploadCvButton onParsed={handleParsed} />
+            </Section>
+          )}
 
           {saveBanner === 'success' && (
             <Section>
