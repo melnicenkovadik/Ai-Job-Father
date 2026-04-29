@@ -2,7 +2,7 @@
 
 import { Icon } from '@/components/icons';
 import { useTelegramBackButton } from '@/components/telegram/use-back-button';
-import { Headline, MainButtonBinding, Spinner } from '@/components/ui';
+import { BottomTabBar, Headline, Spinner } from '@/components/ui';
 import { Screen, Scroll, Stack } from '@/components/ui/layout';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
@@ -16,11 +16,21 @@ export function ProfilesListScreen() {
   useTelegramBackButton('/');
 
   return (
-    <Screen>
+    <Screen reserveMainButton={false} className="pb-[5.5rem]">
       <Scroll className="flex-1">
         <Stack gap={3} className="px-4 pb-4 pt-6">
           <Stack gap={1}>
-            <Headline size="md">{t('title')}</Headline>
+            <div className="flex min-w-0 items-start justify-between gap-3">
+              <Headline size="md">{t('title')}</Headline>
+              <button
+                type="button"
+                onClick={() => router.push('/profile/upload')}
+                className="inline-flex min-h-[2.25rem] shrink-0 items-center gap-1.5 rounded-[var(--radius-full)] bg-[var(--color-accent)] px-3 py-1.5 text-[13px] font-semibold text-[var(--color-accent-ink)] transition-opacity hover:opacity-90"
+              >
+                <Icon.Plus size={14} />
+                <span>{t('newProfile')}</span>
+              </button>
+            </div>
             <p className="text-[13px] text-[var(--color-text-dim)]">{t('subtitle')}</p>
           </Stack>
 
@@ -52,7 +62,7 @@ export function ProfilesListScreen() {
         </Stack>
       </Scroll>
 
-      <MainButtonBinding text={t('newProfile')} onClick={() => router.push('/profile/upload')} />
+      <BottomTabBar />
     </Screen>
   );
 }
