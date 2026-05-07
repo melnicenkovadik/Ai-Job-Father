@@ -3,6 +3,7 @@ export const dynamic = 'force-dynamic';
 
 import { getServerLogger } from '@/lib/logger/server';
 import { createHeuristicResumeParser } from '@/lib/resume/heuristic-parser';
+import { uploadResume } from '@/lib/supabase/resume-storage';
 import { requireAuth } from '@/lib/telegram/auth-middleware';
 import {
   ResumeFormatError,
@@ -99,7 +100,18 @@ export const POST = requireAuth(async (req, { user }) => {
         languages: parsed.languages?.length ?? 0,
       },
     });
-    return Response.json({ ...parsed, parser: 'heuristic' });
+    // Best-effort upload to Supabase Storage so the user can re-parse
+    // with AI later without re-uploading. The helper logs warnings on
+    // failure and returns uploaded:false; the parse itself stays valid.
+    const upload = await uploadResume(user.id.value, file.name, bytes);
+    return Response.json({
+      ...parsed,
+      parser: 'heuristic',
+      resumeStoragePath: upload.uploaded ? upload.storagePath : undefined,
+      resumeFileHash: upload.hash,
+      resumeParsedAt: new Date().toISOString(),
+      resumeParseModel: 'heuristic-v1',
+    });
   } catch (err) {
     return mapParserError(err);
   }

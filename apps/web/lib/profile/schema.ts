@@ -137,6 +137,15 @@ export const profileDraftSchema = z.object({
   experience: z.array(experienceEntry).max(30).default([]),
   education: z.array(educationEntry).max(20).default([]),
   languages: z.array(languageEntry).max(20).default([]),
+  // Resume provenance — set when /parse-resume uploaded the PDF to Storage.
+  // Optional on every save: not every profile edit touches the CV.
+  resumeStoragePath: optionalString(0, 500),
+  resumeFileHash: optionalString(0, 64),
+  resumeParsedAt: z
+    .union([z.string().datetime(), z.literal('')])
+    .optional()
+    .transform((v) => (v && v !== '' ? new Date(v) : undefined)),
+  resumeParseModel: optionalString(0, 60),
 });
 
 export type ProfileDraftDto = z.infer<typeof profileDraftSchema>;
@@ -177,6 +186,10 @@ export interface ProfileDto {
     endMonth?: string;
   }[];
   readonly languages: readonly { code: string; level: string }[];
+  readonly resumeStoragePath: string | null;
+  readonly resumeFileHash: string | null;
+  readonly resumeParsedAt: string | null;
+  readonly resumeParseModel: string | null;
   readonly createdAt: string;
   readonly updatedAt: string;
 }
@@ -222,6 +235,10 @@ export function profileToDto(profile: Profile): ProfileDto {
       ...(e.endMonth !== undefined ? { endMonth: e.endMonth } : {}),
     })),
     languages: profile.languages.map((l) => ({ code: l.code, level: l.level })),
+    resumeStoragePath: profile.resumeStoragePath ?? null,
+    resumeFileHash: profile.resumeFileHash ?? null,
+    resumeParsedAt: profile.resumeParsedAt ? profile.resumeParsedAt.toISOString() : null,
+    resumeParseModel: profile.resumeParseModel ?? null,
     createdAt: profile.createdAt.toISOString(),
     updatedAt: profile.updatedAt.toISOString(),
   };

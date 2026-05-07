@@ -1,6 +1,7 @@
 'use client';
 
 import { Stack } from '@/components/ui/layout';
+import type { ResumeMeta } from '@/features/profile/types';
 import { authedFetch } from '@/lib/http/authed-fetch';
 import type { ParsedResume } from '@ai-job-bot/core';
 import { useMutation } from '@tanstack/react-query';
@@ -8,8 +9,10 @@ import { useTranslations } from 'next-intl';
 import { useEffect, useRef, useState } from 'react';
 
 interface UploadCvButtonProps {
-  onParsed(parsed: ParsedResume): void;
+  onParsed(parsed: ParsedResume, meta: ResumeMeta): void;
 }
+
+type ParseResponse = ParsedResume & ResumeMeta;
 
 interface SuccessBanner {
   readonly kind: 'success';
@@ -51,7 +54,7 @@ export function UploadCvButton({ onParsed }: UploadCvButtonProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [banner, setBanner] = useState<Banner | null>(null);
 
-  const mutation = useMutation<ParsedResume, UploadError, File>({
+  const mutation = useMutation<ParseResponse, UploadError, File>({
     mutationFn: async (file) => {
       const fd = new FormData();
       fd.append('file', file);
@@ -63,10 +66,18 @@ export function UploadCvButton({ onParsed }: UploadCvButtonProps) {
         const body = (await res.json().catch(() => ({}))) as { error?: string };
         throw new UploadError(body.error ?? 'internal');
       }
-      return (await res.json()) as ParsedResume;
+      return (await res.json()) as ParseResponse;
     },
-    onSuccess: (parsed) => {
-      onParsed(parsed);
+    onSuccess: (response) => {
+      const { resumeStoragePath, resumeFileHash, resumeParsedAt, resumeParseModel, ...parsed } =
+        response;
+      const meta: ResumeMeta = {
+        ...(resumeStoragePath !== undefined ? { resumeStoragePath } : {}),
+        ...(resumeFileHash !== undefined ? { resumeFileHash } : {}),
+        ...(resumeParsedAt !== undefined ? { resumeParsedAt } : {}),
+        ...(resumeParseModel !== undefined ? { resumeParseModel } : {}),
+      };
+      onParsed(parsed, meta);
       const filled = countFilledFromParsed(parsed);
       setBanner({ kind: 'success', filled, total: 12 });
     },

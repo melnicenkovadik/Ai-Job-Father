@@ -5,6 +5,7 @@ import { useTelegramBackButton } from '@/components/telegram/use-back-button';
 import { Headline, MainButtonBinding, Spinner } from '@/components/ui';
 import { Screen, Scroll, Stack } from '@/components/ui/layout';
 import { openStarsInvoice } from '@/features/payment/use-payments';
+import type { ResumeMeta } from '@/features/profile/types';
 import { authedFetch } from '@/lib/http/authed-fetch';
 import type { ParsedResume } from '@ai-job-bot/core';
 import { useMutation } from '@tanstack/react-query';
@@ -57,7 +58,7 @@ export function ProfileUploadScreen({
   useTelegramBackButton('/profile');
 
   const mutation = useMutation<
-    { parsed: ParsedResume; file: File },
+    { parsed: ParsedResume; meta: ResumeMeta; file: File },
     UploadError,
     { file: File; mode: ParseMode }
   >({
@@ -70,20 +71,29 @@ export function ProfileUploadScreen({
         const body = (await res.json().catch(() => ({}))) as { error?: string };
         throw new UploadError(body.error ?? 'internal');
       }
-      const parsed = (await res.json()) as ParsedResume;
-      return { parsed, file };
+      const response = (await res.json()) as ParsedResume & ResumeMeta;
+      const { resumeStoragePath, resumeFileHash, resumeParsedAt, resumeParseModel, ...parsed } =
+        response;
+      const meta: ResumeMeta = {
+        ...(resumeStoragePath !== undefined ? { resumeStoragePath } : {}),
+        ...(resumeFileHash !== undefined ? { resumeFileHash } : {}),
+        ...(resumeParsedAt !== undefined ? { resumeParsedAt } : {}),
+        ...(resumeParseModel !== undefined ? { resumeParseModel } : {}),
+      };
+      return { parsed, meta, file };
     },
     onMutate: () => {
       setPhase('uploading');
       setTimeout(() => setPhase((p) => (p === 'uploading' ? 'parsing' : p)), 800);
     },
-    onSuccess: async ({ parsed, file }) => {
+    onSuccess: async ({ parsed, meta, file }) => {
       setPhase('done');
-      // Stash parsed result + raw PDF in sessionStorage so /profile?new=1 can
-      // hydrate the form without re-uploading. The blob is also useful for the
-      // "Re-parse with AI" button on the profile screen.
+      // Stash parsed result + meta + raw PDF in sessionStorage so /profile?new=1
+      // can hydrate the form without re-uploading. The blob is also useful for
+      // the "Re-parse with AI" button on the profile screen.
       try {
         sessionStorage.setItem('pendingParsedResume', JSON.stringify(parsed));
+        sessionStorage.setItem('pendingResumeMeta', JSON.stringify(meta));
         const dataUrl = await fileToDataUrl(file);
         sessionStorage.setItem('pendingResumeBlob', dataUrl);
         sessionStorage.setItem('pendingResumeName', file.name);

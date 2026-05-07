@@ -26,6 +26,13 @@ export interface ProfileDraft {
   experience: ExperienceDraft[];
   education: EducationDraft[];
   languages: LanguageDraft[];
+  // Resume provenance — set after /parse-resume uploads the PDF to Storage.
+  // The form never edits these; they ride along on save so the server can
+  // record where the source PDF lives.
+  resumeStoragePath: string;
+  resumeFileHash: string;
+  resumeParsedAt: string;
+  resumeParseModel: string;
 }
 
 export interface SkillDraft {
@@ -76,6 +83,10 @@ export const EMPTY_DRAFT: ProfileDraft = {
   experience: [],
   education: [],
   languages: [],
+  resumeStoragePath: '',
+  resumeFileHash: '',
+  resumeParsedAt: '',
+  resumeParseModel: '',
 };
 
 /** Stable client-side id for list items. */
@@ -133,6 +144,10 @@ export function dtoToDraft(dto: ProfileDto | null): ProfileDraft {
       code: l.code,
       level: l.level as CefrLevel,
     })),
+    resumeStoragePath: dto.resumeStoragePath ?? '',
+    resumeFileHash: dto.resumeFileHash ?? '',
+    resumeParsedAt: dto.resumeParsedAt ?? '',
+    resumeParseModel: dto.resumeParseModel ?? '',
   };
 }
 
@@ -183,6 +198,33 @@ export function draftToWire(draft: ProfileDraft): Record<string, unknown> {
     languages: draft.languages
       .filter((l) => l.code.length === 2)
       .map((l) => ({ code: l.code, level: l.level })),
+    resumeStoragePath: emptyToUndefined(draft.resumeStoragePath),
+    resumeFileHash: emptyToUndefined(draft.resumeFileHash),
+    resumeParsedAt: emptyToUndefined(draft.resumeParsedAt),
+    resumeParseModel: emptyToUndefined(draft.resumeParseModel),
+  };
+}
+
+/**
+ * Resume provenance metadata returned by `/api/profile/parse-resume*`.
+ * Pure metadata that rides alongside the parsed JSON — never edited in the UI.
+ */
+export interface ResumeMeta {
+  readonly resumeStoragePath?: string;
+  readonly resumeFileHash?: string;
+  readonly resumeParsedAt?: string;
+  readonly resumeParseModel?: string;
+}
+
+/** Overlay storage metadata onto a draft. Used after parse completes so the
+ *  draft carries the path + hash + timestamp through to the profile save. */
+export function applyResumeMeta(draft: ProfileDraft, meta: ResumeMeta): ProfileDraft {
+  return {
+    ...draft,
+    resumeStoragePath: meta.resumeStoragePath ?? draft.resumeStoragePath,
+    resumeFileHash: meta.resumeFileHash ?? draft.resumeFileHash,
+    resumeParsedAt: meta.resumeParsedAt ?? draft.resumeParsedAt,
+    resumeParseModel: meta.resumeParseModel ?? draft.resumeParseModel,
   };
 }
 

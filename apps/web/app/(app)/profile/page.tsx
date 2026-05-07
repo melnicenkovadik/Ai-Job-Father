@@ -12,6 +12,8 @@ import { SkillsSection } from '@/features/profile/skills-section';
 import {
   EMPTY_DRAFT,
   type ProfileDraft,
+  type ResumeMeta,
+  applyResumeMeta,
   draftToWire,
   mergeParsedResume,
 } from '@/features/profile/types';
@@ -113,11 +115,23 @@ export default function ProfilePage() {
       if (!raw) return;
       const parsed = JSON.parse(raw) as ParsedResume;
       const merged = mergeParsedResume(EMPTY_DRAFT, parsed);
+      // Pull resume provenance metadata stashed alongside the parsed JSON.
+      // Optional — older uploads (pre-J.3) won't have it.
+      let withMeta = merged;
+      try {
+        const metaRaw = sessionStorage.getItem('pendingResumeMeta');
+        if (metaRaw) {
+          const meta = JSON.parse(metaRaw) as ResumeMeta;
+          withMeta = applyResumeMeta(merged, meta);
+        }
+      } catch {
+        // Bad meta JSON — keep going without provenance.
+      }
       // Auto-name the profile from the parsed headline so users with
       // multiple profiles can tell them apart at a glance. The default
       // "Default profile" string is unhelpful when you have three.
       const autoName = autoNameFromParsed(parsed);
-      draftState.replace(autoName ? { ...merged, name: autoName } : merged);
+      draftState.replace(autoName ? { ...withMeta, name: autoName } : withMeta);
     } catch {
       // Bad JSON or storage unavailable — leave the form blank.
     }
@@ -161,6 +175,7 @@ export default function ProfilePage() {
       // Drop the pending blob/parse — they served their purpose.
       try {
         sessionStorage.removeItem('pendingParsedResume');
+        sessionStorage.removeItem('pendingResumeMeta');
         sessionStorage.removeItem('pendingResumeBlob');
         sessionStorage.removeItem('pendingResumeName');
       } catch {
@@ -183,8 +198,9 @@ export default function ProfilePage() {
     return () => clearTimeout(timer);
   }, [saveBanner]);
 
-  function handleParsed(parsed: ParsedResume) {
-    draftState.replace(mergeParsedResume(draftState.draft, parsed));
+  function handleParsed(parsed: ParsedResume, meta: ResumeMeta) {
+    const merged = mergeParsedResume(draftState.draft, parsed);
+    draftState.replace(applyResumeMeta(merged, meta));
   }
 
   // In edit mode wait for the GET. In new mode there's no fetch — render
