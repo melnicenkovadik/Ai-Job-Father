@@ -3,6 +3,7 @@ import { env } from '../env';
 import { ConsoleTransport } from './console-transport';
 import { CoreLogger } from './core';
 import { NullTransport } from './null-transport';
+import { SentryTransport } from './sentry-transport';
 import { SupabaseTransport } from './supabase-transport';
 import type { LogLevel, LogTransport, Logger } from './types';
 
@@ -32,7 +33,11 @@ export function getServerLogger(): Logger {
     });
     return cached;
   }
-  const transports: LogTransport[] = [new ConsoleTransport(), new SupabaseTransport()];
+  const transports: LogTransport[] = [
+    new ConsoleTransport(),
+    new SupabaseTransport(),
+    new SentryTransport(),
+  ];
   cached = new CoreLogger({
     source: 'api',
     level: env.NEXT_PUBLIC_LOG_LEVEL as LogLevel,

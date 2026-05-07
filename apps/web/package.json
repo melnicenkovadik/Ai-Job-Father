@@ -19,6 +19,7 @@
     "@ai-job-bot/core": "workspace:*",
     "@ai-job-bot/db": "workspace:*",
     "@anthropic-ai/sdk": "^0.30.1",
+    "@sentry/nextjs": "^10.52.0",
     "@supabase/ssr": "^0.5.2",
     "@supabase/supabase-js": "^2.103.3",
     "@t3-oss/env-nextjs": "^0.11.1",
