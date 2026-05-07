@@ -1,6 +1,7 @@
 import type { WizardDraft } from './draft-store';
 
 export const STEP_KEYS = [
+  'profile',
   'category',
   'roles',
   'countries',
@@ -17,6 +18,9 @@ export type StepKey = (typeof STEP_KEYS)[number];
  * Per-step gate. The wizard's MainButton is disabled when this returns false;
  * the whole point is that NO step can be skipped with empty required fields.
  *
+ * - profile: which profile this campaign uses (only shown when the user has
+ *   2+ profiles; otherwise the wizard pre-selects the default and skips the
+ *   step entirely).
  * - category: must pick one of the 12.
  * - roles: ≥ 1 role.
  * - countries: ≥ 1 country code.
@@ -32,6 +36,8 @@ export type StepKey = (typeof STEP_KEYS)[number];
  */
 export function canStepAdvance(stepKey: StepKey, draft: WizardDraft): boolean {
   switch (stepKey) {
+    case 'profile':
+      return Boolean(draft.profileId);
     case 'category':
       return Boolean(draft.category);
     case 'roles':

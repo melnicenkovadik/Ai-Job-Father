@@ -170,6 +170,7 @@
       "title": "New campaign",
       "step": "STEP {current} / {total}",
       "label": {
+        "profile": "Profile",
         "category": "Category",
         "roles": "Roles",
         "countries": "Countries",
@@ -180,6 +181,7 @@
         "checkout": "Review"
       },
       "description": {
+        "profile": "Which profile sends the applications",
         "category": "Pick a category — sets the price formula",
         "roles": "ESCO roles · up to 5",
         "countries": "Where to apply · multi-select",
@@ -188,6 +190,11 @@
         "languages": "Interview languages",
         "quota": "How many applications · sets the price",
         "checkout": "Review and pay"
+      },
+      "profile": {
+        "loading": "Loading profiles…",
+        "defaultBadge": "Default",
+        "newProfile": "New profile"
       },
       "next": "Next",
       "submit": "Review & launch · {amount}",
@@ -242,6 +249,7 @@
       },
       "summary": {
         "title": "Summary",
+        "profile": "Profile",
         "category": "Category",
         "roles": "Roles",
         "rolesCount": "{count, plural, one {# role} other {# roles}}",

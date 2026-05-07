@@ -38,6 +38,21 @@ class SaveError extends Error {
   }
 }
 
+/** Distill a short, user-readable name from the parsed resume so the
+ *  multi-profile list doesn't end up with three "Default profile" rows.
+ *  Prefers the headline (truncated), falls back to fullName + suffix. */
+function autoNameFromParsed(parsed: ParsedResume): string | undefined {
+  const headline = parsed.headline?.trim();
+  if (headline && headline.length > 0) {
+    return headline.length > 40 ? `${headline.slice(0, 39)}…` : headline;
+  }
+  const fullName = parsed.fullName?.trim();
+  if (fullName && fullName.length > 0) {
+    return fullName.length > 36 ? `${fullName.slice(0, 35)}…` : fullName;
+  }
+  return undefined;
+}
+
 function formatSaveError(err: SaveError): string {
   const lines: string[] = [`HTTP ${err.status} · ${err.code}`];
   if (err.body.issues && err.body.issues.length > 0) {
@@ -97,7 +112,12 @@ export default function ProfilePage() {
       const raw = sessionStorage.getItem('pendingParsedResume');
       if (!raw) return;
       const parsed = JSON.parse(raw) as ParsedResume;
-      draftState.replace(mergeParsedResume(EMPTY_DRAFT, parsed));
+      const merged = mergeParsedResume(EMPTY_DRAFT, parsed);
+      // Auto-name the profile from the parsed headline so users with
+      // multiple profiles can tell them apart at a glance. The default
+      // "Default profile" string is unhelpful when you have three.
+      const autoName = autoNameFromParsed(parsed);
+      draftState.replace(autoName ? { ...merged, name: autoName } : merged);
     } catch {
       // Bad JSON or storage unavailable — leave the form blank.
     }

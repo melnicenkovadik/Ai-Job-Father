@@ -170,6 +170,7 @@
       "title": "Nowa kampania",
       "step": "KROK {current} / {total}",
       "label": {
+        "profile": "Profil",
         "category": "Kategoria",
         "roles": "Role",
         "countries": "Kraje",
@@ -180,6 +181,7 @@
         "checkout": "Podgląd"
       },
       "description": {
+        "profile": "Z którego profilu wysyłamy aplikacje",
         "category": "Wybierz kategorię — definiuje formułę ceny",
         "roles": "Role ESCO · do 5",
         "countries": "Gdzie aplikować · wielokrotny wybór",
@@ -188,6 +190,11 @@
         "languages": "Języki rozmów rekrutacyjnych",
         "quota": "Ile aplikacji · wpływa na cenę",
         "checkout": "Podgląd i płatność"
+      },
+      "profile": {
+        "loading": "Ładuję profile…",
+        "defaultBadge": "Domyślny",
+        "newProfile": "Nowy profil"
       },
       "next": "Dalej",
       "submit": "Podgląd i uruchom · {amount}",
@@ -242,6 +249,7 @@
       },
       "summary": {
         "title": "Podsumowanie",
+        "profile": "Profil",
         "category": "Kategoria",
         "roles": "Role",
         "rolesCount": "{count, plural, one {# rola} few {# role} many {# ról} other {# ról}}",

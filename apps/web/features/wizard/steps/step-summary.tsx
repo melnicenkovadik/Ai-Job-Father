@@ -11,8 +11,9 @@ import { useTranslations } from 'next-intl';
 export interface StepSummaryProps {
   /** Indices in the active step list — wizard-screen passes them so the
    *  pencil buttons can jump directly to the correct screen even when the
-   *  stack step is dynamically skipped. */
+   *  profile / stack steps are dynamically skipped. */
   readonly stepIndex: {
+    profile: number | undefined;
     category: number;
     roles: number;
     countries: number;
@@ -22,9 +23,13 @@ export interface StepSummaryProps {
     quota: number;
   };
   readonly onEdit: (index: number) => void;
+  /** Display name of the profile this campaign will use. `null` when the
+   *  user has 0–1 profiles — the row is hidden in that case (no choice was
+   *  asked of them, so showing it is just noise). */
+  readonly profileName: string | null;
 }
 
-export function StepSummary({ stepIndex, onEdit }: StepSummaryProps) {
+export function StepSummary({ stepIndex, onEdit, profileName }: StepSummaryProps) {
   const t = useTranslations('screens.wizard');
   const tCat = useTranslations('screens.wizard.category');
   const draft = useWizardDraft((s) => s.draft);
@@ -65,6 +70,13 @@ export function StepSummary({ stepIndex, onEdit }: StepSummaryProps) {
   return (
     <Stack gap={4}>
       <div className="overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)]">
+        {profileName !== null && stepIndex.profile !== undefined ? (
+          <SummaryRow
+            label={t('summary.profile')}
+            value={profileName}
+            onEdit={() => onEdit(stepIndex.profile as number)}
+          />
+        ) : null}
         <SummaryRow
           label={t('summary.category')}
           value={categoryLabel}

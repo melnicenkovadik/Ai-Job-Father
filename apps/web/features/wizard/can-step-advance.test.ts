@@ -5,6 +5,13 @@ import { EMPTY_WIZARD_DRAFT } from './draft-store';
 const empty = EMPTY_WIZARD_DRAFT;
 
 describe('canStepAdvance', () => {
+  it('blocks profile step until profileId is set', () => {
+    expect(canStepAdvance('profile', empty)).toBe(false);
+    expect(
+      canStepAdvance('profile', { ...empty, profileId: '00000000-0000-0000-0000-000000000001' }),
+    ).toBe(true);
+  });
+
   it('blocks category step until a category is picked', () => {
     expect(canStepAdvance('category', empty)).toBe(false);
     expect(canStepAdvance('category', { ...empty, category: 'tech' })).toBe(true);

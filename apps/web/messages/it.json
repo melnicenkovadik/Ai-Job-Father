@@ -170,6 +170,7 @@
       "title": "Nuova campagna",
       "step": "PASSO {current} / {total}",
       "label": {
+        "profile": "Profilo",
         "category": "Categoria",
         "roles": "Ruoli",
         "countries": "Paesi",
@@ -180,6 +181,7 @@
         "checkout": "Riepilogo"
       },
       "description": {
+        "profile": "Da quale profilo inviamo le candidature",
         "category": "Scegli una categoria — definisce la formula del prezzo",
         "roles": "Ruoli ESCO · fino a 5",
         "countries": "Dove candidarsi · selezione multipla",
@@ -188,6 +190,11 @@
         "languages": "Lingue per i colloqui",
         "quota": "Quante candidature · influenza il prezzo",
         "checkout": "Riepilogo e pagamento"
+      },
+      "profile": {
+        "loading": "Caricamento profili…",
+        "defaultBadge": "Predefinito",
+        "newProfile": "Nuovo profilo"
       },
       "next": "Avanti",
       "submit": "Riepilogo e avvio · {amount}",
@@ -242,6 +249,7 @@
       },
       "summary": {
         "title": "Riepilogo",
+        "profile": "Profilo",
         "category": "Categoria",
         "roles": "Ruoli",
         "rolesCount": "{count, plural, one {# ruolo} other {# ruoli}}",

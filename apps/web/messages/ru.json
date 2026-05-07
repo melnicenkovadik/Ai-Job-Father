@@ -170,6 +170,7 @@
       "title": "Новая кампания",
       "step": "ШАГ {current} / {total}",
       "label": {
+        "profile": "Профиль",
         "category": "Категория",
         "roles": "Роли",
         "countries": "Страны",
@@ -180,6 +181,7 @@
         "checkout": "Проверка"
       },
       "description": {
+        "profile": "С какого профиля отправляем отклики",
         "category": "Выбери категорию — определит формулу цены",
         "roles": "Роли ESCO · до 5 штук",
         "countries": "Куда откликаемся · можно несколько",
@@ -188,6 +190,11 @@
         "languages": "Языки для собеседований",
         "quota": "Сколько откликов · влияет на цену",
         "checkout": "Проверка и оплата"
+      },
+      "profile": {
+        "loading": "Загружаю профили…",
+        "defaultBadge": "Основной",
+        "newProfile": "Новый профиль"
       },
       "next": "Далее",
       "submit": "К запуску · {amount}",
@@ -242,6 +249,7 @@
       },
       "summary": {
         "title": "Сводка",
+        "profile": "Профиль",
         "category": "Категория",
         "roles": "Роли",
         "rolesCount": "{count, plural, one {# роль} few {# роли} many {# ролей} other {# роли}}",

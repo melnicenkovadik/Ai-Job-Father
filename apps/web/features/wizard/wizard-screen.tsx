@@ -19,6 +19,7 @@ import { type WizardDraft, useWizardStore } from './draft-store';
 import { StepCategory } from './steps/step-category';
 import { StepCountries } from './steps/step-countries';
 import { StepLanguages } from './steps/step-languages';
+import { StepProfile } from './steps/step-profile';
 import { StepQuota } from './steps/step-quota';
 import { StepRoles } from './steps/step-roles';
 import { StepSalary } from './steps/step-salary';
@@ -51,15 +52,20 @@ export function WizardScreen({ initialStep }: WizardScreenProps = {}) {
   const draft = useWizardStore((s) => s.draft);
   const setStep = useWizardStore((s) => s.setStep);
   const resetDraft = useWizardStore((s) => s.resetDraft);
+  const patchDraft = useWizardStore((s) => s.patchDraft);
   const { data: profiles = [] } = useProfilesQuery();
   const create = useCreateCampaign();
 
   // The stack step is dropped for non-tech categories — the UX matches what
   // users expect on LinkedIn and other job-adjacent flows.
+  // The profile step is dropped when the user has 0–1 profiles (no choice
+  // to make); the wizard pre-selects the default below.
   const stepKeys = useMemo<readonly StepKey[]>(() => {
-    if (categoryNeedsStack(draft.category)) return BASE_STEP_KEYS;
-    return BASE_STEP_KEYS.filter((k) => k !== 'stack');
-  }, [draft.category]);
+    let keys: readonly StepKey[] = BASE_STEP_KEYS;
+    if (!categoryNeedsStack(draft.category)) keys = keys.filter((k) => k !== 'stack');
+    if (profiles.length < 2) keys = keys.filter((k) => k !== 'profile');
+    return keys;
+  }, [draft.category, profiles.length]);
 
   const total = stepKeys.length;
 
@@ -95,12 +101,25 @@ export function WizardScreen({ initialStep }: WizardScreenProps = {}) {
   const stepKey = stepKeys[effectiveStep] ?? 'category';
   const defaultProfile = profiles.find((p) => p.isDefault) ?? profiles[0];
 
+  // Auto-select a profile so single-profile users (and first-time wizard
+  // visits with multiple profiles) don't trip over an empty `profileId`.
+  // The profile step is hidden when there's < 2 profiles, so the user
+  // doesn't even see this happen.
+  useEffect(() => {
+    if (draft.profileId) return;
+    if (!defaultProfile) return;
+    patchDraft({ profileId: defaultProfile.id });
+  }, [draft.profileId, defaultProfile, patchDraft]);
+
+  const selectedProfile = profiles.find((p) => p.id === draft.profileId) ?? defaultProfile;
+
   const stepIndices = useMemo(() => {
     const idx = (k: StepKey): number | undefined => {
       const i = stepKeys.indexOf(k);
       return i >= 0 ? i : undefined;
     };
     return {
+      profile: idx('profile'),
       category: idx('category') ?? 0,
       roles: idx('roles') ?? 0,
       countries: idx('countries') ?? 0,
@@ -117,10 +136,11 @@ export function WizardScreen({ initialStep }: WizardScreenProps = {}) {
       return;
     }
     if (!draft.category) return;
-    if (!defaultProfile) return;
+    const profileId = draft.profileId ?? defaultProfile?.id;
+    if (!profileId) return;
     create.mutate(
       {
-        profileId: defaultProfile.id,
+        profileId,
         title: titleFromDraft(draft),
         category: draft.category,
         quota: draft.quota,
@@ -167,7 +187,12 @@ export function WizardScreen({ initialStep }: WizardScreenProps = {}) {
         </Stack>
 
         <div className="px-4 py-4">
-          <StepBody stepKey={stepKey} stepIndices={stepIndices} onJump={setStep} />
+          <StepBody
+            stepKey={stepKey}
+            stepIndices={stepIndices}
+            onJump={setStep}
+            selectedProfileName={selectedProfile?.fullName ?? selectedProfile?.name ?? null}
+          />
         </div>
 
         {effectiveStep === total - 1 && !defaultProfile ? (
@@ -196,9 +221,11 @@ function StepBody({
   stepKey,
   stepIndices,
   onJump,
+  selectedProfileName,
 }: {
   stepKey: StepKey;
   stepIndices: {
+    profile: number | undefined;
     category: number;
     roles: number;
     countries: number;
@@ -208,8 +235,11 @@ function StepBody({
     quota: number;
   };
   onJump: (i: number) => void;
+  selectedProfileName: string | null;
 }) {
   switch (stepKey) {
+    case 'profile':
+      return <StepProfile />;
     case 'category':
       return <StepCategory />;
     case 'roles':
@@ -225,7 +255,9 @@ function StepBody({
     case 'quota':
       return <StepQuota />;
     case 'checkout':
-      return <StepSummary stepIndex={stepIndices} onEdit={onJump} />;
+      return (
+        <StepSummary stepIndex={stepIndices} onEdit={onJump} profileName={selectedProfileName} />
+      );
     default:
       return null;
   }

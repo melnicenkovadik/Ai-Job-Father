@@ -170,6 +170,7 @@
       "title": "Нова кампанія",
       "step": "КРОК {current} / {total}",
       "label": {
+        "profile": "Профіль",
         "category": "Категорія",
         "roles": "Ролі",
         "countries": "Країни",
@@ -180,6 +181,7 @@
         "checkout": "Перегляд"
       },
       "description": {
+        "profile": "З якого профілю надсилаємо відгуки",
         "category": "Вибери категорію — задає формулу ціни",
         "roles": "Ролі ESCO · до 5",
         "countries": "Куди відгукуємось · можна кілька",
@@ -188,6 +190,11 @@
         "languages": "Мови для співбесід",
         "quota": "Скільки відгуків · впливає на ціну",
         "checkout": "Перегляд та оплата"
+      },
+      "profile": {
+        "loading": "Завантажую профілі…",
+        "defaultBadge": "Основний",
+        "newProfile": "Новий профіль"
       },
       "next": "Далі",
       "submit": "До запуску · {amount}",
@@ -242,6 +249,7 @@
       },
       "summary": {
         "title": "Зведення",
+        "profile": "Профіль",
         "category": "Категорія",
         "roles": "Ролі",
         "rolesCount": "{count, plural, one {# роль} few {# ролі} many {# ролей} other {# ролі}}",
