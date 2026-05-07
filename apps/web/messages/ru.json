@@ -10,7 +10,8 @@
   },
   "nav": {
     "aria": "Главная навигация",
-    "dashboard": "Кампании",
+    "home": "Главная",
+    "campaigns": "Кампании",
     "profiles": "Профиль",
     "settings": "Настройки"
   },
@@ -116,6 +117,21 @@
         "support": "Поддержка"
       },
       "comingSoon": "Скоро"
+    },
+    "campaigns": {
+      "title": "Кампании",
+      "subtitle": "Активные и прошедшие запуски.",
+      "newCampaign": "Новая",
+      "loading": "Загружаем кампании…",
+      "empty": "Кампаний ещё нет. Нажми «Новая», чтобы запустить.",
+      "emptyFilter": "Здесь пусто по этому фильтру.",
+      "filter": {
+        "all": "Все",
+        "active": "Активные",
+        "past": "Прошедшие"
+      },
+      "countriesCount": "{count, plural, one {# страна} few {# страны} many {# стран} other {# страны}}",
+      "progress": "{found} найдено · {applied} подано"
     },
     "profiles": {
       "title": "Профили",

@@ -10,7 +10,8 @@
   },
   "nav": {
     "aria": "Navigazione principale",
-    "dashboard": "Campagne",
+    "home": "Home",
+    "campaigns": "Campagne",
     "profiles": "Profilo",
     "settings": "Impostazioni"
   },
@@ -116,6 +117,21 @@
         "support": "Assistenza"
       },
       "comingSoon": "Prossimamente"
+    },
+    "campaigns": {
+      "title": "Campagne",
+      "subtitle": "Esecuzioni attive e i tuoi lanci passati.",
+      "newCampaign": "Nuova",
+      "loading": "Caricamento campagne…",
+      "empty": "Nessuna campagna. Tocca Nuova per avviarne una.",
+      "emptyFilter": "Niente qui per questo filtro.",
+      "filter": {
+        "all": "Tutte",
+        "active": "Attive",
+        "past": "Passate"
+      },
+      "countriesCount": "{count, plural, one {# paese} other {# paesi}}",
+      "progress": "{found} trovate · {applied} inviate"
     },
     "profiles": {
       "title": "Profili",

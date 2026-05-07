@@ -10,7 +10,8 @@
   },
   "nav": {
     "aria": "Головна навігація",
-    "dashboard": "Кампанії",
+    "home": "Головна",
+    "campaigns": "Кампанії",
     "profiles": "Профіль",
     "settings": "Налаштування"
   },
@@ -116,6 +117,21 @@
         "support": "Підтримка"
       },
       "comingSoon": "Скоро"
+    },
+    "campaigns": {
+      "title": "Кампанії",
+      "subtitle": "Активні та минулі запуски.",
+      "newCampaign": "Нова",
+      "loading": "Завантажуємо кампанії…",
+      "empty": "Кампаній ще немає. Натисни «Нова», щоб запустити.",
+      "emptyFilter": "Тут порожньо за цим фільтром.",
+      "filter": {
+        "all": "Всі",
+        "active": "Активні",
+        "past": "Минулі"
+      },
+      "countriesCount": "{count, plural, one {# країна} few {# країни} many {# країн} other {# країни}}",
+      "progress": "{found} знайдено · {applied} подано"
     },
     "profiles": {
       "title": "Профілі",

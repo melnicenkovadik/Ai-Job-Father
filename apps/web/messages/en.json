@@ -10,7 +10,8 @@
   },
   "nav": {
     "aria": "Main navigation",
-    "dashboard": "Campaigns",
+    "home": "Home",
+    "campaigns": "Campaigns",
     "profiles": "Profile",
     "settings": "Settings"
   },
@@ -116,6 +117,21 @@
         "support": "Support"
       },
       "comingSoon": "Coming soon"
+    },
+    "campaigns": {
+      "title": "Campaigns",
+      "subtitle": "Active runs and your past launches.",
+      "newCampaign": "New",
+      "loading": "Loading campaigns…",
+      "empty": "No campaigns yet. Tap New to launch one.",
+      "emptyFilter": "Nothing here for this filter.",
+      "filter": {
+        "all": "All",
+        "active": "Active",
+        "past": "Past"
+      },
+      "countriesCount": "{count, plural, one {# country} other {# countries}}",
+      "progress": "{found} found · {applied} applied"
     },
     "profiles": {
       "title": "Profiles",

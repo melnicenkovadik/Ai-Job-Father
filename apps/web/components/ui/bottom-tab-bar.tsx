@@ -8,7 +8,7 @@ import { usePathname } from 'next/navigation';
 import type * as React from 'react';
 
 interface TabConfig {
-  readonly key: 'dashboard' | 'profiles' | 'settings';
+  readonly key: 'home' | 'campaigns' | 'profiles' | 'settings';
   readonly href: string;
   readonly icon: React.ReactNode;
   readonly match: (pathname: string) => boolean;
@@ -16,10 +16,16 @@ interface TabConfig {
 
 const TABS: readonly TabConfig[] = [
   {
-    key: 'dashboard',
+    key: 'home',
     href: '/',
     icon: <Icon.Search size={22} />,
-    match: (p) => p === '/' || p.startsWith('/campaign'),
+    match: (p) => p === '/' || p === '/onboarding',
+  },
+  {
+    key: 'campaigns',
+    href: '/campaigns',
+    icon: <Icon.Doc size={22} />,
+    match: (p) => p === '/campaigns' || p.startsWith('/campaign/'),
   },
   {
     key: 'profiles',
