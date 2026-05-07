@@ -168,7 +168,12 @@ UI review (6) uses `/gsd:ui-review` — systematic audit.
 - Vercel production deployment + custom domain (optional)
 - Supabase production project (EU-central Frankfurt recommended)
 - Rate limits on all API routes (per-user + per-IP)
-- Sentry integration + source maps + error budget
+- Sentry **activation** (instrumentation already shipped in Wave J.6 — `@sentry/nextjs` wired on web + dashboard, `SentryTransport` in the logger pipeline, dormant without DSN). To turn on:
+  1. Create two projects on sentry.io (Next.js platform): `ai-job-bot-web`, `ai-job-father-dashboard`.
+  2. Generate one auth token with `project:releases` + `project:read`.
+  3. Set `SENTRY_DSN` + `NEXT_PUBLIC_SENTRY_DSN` (per-project DSN) and `SENTRY_AUTH_TOKEN` (shared) on both Vercel projects → production scope.
+  4. Redeploy both, verify error capture by throwing a test exception.
+  5. Source-map upload runs only when `SENTRY_AUTH_TOKEN` is set, so preview/dev builds stay unaffected.
 - Webhook URL pinned to prod (not preview)
 - Secrets rotated; service-role key audited for client-side leakage (grep + Biome + runtime check)
 - `docs/RUNBOOK.md` — deploy, secret rotation, bot outage recovery, rollback procedures
