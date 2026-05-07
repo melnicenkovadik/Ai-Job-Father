@@ -126,7 +126,17 @@
       "newProfile": "Nuovo profilo",
       "campaigns": "{count, plural, one {# campagna} other {# campagne}}",
       "edit": "Modifica",
-      "loading": "Caricamento profili…"
+      "loading": "Caricamento profili…",
+      "delete": {
+        "label": "Elimina profilo",
+        "confirmTitle": "Eliminare {name}?",
+        "confirmHint": "L'azione non è reversibile.",
+        "confirmYes": "Sì, elimina",
+        "cancel": "Annulla",
+        "errorPaidCampaign": "Questo profilo ha campagne pagate e non può essere eliminato.",
+        "errorNotFound": "Profilo non trovato.",
+        "errorGeneric": "Eliminazione fallita. Riprova."
+      }
     },
     "upload": {
       "title": "CV",

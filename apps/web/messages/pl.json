@@ -126,7 +126,17 @@
       "newProfile": "Nowy profil",
       "campaigns": "{count, plural, one {# kampania} few {# kampanie} many {# kampanii} other {# kampanii}}",
       "edit": "Edytuj",
-      "loading": "Ładowanie profili…"
+      "loading": "Ładowanie profili…",
+      "delete": {
+        "label": "Usuń profil",
+        "confirmTitle": "Usunąć {name}?",
+        "confirmHint": "Tej operacji nie można cofnąć.",
+        "confirmYes": "Tak, usuń",
+        "cancel": "Anuluj",
+        "errorPaidCampaign": "Ten profil ma opłacone kampanie i nie można go usunąć.",
+        "errorNotFound": "Profil nie znaleziony.",
+        "errorGeneric": "Nie udało się usunąć. Spróbuj ponownie."
+      }
     },
     "upload": {
       "title": "CV",

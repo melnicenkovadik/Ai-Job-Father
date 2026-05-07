@@ -126,7 +126,17 @@
       "newProfile": "Новий профіль",
       "campaigns": "{count, plural, one {# кампанія} few {# кампанії} many {# кампаній} other {# кампанії}}",
       "edit": "Редагувати",
-      "loading": "Завантажуємо профілі…"
+      "loading": "Завантажуємо профілі…",
+      "delete": {
+        "label": "Видалити профіль",
+        "confirmTitle": "Видалити {name}?",
+        "confirmHint": "Дію не можна скасувати.",
+        "confirmYes": "Так, видалити",
+        "cancel": "Скасувати",
+        "errorPaidCampaign": "У цього профілю є оплачені кампанії — видалити не можна.",
+        "errorNotFound": "Профіль не знайдено.",
+        "errorGeneric": "Не вдалося видалити. Спробуй ще раз."
+      }
     },
     "upload": {
       "title": "CV",

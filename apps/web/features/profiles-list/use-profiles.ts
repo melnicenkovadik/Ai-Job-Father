@@ -1,7 +1,7 @@
 'use client';
 
 import { authedFetch } from '@/lib/http/authed-fetch';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 export interface ProfileSummaryDto {
   id: string;
@@ -50,5 +50,38 @@ export function useProfilesQuery() {
     queryKey: ['profiles'],
     queryFn: fetchProfiles,
     staleTime: 30_000,
+  });
+}
+
+export class DeleteProfileError extends Error {
+  constructor(public readonly code: string) {
+    super(code);
+    this.name = 'DeleteProfileError';
+  }
+}
+
+async function deleteProfileApi(id: string): Promise<void> {
+  const res = await authedFetch(`/api/profile/${id}`, { method: 'DELETE' });
+  if (!res.ok) {
+    const body = (await res.json().catch(() => ({}))) as { error?: string };
+    throw new DeleteProfileError(body.error ?? `delete_${res.status}`);
+  }
+}
+
+/**
+ * On success, invalidates the profile list, the single-profile query, and
+ * the campaign list (the FK from campaigns.profile_id ripples here too —
+ * if delete succeeded, no campaign was using this profile, but the cached
+ * campaign list might still need a refresh in edge cases).
+ */
+export function useDeleteProfile() {
+  const qc = useQueryClient();
+  return useMutation<void, DeleteProfileError, string>({
+    mutationFn: deleteProfileApi,
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['profiles'] });
+      qc.invalidateQueries({ queryKey: ['profile', 'me'] });
+      qc.invalidateQueries({ queryKey: ['campaigns'] });
+    },
   });
 }

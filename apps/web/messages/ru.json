@@ -126,7 +126,17 @@
       "newProfile": "Новый профиль",
       "campaigns": "{count, plural, one {# кампания} few {# кампании} many {# кампаний} other {# кампании}}",
       "edit": "Изменить",
-      "loading": "Загружаем профили…"
+      "loading": "Загружаем профили…",
+      "delete": {
+        "label": "Удалить профиль",
+        "confirmTitle": "Удалить {name}?",
+        "confirmHint": "Действие нельзя отменить.",
+        "confirmYes": "Да, удалить",
+        "cancel": "Отмена",
+        "errorPaidCampaign": "У этого профиля есть оплаченные кампании — удалить нельзя.",
+        "errorNotFound": "Профиль не найден.",
+        "errorGeneric": "Не получилось удалить. Попробуй ещё раз."
+      }
     },
     "upload": {
       "title": "CV",

@@ -126,7 +126,17 @@
       "newProfile": "New profile",
       "campaigns": "{count, plural, one {# campaign} other {# campaigns}}",
       "edit": "Edit",
-      "loading": "Loading profiles…"
+      "loading": "Loading profiles…",
+      "delete": {
+        "label": "Delete profile",
+        "confirmTitle": "Delete {name}?",
+        "confirmHint": "This cannot be undone.",
+        "confirmYes": "Yes, delete",
+        "cancel": "Cancel",
+        "errorPaidCampaign": "This profile has paid campaigns and cannot be deleted.",
+        "errorNotFound": "Profile not found.",
+        "errorGeneric": "Could not delete. Try again."
+      }
     },
     "upload": {
       "title": "CV",
