@@ -444,6 +444,19 @@
         "internal": "Analisi fallita. Riprova."
       }
     },
+    "aiReparse": {
+      "label": "Rianalizza con AI · {amount} ⭐",
+      "hint": "Riesegue l'analisi sul PDF già caricato. Non serve ricaricare.",
+      "busyPay": "Apertura pagamento…",
+      "busyParse": "L'AI sta rileggendo il CV…",
+      "success": "Profilo aggiornato dall'analisi AI.",
+      "errorPayment": "Pagamento fallito. Riprova.",
+      "errorCancelled": "Pagamento annullato.",
+      "errorNoPdf": "Nessun PDF salvato. Carica prima un nuovo CV.",
+      "errorNotFound": "Profilo non trovato.",
+      "errorDownload": "Impossibile leggere il PDF salvato. Riprova a caricarlo.",
+      "errorGeneric": "Rianalisi fallita. Riprova."
+    },
     "section": {
       "identity": "Identità",
       "experience": "Esperienza e formazione",

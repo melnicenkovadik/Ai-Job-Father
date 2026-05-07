@@ -7,6 +7,7 @@ import { ExperienceSection } from '@/features/profile/experience-section';
 import { IdentitySection } from '@/features/profile/identity-section';
 import { LanguagesSection } from '@/features/profile/languages-section';
 import { LinksSection } from '@/features/profile/links-section';
+import { ReparseWithAiButton } from '@/features/profile/reparse-ai-button';
 import { SaveProfileButton } from '@/features/profile/save-profile-button';
 import { SkillsSection } from '@/features/profile/skills-section';
 import {
@@ -231,6 +232,16 @@ export default function ProfilePage() {
               <UploadCvButton onParsed={handleParsed} />
             </Section>
           )}
+
+          {/* AI re-parse without re-upload — only when an existing profile has
+              a stored PDF in Supabase Storage. The button gates behind a
+              Stars invoice; on success the form is re-hydrated with the new
+              parse. New-mode skips this (the user just parsed). */}
+          {!isNewMode && query.data?.id && query.data?.resumeStoragePath ? (
+            <Section>
+              <ReparseWithAiButton profileId={query.data.id} onParsed={handleParsed} />
+            </Section>
+          ) : null}
 
           {saveBanner === 'success' && (
             <Section>

@@ -444,6 +444,19 @@
         "internal": "Parse failed. Please try again."
       }
     },
+    "aiReparse": {
+      "label": "Re-parse with AI · {amount} ⭐",
+      "hint": "Re-runs the parse on your stored PDF. No re-upload required.",
+      "busyPay": "Opening payment…",
+      "busyParse": "AI is re-reading your CV…",
+      "success": "Profile updated from AI parse.",
+      "errorPayment": "Payment failed. Try again.",
+      "errorCancelled": "Payment cancelled.",
+      "errorNoPdf": "No PDF on file. Upload a fresh CV first.",
+      "errorNotFound": "Profile not found.",
+      "errorDownload": "Couldn't read your stored PDF. Try uploading again.",
+      "errorGeneric": "Re-parse failed. Please try again."
+    },
     "section": {
       "identity": "Identity",
       "experience": "Experience & Education",

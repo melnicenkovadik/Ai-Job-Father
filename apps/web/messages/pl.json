@@ -444,6 +444,19 @@
         "internal": "Analiza nieudana. Spróbuj ponownie."
       }
     },
+    "aiReparse": {
+      "label": "Przeanalizuj ponownie z AI · {amount} ⭐",
+      "hint": "Uruchamia parser na zapisanym PDF. Nie trzeba wgrywać go ponownie.",
+      "busyPay": "Otwieranie płatności…",
+      "busyParse": "AI ponownie czyta CV…",
+      "success": "Profil zaktualizowany przez analizę AI.",
+      "errorPayment": "Płatność nieudana. Spróbuj ponownie.",
+      "errorCancelled": "Płatność anulowana.",
+      "errorNoPdf": "Brak zapisanego PDF. Wgraj najpierw nowe CV.",
+      "errorNotFound": "Nie znaleziono profilu.",
+      "errorDownload": "Nie udało się odczytać zapisanego PDF. Spróbuj wgrać ponownie.",
+      "errorGeneric": "Ponowna analiza nieudana. Spróbuj ponownie."
+    },
     "section": {
       "identity": "Dane osobowe",
       "experience": "Doświadczenie i edukacja",
