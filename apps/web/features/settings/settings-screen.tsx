@@ -67,41 +67,43 @@ export function SettingsScreen() {
           </Stack>
         </Section>
 
-        <Section
-          title={
-            <SectionTitle>
-              <span className="inline-flex items-center gap-2">
-                {t('section.notifications')}
-                <span className="rounded-full bg-[var(--color-bg-2)] px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-[var(--color-text-mute)]">
+        <Section title={<SectionTitle>{t('section.notifications')}</SectionTitle>}>
+          <Stack gap={2}>
+            <div className="rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] px-4">
+              <Toggle
+                checked={notifications.push}
+                onChange={(next) => {
+                  if (disabled) return;
+                  update.mutate({ notifications: { push: next } });
+                }}
+                label={t('notification.push.label')}
+                description={t('notification.push.description')}
+              />
+            </div>
+            {/* Email + weekly digest stay disabled — backend not wired yet. */}
+            <div
+              aria-disabled="true"
+              className="pointer-events-none rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] px-4 opacity-50"
+            >
+              <div className="flex items-center justify-between border-b border-[var(--color-border)] py-3">
+                <span className="text-[12px] font-medium uppercase tracking-wide text-[var(--color-text-mute)]">
                   {t('comingSoon')}
                 </span>
-              </span>
-            </SectionTitle>
-          }
-        >
-          <div
-            aria-disabled="true"
-            className="pointer-events-none rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] px-4 opacity-50"
-          >
-            <Toggle
-              checked={notifications.push}
-              onChange={() => {}}
-              label={t('notification.push.label')}
-              description={t('notification.push.description')}
-            />
-            <Toggle
-              checked={notifications.email}
-              onChange={() => {}}
-              label={t('notification.email.label')}
-              description={t('notification.email.description')}
-            />
-            <Toggle
-              checked={notifications.weekly}
-              onChange={() => {}}
-              label={t('notification.weeklyDigest.label')}
-              description={t('notification.weeklyDigest.description')}
-            />
-          </div>
+              </div>
+              <Toggle
+                checked={notifications.email}
+                onChange={() => {}}
+                label={t('notification.email.label')}
+                description={t('notification.email.description')}
+              />
+              <Toggle
+                checked={notifications.weekly}
+                onChange={() => {}}
+                label={t('notification.weeklyDigest.label')}
+                description={t('notification.weeklyDigest.description')}
+              />
+            </div>
+          </Stack>
         </Section>
 
         <Section title={<SectionTitle>{t('section.theme')}</SectionTitle>}>

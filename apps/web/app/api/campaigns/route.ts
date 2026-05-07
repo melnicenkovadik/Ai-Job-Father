@@ -3,6 +3,7 @@ export const dynamic = 'force-dynamic';
 
 import { campaignToDto, createCampaignSchema } from '@/lib/campaign/schema';
 import { getServerLogger } from '@/lib/logger/server';
+import { notifyIfJustCompleted } from '@/lib/notifications/dispatch';
 import { SystemClock, getCampaignProgressDriver } from '@/lib/sim/factory';
 import { SupabaseCampaignEventRepo } from '@/lib/supabase/campaign-event-repo';
 import { SupabaseCampaignRepo } from '@/lib/supabase/campaign-repo';
@@ -29,16 +30,16 @@ export const GET = requireAuth(async (_req, { user }) => {
   try {
     let campaigns = await repo.findByUserId(user.id);
 
-    const activeIds = campaigns
+    const activeBefore = campaigns
       .filter((c) => isActive(c.status))
-      .slice(0, LAZY_TICK_BATCH_LIMIT)
-      .map((c) => c.id);
+      .slice(0, LAZY_TICK_BATCH_LIMIT);
+    const prevStatusById = new Map(activeBefore.map((c) => [c.id.value, c.status]));
 
-    if (activeIds.length > 0) {
+    if (activeBefore.length > 0) {
       await Promise.all(
-        activeIds.map((id) =>
+        activeBefore.map((c) =>
           tickCampaignIfDue(
-            { campaignId: id },
+            { campaignId: c.id },
             {
               campaignRepo: repo,
               campaignEventRepo: eventRepo,
@@ -49,7 +50,7 @@ export const GET = requireAuth(async (_req, { user }) => {
             // Lazy tick must never break the list response.
             getServerLogger().warn({
               context: 'api/campaigns.list.tick',
-              data: { id: id.value },
+              data: { id: c.id.value },
               error: err,
             });
             return null;
@@ -58,6 +59,13 @@ export const GET = requireAuth(async (_req, { user }) => {
       );
       // Re-fetch so the response reflects the freshly-ticked progress.
       campaigns = await repo.findByUserId(user.id);
+      // Fire push notifications for any campaigns that just transitioned to
+      // 'completed'. Best-effort — `notifyIfJustCompleted` swallows its own
+      // errors.
+      for (const c of campaigns) {
+        const prev = prevStatusById.get(c.id.value);
+        if (prev !== undefined) void notifyIfJustCompleted(prev, c);
+      }
     }
 
     return Response.json({ campaigns: campaigns.map(campaignToDto) });

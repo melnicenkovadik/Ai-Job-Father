@@ -3,6 +3,7 @@ export const dynamic = 'force-dynamic';
 
 import { campaignToDto } from '@/lib/campaign/schema';
 import { getServerLogger } from '@/lib/logger/server';
+import { notifyIfJustCompleted } from '@/lib/notifications/dispatch';
 import { SystemClock, getCampaignProgressDriver } from '@/lib/sim/factory';
 import { SupabaseCampaignEventRepo } from '@/lib/supabase/campaign-event-repo';
 import { SupabaseCampaignRepo } from '@/lib/supabase/campaign-repo';
@@ -34,6 +35,7 @@ export const GET = async (req: Request, ctx: { params: Promise<{ id: string }> }
         return Response.json({ error: 'forbidden' }, { status: 403 });
       }
 
+      const prevStatus = campaign.status;
       const ticked = await tickCampaignIfDue(
         { campaignId: cid },
         {
@@ -44,6 +46,10 @@ export const GET = async (req: Request, ctx: { params: Promise<{ id: string }> }
         },
       );
       if (ticked) campaign = ticked;
+
+      // Best-effort push on completion transition. `notifyIfJustCompleted`
+      // catches its own errors; the route never blocks on the bot API.
+      void notifyIfJustCompleted(prevStatus, campaign);
 
       return Response.json(campaignToDto(campaign));
     } catch (err) {
