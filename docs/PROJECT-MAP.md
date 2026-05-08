@@ -1,6 +1,6 @@
 # Project Map — AI Job Bot
 
-**Last updated:** 2026-04-17 (Phase 2 in progress — Profile UI + heuristic resume parse shipped; AI-tier parse + ESCO wait for Phase 3/4)
+**Last updated:** 2026-05-08 (Wave J — Bot polish shipped — multi-profile delete, /campaigns history, resume PDF storage, AI re-parse, push notifications, Sentry instrumentation [dormant])
 
 ## Live Systems
 
@@ -53,7 +53,19 @@ Extensions installed by `20260417000000_init.sql`: `pgcrypto`, `pg_trgm`, `uuid-
 - ✅ `/api/auth/session` with signed initData → upsert `users` row + mint Supabase JWT +
   pass RLS (Phase 1 — covered by unit + integration tests)
 - ✅ `/profile` editor + 📎 Upload CV (heuristic parse) → draft filled → Save → `profiles` row (Phase 2 — MVP tier)
-- ⏳ Paid AI-re-parse (OpenAI gpt-5.1) behind Stars paywall (Phase 4)
+- ✅ Paid AI re-parse (OpenAI) behind Stars paywall — initial upload AND
+  in-place re-parse of the stored PDF without re-upload (Wave J.4)
+- ✅ Multi-profile: list at `/profiles`, delete with auto-promoted
+  default, FK-aware block when paid campaigns reference (Wave J.1)
+- ✅ Campaign history at `/campaigns` with filter pills + 4-tab bar
+  (Home / Campaigns / Profile / Settings) (Wave J.2)
+- ✅ Resume PDF persisted to Supabase Storage
+  `resumes/{userId}/{ts}-{hash8}.pdf` after every parse, with 60s
+  same-hash dedup (Wave J.3)
+- ✅ Push notification on campaign completion via grammY, gated on
+  `user_settings.notify_push`; Settings push toggle live (Wave J.5)
+- ⏳ Sentry instrumentation shipped (Wave J.6) — activation deferred to
+  Phase 7 (DSN + auth token + Vercel env vars)
 - ⏳ 3-screen wizard → `campaigns (draft)` with valid snapshot (Phase 3, per
   `~/.claude/plans/lucky-noodling-pike.md`)
 - ⏳ Pay via Stars or TON → `status=paid` → snapshot frozen → push notification (Phase 4)
@@ -70,16 +82,35 @@ Extensions installed by `20260417000000_init.sql`: `pgcrypto`, `pg_trgm`, `uuid-
 | Responsive UI contract | 1 | [ui-contract.md](./features/ui-contract.md) |
 | i18n skeleton | 1 | [i18n-skeleton.md](./features/i18n-skeleton.md) |
 | Bot commands | 1 | [bot-commands.md](./features/bot-commands.md) |
+| Profile editor + heuristic parse | 2 | [profile.md](./features/profile.md) |
+| Wave J — Bot polish (J.1–J.6) | 2 (cross-phase polish) | [wave-j-bot-polish.md](./features/wave-j-bot-polish.md) |
 
 ## Route Map
 
-- **`/`** → Mini App greeting (`app/(app)/page.tsx` under `(app)` layout with
-  `NextIntlClientProvider` + `TelegramProvider`).
+- **`/`** → Mini App home (`app/(app)/page.tsx`) — campaigns dashboard for
+  returning users, onboarding bounce for new ones.
+- **`/profiles`** → Multi-profile list with inline trash button (Wave J.1).
+- **`/profile`** → single-profile editor; `?new=1` hydrates from
+  sessionStorage post-upload. AI re-parse button visible in edit mode
+  when `resumeStoragePath` is set (Wave J.4).
+- **`/profile/upload`** → CV picker + heuristic/AI-tier parse selector.
+- **`/campaigns`** → Campaign history list with all/active/past filter
+  pills (Wave J.2).
+- **`/campaign/[id]`** → single campaign detail.
+- **`/campaign/new`** → 3-screen wizard.
+- **`/settings`** → locale picker + Auto/Light/Dark theme + push toggle.
 - **`/ui-contract`** → dev fixture (`app/(dev)/ui-contract/page.tsx` under bare `(dev)`
   layout; no provider chain).
 - **`/api/health`** → 200 JSON.
 - **`/api/auth/session`** → POST initData → Supabase JWT + user.
 - **`/api/bot/webhook`** → grammY `webhookCallback` with secret-token verification.
+- **`/api/profile`** GET / POST; **`/api/profile/[id]`** PUT / DELETE
+  (Wave J.1); **`/api/profile/list`** GET.
+- **`/api/profile/parse-resume`** — heuristic; **`/api/profile/parse-resume/ai-init`**
+  — Stars invoice; **`/api/profile/parse-resume/ai`** — multipart OR
+  JSON `{profileId}` (Wave J.4).
+- **`/api/campaigns`** GET / POST; **`/api/campaigns/[id]`** GET (lazy-tick
+  + push-on-completion in Wave J.5).
 
 ## Open Issues / Technical Debt
 

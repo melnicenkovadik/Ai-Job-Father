@@ -4,6 +4,82 @@ Append-only narrative record of user ↔ Claude conversations. One entry per ses
 
 ---
 
+## 2026-05-08 — Wave J: bot polish across already-shipped surfaces
+
+**Context.** Phases 2–5 are shipped enough to use end-to-end (profile editor,
+multi-profile list, campaign wizard, Stars + TON, dashboard, simulator),
+but real-world use has surfaced gaps: no in-app profile delete, no campaign
+history view, resume PDFs lost on tab close, AI re-parse forces re-upload,
+push-notifications stub, no Sentry. The user approved a six-step "Wave J"
+plan parked at `~/.claude/plans/snoopy-pondering-balloon.md` covering all
+six gaps — explicitly **not** the search-and-apply crawler service, which
+stays postponed to a separate effort.
+
+**Locked decisions (taken before planning):**
+1. Default-profile delete — auto-promote the oldest sibling, then delete
+   target. Last-profile case allowed (cascading; user re-onboards).
+2. Tab layout grew from 3 → 4 tabs:
+   **Home / Campaigns / Profile / Settings**.
+3. Crawler service: still postponed.
+4. i18n parity audit: skipped — `messages-parity.test.ts` green.
+
+**What shipped — six commits on `main`:**
+
+| # | Commit | What |
+|---|---|---|
+| **J.1** | `fd4a937` | Delete profile from `/profiles` list with auto-promote default; FK-aware paid-campaign block (`409 has_campaigns`). |
+| **J.2** | `cacb587` | `/campaigns` history view with filter pills + 4-tab bar (`Home / Campaigns / Profile / Settings`). |
+| **J.3** | `6f8bcb4` | Resume PDF persisted to Supabase Storage (`resumes/{userId}/{ts}-{hash8}.pdf`). 60s same-hash dedup. Profile rows now carry `resume_storage_path|file_hash|parsed_at|parse_model`. |
+| **J.4** | `cc47d55` | AI re-parse without re-upload — `/api/profile/parse-resume/ai` accepts JSON `{profileId}`; downloads from Storage; `<ReparseWithAiButton>` on `/profile`. |
+| **J.5** | `f77178f` | Push notifications on campaign completion via grammY (`bot.api.sendMessage`), gated on `user_settings.notify_push`; Settings push toggle live. |
+| **J.6** | `d9eaf32` (web) + `e6a0ffe` (dashboard) + `6b2e498` (defer-to-Phase-7 doc) | `@sentry/nextjs` instrumentation + logger transport on both repos. Dormant without DSN. Activation deferred to Phase 7. |
+
+Detailed write-up: [`docs/features/wave-j-bot-polish.md`](features/wave-j-bot-polish.md).
+
+**Verification.** Typecheck + Biome clean on all changed files. 51 web + 344
+core unit tests green. Both Vercel projects show `● Ready` in production.
+`messages-parity.test.ts` green across all five locales for every J-wave
+key. No bare strings introduced.
+
+**Architectural notes.**
+
+- The notification side-effect lives at the **route** level
+  (`/api/campaigns/*`), not in `packages/core` — keeps the framework-free
+  rule on the core intact while still firing on every transition into
+  `completed`.
+- Resume metadata fields are pure provenance: they ride along on every
+  profile save but the UI form never edits them. `applyResumeMeta(draft,
+  meta)` overlays them after parse so they survive the round-trip.
+- AI re-parse is content-type-branched on the same handler:
+  `multipart/form-data` (initial upload) vs `application/json` (re-parse
+  from Storage). Same OpenAI parser, same one-credit consume, different
+  byte-source.
+- Sentry instrumentation gated on env: missing `SENTRY_DSN` →
+  `init(enabled: false)` → no-op. Source-map upload only fires when
+  `SENTRY_AUTH_TOKEN` is set, so preview/dev builds skip the CLI.
+
+**Activation outstanding (Phase 7).**
+
+1. Create two Sentry projects (Next.js): `ai-job-bot-web`,
+   `ai-job-father-dashboard`.
+2. Generate one auth token with `project:releases` + `project:read`.
+3. Set `SENTRY_DSN` + `NEXT_PUBLIC_SENTRY_DSN` (per-project) +
+   `SENTRY_AUTH_TOKEN` (shared) on both Vercel projects, production scope.
+4. Redeploy both, verify capture by throwing a test exception.
+
+User explicitly chose to defer all four steps — *"я так подумал пока нафиг
+сентри. добавь в план на будущее"*. Noted in `.planning/ROADMAP.md` under
+Phase 7 (commit `6b2e498`).
+
+**Next session.**
+
+- If continuing the bot: pick from the post-MVP backlog (real translations
+  in Phase 6, RUNBOOK in Phase 7, custom domain).
+- If pivoting: start Phase 3 of the search-and-apply crawler service —
+  separate plan, currently undrafted.
+
+---
+
 ## 2026-04-16 — Phase 0 scaffolding
 
 **Context.** Greenfield kickoff. The user approved the implementation plan in

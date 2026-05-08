@@ -2,6 +2,86 @@
 
 All notable changes per phase. Append-only. One section per phase.
 
+## Wave J — Bot polish (2026-05-08, shipped)
+
+Cross-phase polish across already-implemented surfaces (profiles,
+campaigns, payments, dashboard). Crawler / search-and-apply service
+explicitly out of scope. Detailed write-up in
+[docs/features/wave-j-bot-polish.md](./features/wave-j-bot-polish.md).
+
+### Added
+
+- **J.1** — `DELETE /api/profile/:id` with auto-promote of oldest sibling
+  when the deleted profile was the default. `useDeleteProfile()` hook
+  invalidates `['profiles']` / `['profile', 'me']` / `['campaigns']`.
+  Inline 2-stage trash button on each `<ProfileCard>`. Postgres
+  `23503` FK violation (paid campaigns reference) → `409 has_campaigns`.
+  Translated for 5 locales under `screens.profiles.delete.*`.
+  *(commit `fd4a937`)*
+- **J.2** — `app/(app)/campaigns/page.tsx` + `<CampaignsListScreen>`
+  with all/active/past filter pills, status badges, country count,
+  found/applied progress, creation date. `+ New` routes to
+  `/campaign/new`. Bottom-tab-bar grew to four tabs:
+  Home / Campaigns / Profile / Settings. Translated for 5 locales
+  under `screens.campaigns.*` and `nav.{home,campaigns}`.
+  *(commit `cacb587`)*
+- **J.3** — `lib/supabase/resume-storage.ts` — service-role wrapper
+  around the long-existing `resumes` bucket. PDFs upload to
+  `resumes/{userId}/{timestamp}-{hash8}.pdf` after every successful
+  parse (heuristic + AI). 60s same-hash dedup. Profile rows now carry
+  `resume_storage_path` + `resume_file_hash` + `resume_parsed_at` +
+  `resume_parse_model`. `profileDraftSchema` + `ProfileDto` +
+  `ProfileDraft` extended; `applyResumeMeta()` helper overlays metadata
+  onto a draft after parse. Best-effort: bucket failure logs a warning,
+  parse stays valid.
+  *(commit `6f8bcb4`)*
+- **J.4** — `POST /api/profile/parse-resume/ai` accepts JSON
+  `{ profileId }` in addition to multipart. Re-parse downloads the PDF
+  from Storage, runs OpenAI, consumes one credit, returns the new
+  parsed JSON + provenance metadata. `<ReparseWithAiButton>` on
+  `/profile` (edit mode only, gated on `resumeStoragePath`) reuses the
+  Stars `ai-init` invoice flow with a 500ms grace for the bot's
+  `successful_payment` handler. Five locales under
+  `profile.aiReparse.*`. Errors map by code: `no_credit`,
+  `no_resume_in_storage`, `profile_not_found`,
+  `storage_download_failed`.
+  *(commit `cc47d55`)*
+- **J.5** — `lib/notifications/dispatch.ts` — `notifyCampaignCompleted`
+  + `notifyIfJustCompleted` helpers. Settings lookup gated on
+  `user_settings.notify_push`; `users.telegram_id` resolved through
+  service-role; HTML message via grammY. Wired into
+  `GET /api/campaigns/[id]` and `GET /api/campaigns` lazy-tick paths
+  — both capture prior status, fire the push only on transition into
+  `completed`. End-to-end best-effort with warn-level logs. Settings
+  push toggle is now live (`useUpdateSettings`); email + weekly stay
+  disabled with a "Coming soon" badge.
+  *(commit `f77178f`)*
+- **J.6** — `@sentry/nextjs` ≥ 10 scaffolded on both `apps/web` and the
+  separate dashboard repo. Four-file setup
+  (`sentry.{client,server,edge}.config.ts` + `instrumentation.ts`),
+  `app/global-error.tsx`, `withSentryConfig` wrapper around
+  `next.config.ts`. `SentryTransport` forwards `error`-level log
+  events with `context` / `source` / `url` tags + extras. Activation
+  gated entirely on env (`SENTRY_DSN` / `NEXT_PUBLIC_SENTRY_DSN` /
+  `SENTRY_AUTH_TOKEN`) — without DSN the SDK runs but never sends.
+  *(commits `d9eaf32` web, `e6a0ffe` dashboard)*
+
+### Deferred
+
+- **Sentry activation** — DSN provisioning and Vercel env vars require
+  the user to create Sentry projects in the UI (browser OAuth, no CLI
+  path). Five-step activation checklist parked in
+  `.planning/ROADMAP.md` §Phase 7 (commit `6b2e498`).
+
+### Notes
+
+- `messages-parity.test.ts` stays green across all five locales for
+  every J-wave key. No bare strings introduced.
+- `tickCampaignIfDue` signature unchanged; notification side-effect
+  lives at the route level so the core stays framework-free.
+- The four resume-provenance fields ride along on every profile save
+  but are never editable in the UI — they're pure metadata.
+
 ## Phase 2 — Profile + resume parse (2026-04-17 → in progress)
 
 ### 2026-04-17 evening — AI-first resume parse + save end-to-end
