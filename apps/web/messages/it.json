@@ -148,9 +148,12 @@
         "confirmTitle": "Eliminare {name}?",
         "confirmHint": "L'azione non è reversibile.",
         "confirmYes": "Sì, elimina",
+        "confirmCascade": "Sì, elimina tutto",
+        "cascadeHint": "{count, plural, one {Questo profilo ha 1 campagna — verrà rimossa insieme ai pagamenti collegati. Continuare?} other {Questo profilo ha # campagne — verranno tutte rimosse insieme ai pagamenti collegati. Continuare?}}",
         "cancel": "Annulla",
         "errorPaidCampaign": "Questo profilo ha campagne pagate e non può essere eliminato.",
         "errorNotFound": "Profilo non trovato.",
+        "errorCascadeFailed": "Impossibile rimuovere le campagne collegate. Riprova.",
         "errorGeneric": "Eliminazione fallita. Riprova."
       }
     },

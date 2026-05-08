@@ -87,19 +87,28 @@ function ProfileCard({
   const display = profile.fullName ?? profile.name;
   const [confirming, setConfirming] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // Two-stage delete: 1st click — plain delete (server enforces FK and
+  // returns 409 if campaigns reference the profile). 2nd click after the
+  // 409 — pass `force` so the backend cascades through payments and
+  // campaigns first. We also track the campaign count surfaced by the
+  // 409 body so the UI can warn "X campaigns will be removed".
+  const [cascadeAck, setCascadeAck] = useState(false);
+  const [blockedCount, setBlockedCount] = useState<number | null>(null);
   const deleteMutation = useDeleteProfile();
 
   if (confirming) {
+    const primaryLabel = deleteMutation.isPending
+      ? '…'
+      : cascadeAck
+        ? t('confirmCascade')
+        : t('confirmYes');
+    const hint = cascadeAck ? t('cascadeHint', { count: blockedCount ?? 0 }) : t('confirmHint');
     return (
-      <div
-        className={`flex w-full min-w-0 flex-col rounded-[var(--radius-lg)] border border-[var(--color-danger)] bg-[var(--color-surface)] p-4 ${
-          profile.isDefault ? '' : ''
-        }`}
-      >
+      <div className="flex w-full min-w-0 flex-col rounded-[var(--radius-lg)] border border-[var(--color-danger)] bg-[var(--color-surface)] p-4">
         <p className="text-[14px] font-semibold text-[var(--color-text)]">
           {t('confirmTitle', { name: display })}
         </p>
-        <p className="mt-1 text-[12px] text-[var(--color-text-dim)]">{t('confirmHint')}</p>
+        <p className="mt-1 text-[12px] text-[var(--color-text-dim)]">{hint}</p>
         {error ? (
           <p
             role="alert"
@@ -114,22 +123,35 @@ function ProfileCard({
             disabled={deleteMutation.isPending}
             onClick={() => {
               setError(null);
-              deleteMutation.mutate(profile.id, {
-                onSuccess: () => setConfirming(false),
-                onError: (err) => {
-                  if (err.code === 'has_campaigns') {
-                    setError(t('errorPaidCampaign'));
-                  } else if (err.code === 'forbidden' || err.code === 'not_found') {
-                    setError(t('errorNotFound'));
-                  } else {
-                    setError(t('errorGeneric'));
-                  }
+              deleteMutation.mutate(
+                { id: profile.id, force: cascadeAck },
+                {
+                  onSuccess: () => {
+                    setConfirming(false);
+                    setCascadeAck(false);
+                    setBlockedCount(null);
+                  },
+                  onError: (err) => {
+                    if (err.code === 'has_campaigns') {
+                      // Move into "cascade ack" mode — the next click
+                      // will retry with force=1.
+                      setCascadeAck(true);
+                      setBlockedCount(err.campaignCount ?? null);
+                      setError(null);
+                    } else if (err.code === 'forbidden' || err.code === 'not_found') {
+                      setError(t('errorNotFound'));
+                    } else if (err.code === 'cascade_failed') {
+                      setError(t('errorCascadeFailed'));
+                    } else {
+                      setError(t('errorGeneric'));
+                    }
+                  },
                 },
-              });
+              );
             }}
             className="inline-flex min-h-[2.5rem] flex-1 items-center justify-center gap-1.5 rounded-[var(--radius-md)] bg-[var(--color-danger)] px-3 py-2 text-[13px] font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-50"
           >
-            {deleteMutation.isPending ? '…' : t('confirmYes')}
+            {primaryLabel}
           </button>
           <button
             type="button"
@@ -137,6 +159,8 @@ function ProfileCard({
             onClick={() => {
               setConfirming(false);
               setError(null);
+              setCascadeAck(false);
+              setBlockedCount(null);
             }}
             className="inline-flex min-h-[2.5rem] flex-1 items-center justify-center rounded-[var(--radius-md)] border border-[var(--color-border)] px-3 py-2 text-[13px] font-medium text-[var(--color-text)] disabled:opacity-50"
           >

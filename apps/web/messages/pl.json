@@ -148,9 +148,12 @@
         "confirmTitle": "Usunąć {name}?",
         "confirmHint": "Tej operacji nie można cofnąć.",
         "confirmYes": "Tak, usuń",
+        "confirmCascade": "Tak, usuń wszystko",
+        "cascadeHint": "{count, plural, one {Ten profil ma 1 kampanię — zostanie usunięta razem z powiązanymi płatnościami. Kontynuować?} few {Ten profil ma # kampanie — wszystkie zostaną usunięte razem z powiązanymi płatnościami. Kontynuować?} many {Ten profil ma # kampanii — wszystkie zostaną usunięte razem z powiązanymi płatnościami. Kontynuować?} other {Ten profil ma # kampanii — wszystkie zostaną usunięte razem z powiązanymi płatnościami. Kontynuować?}}",
         "cancel": "Anuluj",
         "errorPaidCampaign": "Ten profil ma opłacone kampanie i nie można go usunąć.",
         "errorNotFound": "Profil nie znaleziony.",
+        "errorCascadeFailed": "Nie udało się usunąć powiązanych kampanii. Spróbuj ponownie.",
         "errorGeneric": "Nie udało się usunąć. Spróbuj ponownie."
       }
     },

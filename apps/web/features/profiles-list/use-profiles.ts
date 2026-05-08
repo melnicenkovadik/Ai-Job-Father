@@ -54,29 +54,47 @@ export function useProfilesQuery() {
 }
 
 export class DeleteProfileError extends Error {
-  constructor(public readonly code: string) {
+  constructor(
+    public readonly code: string,
+    public readonly campaignCount?: number,
+  ) {
     super(code);
     this.name = 'DeleteProfileError';
   }
 }
 
-async function deleteProfileApi(id: string): Promise<void> {
-  const res = await authedFetch(`/api/profile/${id}`, { method: 'DELETE' });
+interface DeleteProfileInput {
+  readonly id: string;
+  readonly force?: boolean;
+}
+
+async function deleteProfileApi({ id, force = false }: DeleteProfileInput): Promise<void> {
+  const url = force ? `/api/profile/${id}?force=1` : `/api/profile/${id}`;
+  const res = await authedFetch(url, { method: 'DELETE' });
   if (!res.ok) {
-    const body = (await res.json().catch(() => ({}))) as { error?: string };
-    throw new DeleteProfileError(body.error ?? `delete_${res.status}`);
+    const body = (await res.json().catch(() => ({}))) as {
+      error?: string;
+      campaignCount?: number;
+    };
+    throw new DeleteProfileError(
+      body.error ?? `delete_${res.status}`,
+      typeof body.campaignCount === 'number' ? body.campaignCount : undefined,
+    );
   }
 }
 
 /**
  * On success, invalidates the profile list, the single-profile query, and
- * the campaign list (the FK from campaigns.profile_id ripples here too —
- * if delete succeeded, no campaign was using this profile, but the cached
- * campaign list might still need a refresh in edge cases).
+ * the campaign list (`campaigns.profile_id` FK + the cascade path both
+ * touch the same cache).
+ *
+ * Two-stage delete: call without `force` first; on `has_campaigns` the
+ * UI shows a second confirm and re-runs the mutation with `force: true`,
+ * which cascades through payments → campaigns → profile.
  */
 export function useDeleteProfile() {
   const qc = useQueryClient();
-  return useMutation<void, DeleteProfileError, string>({
+  return useMutation<void, DeleteProfileError, DeleteProfileInput>({
     mutationFn: deleteProfileApi,
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['profiles'] });
