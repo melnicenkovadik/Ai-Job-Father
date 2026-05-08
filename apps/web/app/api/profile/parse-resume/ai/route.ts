@@ -65,6 +65,12 @@ export const POST = requireAuth(async (req, { user }) => {
   const isJson = contentType.toLowerCase().includes('application/json');
 
   let bytes: Uint8Array;
+  // Copy of the upload bytes kept around for Storage. The parser
+  // (unpdf / OpenAI SDK) may transfer the buffer to a worker which
+  // detaches it; without a private copy `uploadResume` would crash on
+  // `Uint8Array.set`. Re-parse path leaves this `null` — the bytes
+  // already live in Storage so we skip the post-parse upload.
+  let storageBytes: Uint8Array | null = null;
   let filename: string;
   let isReparse = false;
 
@@ -128,6 +134,7 @@ export const POST = requireAuth(async (req, { user }) => {
       return Response.json({ error: 'invalid_mime', mime: file.type }, { status: 415 });
     }
     bytes = new Uint8Array(await file.arrayBuffer());
+    storageBytes = new Uint8Array(bytes); // own copy, parser-safe
     filename = file.name;
   }
 
@@ -167,8 +174,8 @@ export const POST = requireAuth(async (req, { user }) => {
   if (isReparse) {
     // Hash is already on the profile row; we just don't echo it back. The
     // client uses `parser: 'openai'` + the new field values to refresh state.
-  } else {
-    const upload = await uploadResume(user.id.value, filename, bytes);
+  } else if (storageBytes) {
+    const upload = await uploadResume(user.id.value, filename, storageBytes);
     resumeStoragePath = upload.uploaded ? upload.storagePath : undefined;
     resumeFileHash = upload.hash;
   }

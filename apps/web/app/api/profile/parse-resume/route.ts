@@ -77,9 +77,13 @@ export const POST = requireAuth(async (req, { user }) => {
     data: { name: file.name, size: file.size, mime: file.type },
   });
 
-  const bytes = new Uint8Array(await file.arrayBuffer());
+  // unpdf transfers the buffer to a worker, which detaches it. Keep a
+  // private copy for Storage so the post-parse upload doesn't blow up
+  // with "%TypedArray%.prototype.set on a detached ArrayBuffer".
+  const original = new Uint8Array(await file.arrayBuffer());
+  const storageBytes = new Uint8Array(original); // own copy, parser-safe
   const input = {
-    pdfBytes: bytes,
+    pdfBytes: original,
     userId: user.id.value,
     filename: file.name,
   };
@@ -103,7 +107,7 @@ export const POST = requireAuth(async (req, { user }) => {
     // Best-effort upload to Supabase Storage so the user can re-parse
     // with AI later without re-uploading. The helper logs warnings on
     // failure and returns uploaded:false; the parse itself stays valid.
-    const upload = await uploadResume(user.id.value, file.name, bytes);
+    const upload = await uploadResume(user.id.value, file.name, storageBytes);
     return Response.json({
       ...parsed,
       parser: 'heuristic',
