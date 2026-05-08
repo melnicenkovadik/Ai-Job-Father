@@ -173,8 +173,11 @@ export const POST = withApiLogging(
       // Hash is already on the profile row; we just don't echo it back. The
       // client uses `parser: 'openai'` + the new field values to refresh state.
     } else if (storageBytes) {
+      // Always echo `storagePath` when the helper produced one — a dedup
+      // hit (`uploaded:false`) returns a valid existing path; only a
+      // thrown upload leaves it blank.
       const upload = await uploadResume(user.id.value, filename, storageBytes);
-      resumeStoragePath = upload.uploaded ? upload.storagePath : undefined;
+      resumeStoragePath = upload.storagePath;
       resumeFileHash = upload.hash;
     }
 

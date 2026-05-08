@@ -108,6 +108,10 @@ function parseMonth(ym: string): Date | null {
  * bytes. Biome's `noControlCharactersInRegex` would normally reject this.
  * Each line that constructs such a regex carries an inline ignore comment.
  */
+const PHONE_NUL_RE =
+  // biome-ignore lint/suspicious/noControlCharactersInRegex: NUL recovery
+  /\b(Phone|Tel|Tel\.|Mobile|Cell|Mob|Tél|Téléphone|Telefono|Telefon|Telefono cellulare|Телефон|Тел|Тел\.|Моб)\s*:?\s*\x00(\d)/gi;
+
 function normalize(text: string): string {
   return (
     text
@@ -123,6 +127,12 @@ function normalize(text: string): string {
       //    "AI<NUL>\npowered" is the PDF's hyphenation point, not a paren.
       // biome-ignore lint/suspicious/noControlCharactersInRegex: NUL recovery
       .replace(/(\w)\x00\n(\w)/g, '$1-\n$2')
+      // 1b. "Phone:<spaces><NUL><digits>" \u2192 "Phone: +<digits>"
+      //     The font drops "+" along with its other punctuation glyphs;
+      //     in the phone context the recovered character must be "+",
+      //     not "(", or extractPhone loses the country-code prefix.
+      //     Covers EN/IT/DE/FR/UA/RU labels seen in the wild.
+      .replace(PHONE_NUL_RE, '$1: +$2')
       // 2. "Letter<NUL> Uppercase List..." \u2192 category prefix colon.
       //    Catches "Mapping & GIS<NUL> Mapbox, Leaflet", "Languages<NUL>
       //    English, Italian". Lookahead requires the next token to be

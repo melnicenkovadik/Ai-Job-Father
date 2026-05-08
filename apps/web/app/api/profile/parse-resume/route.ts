@@ -109,12 +109,17 @@ export const POST = withApiLogging(
       });
       // Best-effort upload to Supabase Storage so the user can re-parse
       // with AI later without re-uploading. The helper logs warnings on
-      // failure and returns uploaded:false; the parse itself stays valid.
+      // failure and returns `uploaded:false`; the parse itself stays valid.
+      // `uploaded:false` is also legitimately returned on a dedup hit
+      // (same hash within 60s) — in that case the path is still valid
+      // and points at the existing object, so we always echo it back
+      // when the helper produced one. Only a *thrown* upload (network /
+      // bucket auth failure) leaves `storagePath` blank.
       const upload = await uploadResume(user.id.value, file.name, storageBytes);
       return Response.json({
         ...parsed,
         parser: 'heuristic',
-        resumeStoragePath: upload.uploaded ? upload.storagePath : undefined,
+        resumeStoragePath: upload.storagePath,
         resumeFileHash: upload.hash,
         resumeParsedAt: new Date().toISOString(),
         resumeParseModel: 'heuristic-v1',
