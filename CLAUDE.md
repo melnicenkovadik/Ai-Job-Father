@@ -108,6 +108,49 @@ Any violation of these rules is a lint error. Don't suppress; restructure.
 8. Auto-memory note (via `/claude:memory`) if a cross-session insight emerged.
 9. `.planning/phases/N/verify.md` shows proof of working outcome.
 10. Typecheck + build + lint all green (enforced by CI).
+11. **Logging in place** — every new endpoint, server action, mutation
+    or noteworthy domain event lands in `app_logs`. See §11a.
+
+## 11a. Logging Discipline (mandatory, enforced by code review)
+
+> **Rule:** No feature ships without observability. If something happens
+> in production and an operator can't grep it out of `app_logs`, the
+> feature is incomplete.
+
+- **Every API route under `apps/web/app/api/*` is wrapped with
+  `withApiLogging('api/<path>.<METHOD>', handler)`** (see
+  `apps/web/lib/logger/with-api-logging.ts`). The wrapper auto-emits
+  `request` / `response` / `exception` events with timing + status.
+  Adding a new route without the wrapper is a code-review block.
+  The single exception is `api/logs` itself (the log sink — wrapping
+  it would loop).
+- **Inside the handler**, log domain events (`'file received'`,
+  `'credit consumed'`, `'cascade-deleted'`) with structured `data` and
+  the same `context` key. Don't write `'route hit'` — the wrapper has
+  it.
+- **Errors** — every `error`-level log carries either a real `Error`
+  instance or a normalised object. The wrapper handles uncaught
+  throws; specific business errors that are returned as 4xx/5xx via a
+  branch should still log at `info`/`warn`/`error` depending on
+  severity, with enough `data` to reproduce.
+- **Browser side** is automatic: every failing React Query query or
+  mutation funnels through the global `QueryCache.onError` /
+  `MutationCache.onError` defined in `apps/web/lib/query-client.ts`
+  → `getBrowserLogger().error` → `/api/logs` → `app_logs`. Don't
+  duplicate this with per-call `onError` unless you also want a UI
+  reaction.
+- **Bot webhook** flows through the same `withApiLogging` wrapper at
+  `api/bot/webhook.POST`; grammY exceptions land in `app_logs` with
+  full stack.
+- **`server-only` modules** that don't sit inside a route (cron
+  handlers, dispatchers, simulators) get their own `getServerLogger()`
+  + explicit `info` / `error` calls — there's no implicit wrapper.
+- **The log sink endpoint** (`/api/logs`) intentionally bypasses the
+  wrapper so a logging failure can't recursively log itself.
+- **Filtering**: `app_logs.context` follows the dotted path convention
+  `api/<route>.<METHOD>` for routes, `lib/<module>.<sub>` for library
+  events, `<feature>.<event>` for client events. Keeps SQL filters
+  simple (`context LIKE 'api/profile%'`).
 
 ## 12. Commit Style
 
