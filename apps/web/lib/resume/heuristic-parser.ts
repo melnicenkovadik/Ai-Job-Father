@@ -7,7 +7,7 @@ import {
   type ResumeParserInput,
   parseResumeText,
 } from '@ai-job-bot/core';
-import { extractText } from 'unpdf';
+import { extractLinks, extractText } from 'unpdf';
 
 /**
  * Free-tier `ResumeParser` — pure heuristics, no external API calls.
@@ -26,13 +26,47 @@ import { extractText } from 'unpdf';
  */
 export class HeuristicResumeParser implements ResumeParser {
   async parse(input: ResumeParserInput): Promise<ParsedResume> {
+    // Two parallel passes against the same PDF bytes: text + Link
+    // annotations. Text alone misses contact URLs that the CV renders
+    // as anchor text only ("LinkedIn", "GitHub"). The link pass surfaces
+    // those URLs to `parseResumeText` as a fallback, so a profile with
+    // hyperlinked contact icons no longer ends up missing linkedinUrl /
+    // githubUrl / telegramUrl.
     const text = await extractPdfText(input.pdfBytes);
-    return parseResumeText(text);
+    const links = await extractPdfLinks(input.pdfBytes);
+    return parseResumeText(text, links);
   }
 }
 
 export function createHeuristicResumeParser(): ResumeParser {
   return new HeuristicResumeParser();
+}
+
+/**
+ * Pull every `Link` annotation URL out of the PDF. Best-effort: a
+ * failure here just degrades to "no link fallback", the text path
+ * still runs unchanged.
+ */
+async function extractPdfLinks(bytes: Uint8Array): Promise<string[]> {
+  try {
+    // unpdf transfers the buffer to a worker; pass a fresh copy so the
+    // earlier extractText() call doesn't leave us with a detached view.
+    const safe = new Uint8Array(bytes);
+    const result = await extractLinks(safe);
+    // unpdf returns either { links: [...] } or a string array depending
+    // on the version; normalise to a string list.
+    const raw = (result as { links?: unknown }).links ?? (result as unknown);
+    if (!Array.isArray(raw)) return [];
+    return raw.filter((u): u is string => typeof u === 'string' && u.length > 0);
+  } catch (err) {
+    // Best-effort — losing the URL fallback is not fatal. Surface it in
+    // the dev console so a regression is visible during local runs;
+    // production failure is invisible by design (parse still succeeds).
+    if (typeof console !== 'undefined') {
+      console.warn('[heuristic-parser] extractLinks failed:', err);
+    }
+    return [];
+  }
 }
 
 async function extractPdfText(bytes: Uint8Array): Promise<string> {

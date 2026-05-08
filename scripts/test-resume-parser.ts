@@ -27,7 +27,7 @@ if (typeof (Promise as unknown as { try?: unknown }).try !== 'function') {
 import { mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { basename, join, resolve } from 'node:path';
 import { type ParsedResume, parseResumeText } from '@ai-job-bot/core';
-import { extractText } from 'unpdf';
+import { extractLinks, extractText } from 'unpdf';
 
 const ROOT = resolve(__dirname, '..');
 const DEFAULT_DIR = join(ROOT, 'samples/resumes-test');
@@ -100,7 +100,17 @@ async function processOne(dir: string, file: string): Promise<Stat> {
       .map((p) => String(p).trim())
       .join('\n\n')
       .trim();
-    parsed = parseResumeText(text);
+    let links: string[] = [];
+    try {
+      const linksResult = await extractLinks(new Uint8Array(buf));
+      const raw = (linksResult as { links?: unknown }).links ?? (linksResult as unknown);
+      if (Array.isArray(raw)) {
+        links = raw.filter((u): u is string => typeof u === 'string' && u.length > 0);
+      }
+    } catch {
+      // Best-effort — proceed without link fallback.
+    }
+    parsed = parseResumeText(text, links);
   } catch (err) {
     return {
       file,
@@ -156,7 +166,17 @@ async function main() {
         .map((p) => String(p).trim())
         .join('\n\n')
         .trim();
-      const parsed = parseResumeText(text);
+      let links: string[] = [];
+      try {
+        const linksResult = await extractLinks(new Uint8Array(buf));
+        const rawLinks = (linksResult as { links?: unknown }).links ?? (linksResult as unknown);
+        if (Array.isArray(rawLinks)) {
+          links = rawLinks.filter((u): u is string => typeof u === 'string' && u.length > 0);
+        }
+      } catch {
+        // ignore
+      }
+      const parsed = parseResumeText(text, links);
       writeFileSync(
         join(outDir, `${basename(file, '.pdf')}.json`),
         JSON.stringify({ file, text_chars: text.length, parsed }, null, 2),

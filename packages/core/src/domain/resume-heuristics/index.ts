@@ -8,6 +8,7 @@ export * from './parse-text';
 export type { Section, SectionKey } from './section-split';
 export { splitIntoSections, findSectionBody, findAllSectionBodies } from './section-split';
 export { extractContacts, type ContactInfo } from './extract-contacts';
+export { classifyLinks, type ContactLinks } from './extract-links';
 export { extractNameHeadlineSummary, type NameHeadlineSummary } from './extract-name';
 export { extractSkills } from './extract-skills';
 export { extractLanguages, type LanguageEntryOut } from './extract-languages';

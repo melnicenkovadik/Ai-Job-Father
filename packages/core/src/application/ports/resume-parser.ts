@@ -51,6 +51,8 @@ export interface ParsedResume {
   readonly location?: string | undefined;
   readonly linkedinUrl?: string | undefined;
   readonly githubUrl?: string | undefined;
+  readonly telegramUrl?: string | undefined;
+  readonly twitterUrl?: string | undefined;
   readonly portfolioUrl?: string | undefined;
   readonly headline?: string | undefined;
   readonly summary?: string | undefined;

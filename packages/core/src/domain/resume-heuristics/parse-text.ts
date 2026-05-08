@@ -15,19 +15,34 @@ import { extractContacts } from './extract-contacts';
 import { extractEducation } from './extract-education';
 import { extractExperience } from './extract-experience';
 import { extractLanguages } from './extract-languages';
+import { classifyLinks } from './extract-links';
 import { extractNameHeadlineSummary } from './extract-name';
 import { extractSkills } from './extract-skills';
 import { findAllSectionBodies, findSectionBody, splitIntoSections } from './section-split';
 
 export const HEURISTIC_MODEL_ID = 'heuristic-v1';
 
-export function parseResumeText(text: string): ParsedResume {
+/**
+ * @param text  Plain-text CV body, as extracted by `unpdf.extractText`.
+ * @param links Optional URL annotations from the source PDF
+ *              (`unpdf.extractLinks`). Anchor text on real-world CVs
+ *              ("LinkedIn", "GitHub", "Telegram") hides the actual URL
+ *              behind a Link annotation; the text path can't recover
+ *              it. When supplied, `parseResumeText` classifies the
+ *              URLs by host and uses them as a *fallback* when the
+ *              text-based extractor came up empty for a given field.
+ */
+export function parseResumeText(text: string, links?: readonly string[]): ParsedResume {
   const normalized = normalize(text);
   const sections = splitIntoSections(normalized);
 
   const header = findSectionBody(sections, 'header');
   const summaryBody = findSectionBody(sections, 'summary');
   const contacts = extractContacts(normalized);
+  // PDF Link annotations carry URLs that anchor text alone hides
+  // ("LinkedIn" → linkedin.com/in/handle). Classify them and use as
+  // FALLBACK only — the text-based extractor wins when both fire.
+  const linkBuckets = links && links.length > 0 ? classifyLinks(links) : null;
   // If the section-splitter ate the header (e.g. line 0 is a category label
   // that matches a section heading), fall back to the first 10 lines of the
   // text so name+headline can still be extracted.
@@ -43,11 +58,13 @@ export function parseResumeText(text: string): ParsedResume {
 
   return {
     fullName,
-    email: contacts.email,
+    email: contacts.email ?? linkBuckets?.email,
     phone: contacts.phone,
-    linkedinUrl: contacts.linkedinUrl,
-    githubUrl: contacts.githubUrl,
-    portfolioUrl: contacts.portfolioUrl,
+    linkedinUrl: contacts.linkedinUrl ?? linkBuckets?.linkedinUrl,
+    githubUrl: contacts.githubUrl ?? linkBuckets?.githubUrl,
+    portfolioUrl: contacts.portfolioUrl ?? linkBuckets?.portfolioUrl,
+    telegramUrl: linkBuckets?.telegramUrl,
+    twitterUrl: linkBuckets?.twitterUrl,
     location: contacts.location,
     headline,
     summary,
