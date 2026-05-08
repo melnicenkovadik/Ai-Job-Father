@@ -3,6 +3,7 @@ export const dynamic = 'force-dynamic';
 
 import { env } from '@/lib/env';
 import { getServerLogger } from '@/lib/logger/server';
+import { withApiLogging } from '@/lib/logger/with-api-logging';
 import { encodePayload, generateNonce } from '@/lib/payments/payload';
 import { buildCampaignSnapshot, hashSnapshot } from '@/lib/payments/snapshot';
 import { resolveStarsAmount } from '@/lib/payments/stars-amount';
@@ -34,31 +35,32 @@ const TON_VALIDITY_SECONDS = 5 * 60;
  *   stars → returns invoice link the client opens via Telegram.WebApp.openInvoice
  *   ton   → returns recipient + amountNano + comment for TonConnect sendTransaction
  */
-export const POST = requireAuth(async (req, { user }) => {
-  let body: unknown;
-  try {
-    body = await req.json();
-  } catch {
-    return Response.json({ error: 'invalid_json' }, { status: 400 });
-  }
-  const parsed = bodySchema.safeParse(body);
-  if (!parsed.success) {
-    return Response.json(
-      {
-        error: 'validation',
-        issues: parsed.error.issues.map((i) => ({
-          path: i.path.join('.'),
-          message: i.message,
-        })),
-      },
-      { status: 400 },
-    );
-  }
+export const POST = withApiLogging(
+  'api/payments/init.POST',
+  requireAuth(async (req, { user }) => {
+    let body: unknown;
+    try {
+      body = await req.json();
+    } catch {
+      return Response.json({ error: 'invalid_json' }, { status: 400 });
+    }
+    const parsed = bodySchema.safeParse(body);
+    if (!parsed.success) {
+      return Response.json(
+        {
+          error: 'validation',
+          issues: parsed.error.issues.map((i) => ({
+            path: i.path.join('.'),
+            message: i.message,
+          })),
+        },
+        { status: 400 },
+      );
+    }
 
-  const cid = CampaignId.from(parsed.data.campaignId);
-  const repo = new SupabaseCampaignRepo();
+    const cid = CampaignId.from(parsed.data.campaignId);
+    const repo = new SupabaseCampaignRepo();
 
-  try {
     const campaign = await repo.findById(cid);
     if (!campaign) {
       return Response.json({ error: 'not_found' }, { status: 404 });
@@ -88,16 +90,8 @@ export const POST = requireAuth(async (req, { user }) => {
       return await issueStarsInvoice(campaign, payload, nonce, snapHash);
     }
     return await issueTonInstructions(campaign, payload, nonce, snapHash);
-  } catch (err) {
-    getServerLogger().error({
-      context: 'api/payments.init',
-      data: { campaignId: cid.value, provider: parsed.data.provider },
-      error: err,
-    });
-    const message = err instanceof Error ? `${err.name}: ${err.message}` : String(err);
-    return Response.json({ error: 'internal', message }, { status: 500 });
-  }
-});
+  }),
+);
 
 async function issueStarsInvoice(
   campaign: Campaign,

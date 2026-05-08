@@ -2,7 +2,7 @@ export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 import { env } from '@/lib/env';
-import { getServerLogger } from '@/lib/logger/server';
+import { withApiLogging } from '@/lib/logger/with-api-logging';
 import { profileToDto } from '@/lib/profile/schema';
 import { SupabaseProfileRepo } from '@/lib/supabase/profile-repo';
 import { createServiceRoleClient } from '@/lib/supabase/server';
@@ -28,9 +28,10 @@ interface ProfileWithCount {
  * GET /api/profile/list → all profiles for the authed user, plus the number
  * of campaigns referencing each one. Used by the profiles list screen.
  */
-export const GET = requireAuth(async (_req, { user }) => {
-  const profileRepo = new SupabaseProfileRepo(createServiceRoleClient());
-  try {
+export const GET = withApiLogging(
+  'api/profile/list.GET',
+  requireAuth(async (_req, { user }) => {
+    const profileRepo = new SupabaseProfileRepo(createServiceRoleClient());
     const profiles = await profileRepo.findByUserId(user.id.value);
     if (profiles.length === 0) {
       return Response.json({ profiles: [] });
@@ -52,8 +53,5 @@ export const GET = requireAuth(async (_req, { user }) => {
       campaignCount: counts.get(p.id.value) ?? 0,
     }));
     return Response.json({ profiles: result });
-  } catch (err) {
-    getServerLogger().error({ context: 'api/profile.list', error: err });
-    return Response.json({ error: 'internal' }, { status: 500 });
-  }
-});
+  }),
+);

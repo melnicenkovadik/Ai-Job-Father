@@ -2,6 +2,7 @@ export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 import { getServerLogger } from '@/lib/logger/server';
+import { withApiLogging } from '@/lib/logger/with-api-logging';
 import { SupabaseUserSettingsRepo } from '@/lib/supabase/user-settings-repo';
 import { requireAuth } from '@/lib/telegram/auth-middleware';
 import {
@@ -55,42 +56,46 @@ export interface SettingsDto {
   updatedAt: string;
 }
 
-export const GET = requireAuth(async (_req, { user }) => {
-  const repo = new SupabaseUserSettingsRepo();
-  const settings =
-    (await repo.findByUserId(user.id)) ?? UserSettings.default(user.id, user.locale, new Date());
-  return Response.json(settingsToDto(settings));
-});
+export const GET = withApiLogging(
+  'api/settings.GET',
+  requireAuth(async (_req, { user }) => {
+    const repo = new SupabaseUserSettingsRepo();
+    const settings =
+      (await repo.findByUserId(user.id)) ?? UserSettings.default(user.id, user.locale, new Date());
+    return Response.json(settingsToDto(settings));
+  }),
+);
 
-export const PUT = requireAuth(async (req, { user }) => {
-  let body: unknown;
-  try {
-    body = await req.json();
-  } catch {
-    return Response.json({ error: 'invalid_json' }, { status: 400 });
-  }
-  const parsed = patchSchema.safeParse(body);
-  if (!parsed.success) {
-    return Response.json(
-      {
-        error: 'validation',
-        issues: parsed.error.issues.map((i) => ({
-          path: i.path.join('.'),
-          message: i.message,
-        })),
-      },
-      { status: 400 },
-    );
-  }
-  const patch: UserSettingsPatch = {
-    ...(parsed.data.locale !== undefined ? { locale: parsed.data.locale } : {}),
-    ...(parsed.data.notifications !== undefined
-      ? { notifications: parsed.data.notifications }
-      : {}),
-  };
+export const PUT = withApiLogging(
+  'api/settings.PUT',
+  requireAuth(async (req, { user }) => {
+    let body: unknown;
+    try {
+      body = await req.json();
+    } catch {
+      return Response.json({ error: 'invalid_json' }, { status: 400 });
+    }
+    const parsed = patchSchema.safeParse(body);
+    if (!parsed.success) {
+      return Response.json(
+        {
+          error: 'validation',
+          issues: parsed.error.issues.map((i) => ({
+            path: i.path.join('.'),
+            message: i.message,
+          })),
+        },
+        { status: 400 },
+      );
+    }
+    const patch: UserSettingsPatch = {
+      ...(parsed.data.locale !== undefined ? { locale: parsed.data.locale } : {}),
+      ...(parsed.data.notifications !== undefined
+        ? { notifications: parsed.data.notifications }
+        : {}),
+    };
 
-  const repo = new SupabaseUserSettingsRepo();
-  try {
+    const repo = new SupabaseUserSettingsRepo();
     const next = await updateUserSettings(
       { userId: user.id, patch },
       { userSettingsRepo: repo, clock: SystemClock },
@@ -114,8 +119,5 @@ export const PUT = requireAuth(async (req, { user }) => {
       );
     }
     return new Response(JSON.stringify(settingsToDto(next)), { status: 200, headers });
-  } catch (err) {
-    getServerLogger().error({ context: 'api/settings.PUT', error: err });
-    return Response.json({ error: 'internal' }, { status: 500 });
-  }
-});
+  }),
+);

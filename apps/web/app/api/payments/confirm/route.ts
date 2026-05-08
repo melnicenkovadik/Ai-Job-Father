@@ -3,6 +3,7 @@ export const dynamic = 'force-dynamic';
 
 import { env } from '@/lib/env';
 import { getServerLogger } from '@/lib/logger/server';
+import { withApiLogging } from '@/lib/logger/with-api-logging';
 import { decodePayload, encodePayload } from '@/lib/payments/payload';
 import { hashSnapshot } from '@/lib/payments/snapshot';
 import { TonVerificationError, verifyTonTransaction } from '@/lib/payments/ton-verifier';
@@ -37,31 +38,32 @@ const bodySchema = z.object({
  *   3. Call recordPayment — flips campaign through paid → searching, emits
  *      paid + started events, starts the simulator.
  */
-export const POST = requireAuth(async (req, { user }) => {
-  let body: unknown;
-  try {
-    body = await req.json();
-  } catch {
-    return Response.json({ error: 'invalid_json' }, { status: 400 });
-  }
-  const parsed = bodySchema.safeParse(body);
-  if (!parsed.success) {
-    return Response.json(
-      {
-        error: 'validation',
-        issues: parsed.error.issues.map((i) => ({
-          path: i.path.join('.'),
-          message: i.message,
-        })),
-      },
-      { status: 400 },
-    );
-  }
+export const POST = withApiLogging(
+  'api/payments/confirm.POST',
+  requireAuth(async (req, { user }) => {
+    let body: unknown;
+    try {
+      body = await req.json();
+    } catch {
+      return Response.json({ error: 'invalid_json' }, { status: 400 });
+    }
+    const parsed = bodySchema.safeParse(body);
+    if (!parsed.success) {
+      return Response.json(
+        {
+          error: 'validation',
+          issues: parsed.error.issues.map((i) => ({
+            path: i.path.join('.'),
+            message: i.message,
+          })),
+        },
+        { status: 400 },
+      );
+    }
 
-  const cid = CampaignId.from(parsed.data.campaignId);
-  const log = getServerLogger();
+    const cid = CampaignId.from(parsed.data.campaignId);
+    const log = getServerLogger();
 
-  try {
     const campaignRepo = new SupabaseCampaignRepo();
     const paymentRepo = new SupabasePaymentRepo();
 
@@ -187,13 +189,5 @@ export const POST = requireAuth(async (req, { user }) => {
     });
 
     return Response.json({ status: 'recorded', paymentId: payment.id });
-  } catch (err) {
-    log.error({
-      context: 'api/payments.confirm',
-      data: { campaignId: cid.value },
-      error: err,
-    });
-    const message = err instanceof Error ? `${err.name}: ${err.message}` : String(err);
-    return Response.json({ error: 'internal', message }, { status: 500 });
-  }
-});
+  }),
+);

@@ -3,6 +3,7 @@ export const dynamic = 'force-dynamic';
 
 import { env } from '@/lib/env';
 import { getServerLogger } from '@/lib/logger/server';
+import { withApiLogging } from '@/lib/logger/with-api-logging';
 import { createOpenAIResumeParser } from '@/lib/openai/resume-parser';
 import { SupabaseAiCreditRepo } from '@/lib/supabase/ai-credit-repo';
 import { SupabaseProfileRepo } from '@/lib/supabase/profile-repo';
@@ -45,150 +46,148 @@ import {
 
 const MAX_PDF_BYTES = 10 * 1024 * 1024;
 
-export const POST = requireAuth(async (req, { user }) => {
-  const log = getServerLogger();
-  const credits = new SupabaseAiCreditRepo();
+export const POST = withApiLogging(
+  'api/profile/parse-resume/ai.POST',
+  requireAuth(async (req, { user }) => {
+    const log = getServerLogger();
+    const credits = new SupabaseAiCreditRepo();
 
-  try {
     const has = await credits.hasUnconsumed(user.id.value, 'resume_parse');
     if (!has) {
       return Response.json({ error: 'no_credit' }, { status: 402 });
     }
-  } catch (err) {
-    log.error({ context: 'api/profile/parse-resume.ai.check', error: err });
-    return Response.json({ error: 'internal' }, { status: 500 });
-  }
 
-  // Branch on content-type. JSON body = re-parse from storage; everything
-  // else falls through to the multipart upload path.
-  const contentType = req.headers.get('content-type') ?? '';
-  const isJson = contentType.toLowerCase().includes('application/json');
+    // Branch on content-type. JSON body = re-parse from storage; everything
+    // else falls through to the multipart upload path.
+    const contentType = req.headers.get('content-type') ?? '';
+    const isJson = contentType.toLowerCase().includes('application/json');
 
-  let bytes: Uint8Array;
-  // Copy of the upload bytes kept around for Storage. The parser
-  // (unpdf / OpenAI SDK) may transfer the buffer to a worker which
-  // detaches it; without a private copy `uploadResume` would crash on
-  // `Uint8Array.set`. Re-parse path leaves this `null` — the bytes
-  // already live in Storage so we skip the post-parse upload.
-  let storageBytes: Uint8Array | null = null;
-  let filename: string;
-  let isReparse = false;
+    let bytes: Uint8Array;
+    // Copy of the upload bytes kept around for Storage. The parser
+    // (unpdf / OpenAI SDK) may transfer the buffer to a worker which
+    // detaches it; without a private copy `uploadResume` would crash on
+    // `Uint8Array.set`. Re-parse path leaves this `null` — the bytes
+    // already live in Storage so we skip the post-parse upload.
+    let storageBytes: Uint8Array | null = null;
+    let filename: string;
+    let isReparse = false;
 
-  if (isJson) {
-    let body: { profileId?: unknown };
+    if (isJson) {
+      let body: { profileId?: unknown };
+      try {
+        body = (await req.json()) as { profileId?: unknown };
+      } catch {
+        return Response.json({ error: 'invalid_json' }, { status: 400 });
+      }
+      const profileId = typeof body.profileId === 'string' ? body.profileId : '';
+      if (!profileId) {
+        return Response.json({ error: 'missing_profile_id' }, { status: 400 });
+      }
+
+      const repo = new SupabaseProfileRepo(createServiceRoleClient());
+      const profile = await repo.findById(profileId);
+      if (!profile) {
+        return Response.json({ error: 'profile_not_found' }, { status: 404 });
+      }
+      if (profile.userId !== user.id.value) {
+        return Response.json({ error: 'forbidden' }, { status: 403 });
+      }
+      if (!profile.resumeStoragePath) {
+        return Response.json({ error: 'no_resume_in_storage' }, { status: 404 });
+      }
+
+      const downloaded = await downloadResume(profile.resumeStoragePath);
+      if (!downloaded) {
+        return Response.json({ error: 'storage_download_failed' }, { status: 502 });
+      }
+      bytes = downloaded;
+      filename = profile.resumeStoragePath.split('/').pop() ?? 'resume.pdf';
+      isReparse = true;
+      log.info({
+        context: 'api/profile/parse-resume.ai',
+        message: 're-parse from storage',
+        data: { userId: user.id.value, profileId, storagePath: profile.resumeStoragePath },
+      });
+    } else {
+      let form: FormData;
+      try {
+        form = await req.formData();
+      } catch {
+        return Response.json({ error: 'invalid_multipart' }, { status: 400 });
+      }
+      const file = form.get('file');
+      if (!(file instanceof File)) {
+        return Response.json({ error: 'missing_file' }, { status: 400 });
+      }
+      if (file.size === 0) {
+        return Response.json({ error: 'empty_file' }, { status: 400 });
+      }
+      if (file.size > MAX_PDF_BYTES) {
+        return Response.json(
+          { error: 'file_too_large', limit: MAX_PDF_BYTES, size: file.size },
+          { status: 413 },
+        );
+      }
+      if (file.type && file.type !== 'application/pdf') {
+        return Response.json({ error: 'invalid_mime', mime: file.type }, { status: 415 });
+      }
+      bytes = new Uint8Array(await file.arrayBuffer());
+      storageBytes = new Uint8Array(bytes); // own copy, parser-safe
+      filename = file.name;
+    }
+
+    const input = {
+      pdfBytes: bytes,
+      userId: user.id.value,
+      filename,
+    };
+
+    const parser = createOpenAIResumeParser(env.OPENAI_API_KEY, env.OPENAI_RESUME_MODEL);
+    let parsed: Awaited<ReturnType<typeof parser.parse>>;
     try {
-      body = (await req.json()) as { profileId?: unknown };
-    } catch {
-      return Response.json({ error: 'invalid_json' }, { status: 400 });
-    }
-    const profileId = typeof body.profileId === 'string' ? body.profileId : '';
-    if (!profileId) {
-      return Response.json({ error: 'missing_profile_id' }, { status: 400 });
+      parsed = await parser.parse(input);
+    } catch (err) {
+      return mapParserError(err);
     }
 
-    const repo = new SupabaseProfileRepo(createServiceRoleClient());
-    const profile = await repo.findById(profileId);
-    if (!profile) {
-      return Response.json({ error: 'profile_not_found' }, { status: 404 });
-    }
-    if (profile.userId !== user.id.value) {
-      return Response.json({ error: 'forbidden' }, { status: 403 });
-    }
-    if (!profile.resumeStoragePath) {
-      return Response.json({ error: 'no_resume_in_storage' }, { status: 404 });
-    }
-
-    const downloaded = await downloadResume(profile.resumeStoragePath);
-    if (!downloaded) {
-      return Response.json({ error: 'storage_download_failed' }, { status: 502 });
-    }
-    bytes = downloaded;
-    filename = profile.resumeStoragePath.split('/').pop() ?? 'resume.pdf';
-    isReparse = true;
-    log.info({
-      context: 'api/profile/parse-resume.ai',
-      message: 're-parse from storage',
-      data: { userId: user.id.value, profileId, storagePath: profile.resumeStoragePath },
-    });
-  } else {
-    let form: FormData;
+    // Parse succeeded — burn one credit. Race-safe via the conditional UPDATE
+    // inside consumeOne. If it returns false (someone else consumed first), we
+    // still return the parse result — better UX than refusing because of a race.
     try {
-      form = await req.formData();
-    } catch {
-      return Response.json({ error: 'invalid_multipart' }, { status: 400 });
+      const consumed = await credits.consumeOne(user.id.value, 'resume_parse');
+      log.info({
+        context: 'api/profile/parse-resume.ai',
+        message: consumed ? 'credit consumed' : 'credit consume race (lost)',
+        data: { userId: user.id.value, consumed, isReparse },
+      });
+    } catch (err) {
+      log.error({ context: 'api/profile/parse-resume.ai.consume', error: err });
+      // Don't fail the request — we already have a parse, returning it is best UX.
     }
-    const file = form.get('file');
-    if (!(file instanceof File)) {
-      return Response.json({ error: 'missing_file' }, { status: 400 });
-    }
-    if (file.size === 0) {
-      return Response.json({ error: 'empty_file' }, { status: 400 });
-    }
-    if (file.size > MAX_PDF_BYTES) {
-      return Response.json(
-        { error: 'file_too_large', limit: MAX_PDF_BYTES, size: file.size },
-        { status: 413 },
-      );
-    }
-    if (file.type && file.type !== 'application/pdf') {
-      return Response.json({ error: 'invalid_mime', mime: file.type }, { status: 415 });
-    }
-    bytes = new Uint8Array(await file.arrayBuffer());
-    storageBytes = new Uint8Array(bytes); // own copy, parser-safe
-    filename = file.name;
-  }
 
-  const input = {
-    pdfBytes: bytes,
-    userId: user.id.value,
-    filename,
-  };
+    // Re-parse path: bytes already live in Storage; skip the upload.
+    // Multipart path: best-effort upload so /profile re-parse works next time.
+    let resumeStoragePath: string | undefined;
+    let resumeFileHash: string | undefined;
+    if (isReparse) {
+      // Hash is already on the profile row; we just don't echo it back. The
+      // client uses `parser: 'openai'` + the new field values to refresh state.
+    } else if (storageBytes) {
+      const upload = await uploadResume(user.id.value, filename, storageBytes);
+      resumeStoragePath = upload.uploaded ? upload.storagePath : undefined;
+      resumeFileHash = upload.hash;
+    }
 
-  const parser = createOpenAIResumeParser(env.OPENAI_API_KEY, env.OPENAI_RESUME_MODEL);
-  let parsed: Awaited<ReturnType<typeof parser.parse>>;
-  try {
-    parsed = await parser.parse(input);
-  } catch (err) {
-    return mapParserError(err);
-  }
-
-  // Parse succeeded — burn one credit. Race-safe via the conditional UPDATE
-  // inside consumeOne. If it returns false (someone else consumed first), we
-  // still return the parse result — better UX than refusing because of a race.
-  try {
-    const consumed = await credits.consumeOne(user.id.value, 'resume_parse');
-    log.info({
-      context: 'api/profile/parse-resume.ai',
-      message: consumed ? 'credit consumed' : 'credit consume race (lost)',
-      data: { userId: user.id.value, consumed, isReparse },
+    return Response.json({
+      ...parsed,
+      parser: 'openai',
+      ...(resumeStoragePath !== undefined ? { resumeStoragePath } : {}),
+      ...(resumeFileHash !== undefined ? { resumeFileHash } : {}),
+      resumeParsedAt: new Date().toISOString(),
+      resumeParseModel: env.OPENAI_RESUME_MODEL,
     });
-  } catch (err) {
-    log.error({ context: 'api/profile/parse-resume.ai.consume', error: err });
-    // Don't fail the request — we already have a parse, returning it is best UX.
-  }
-
-  // Re-parse path: bytes already live in Storage; skip the upload.
-  // Multipart path: best-effort upload so /profile re-parse works next time.
-  let resumeStoragePath: string | undefined;
-  let resumeFileHash: string | undefined;
-  if (isReparse) {
-    // Hash is already on the profile row; we just don't echo it back. The
-    // client uses `parser: 'openai'` + the new field values to refresh state.
-  } else if (storageBytes) {
-    const upload = await uploadResume(user.id.value, filename, storageBytes);
-    resumeStoragePath = upload.uploaded ? upload.storagePath : undefined;
-    resumeFileHash = upload.hash;
-  }
-
-  return Response.json({
-    ...parsed,
-    parser: 'openai',
-    ...(resumeStoragePath !== undefined ? { resumeStoragePath } : {}),
-    ...(resumeFileHash !== undefined ? { resumeFileHash } : {}),
-    resumeParsedAt: new Date().toISOString(),
-    resumeParseModel: env.OPENAI_RESUME_MODEL,
-  });
-});
+  }),
+);
 
 function mapParserError(err: unknown): Response {
   if (err instanceof ResumeFormatError) {

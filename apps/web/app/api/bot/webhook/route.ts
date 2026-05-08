@@ -2,6 +2,7 @@ export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 import { env } from '@/lib/env';
+import { withApiLogging } from '@/lib/logger/with-api-logging';
 import { TelegramEnvMissingError, getBot } from '@/lib/telegram/bot';
 import { webhookCallback } from 'grammy';
 
@@ -31,16 +32,19 @@ function getHandler(): Handler {
   return cachedHandler;
 }
 
-export async function POST(req: Request): Promise<Response> {
-  try {
-    return await getHandler()(req);
-  } catch (err) {
-    if (err instanceof TelegramEnvMissingError) {
-      return Response.json(
-        { error: 'telegram_env_missing', message: err.message },
-        { status: 503 },
-      );
+export const POST = withApiLogging(
+  'api/bot/webhook.POST',
+  async (req: Request): Promise<Response> => {
+    try {
+      return await getHandler()(req);
+    } catch (err) {
+      if (err instanceof TelegramEnvMissingError) {
+        return Response.json(
+          { error: 'telegram_env_missing', message: err.message },
+          { status: 503 },
+        );
+      }
+      throw err;
     }
-    throw err;
-  }
-}
+  },
+);

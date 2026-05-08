@@ -2,7 +2,7 @@ export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 import { campaignToDto } from '@/lib/campaign/schema';
-import { getServerLogger } from '@/lib/logger/server';
+import { withApiLogging } from '@/lib/logger/with-api-logging';
 import { notifyIfJustCompleted } from '@/lib/notifications/dispatch';
 import { SystemClock, getCampaignProgressDriver } from '@/lib/sim/factory';
 import { SupabaseCampaignEventRepo } from '@/lib/supabase/campaign-event-repo';
@@ -15,18 +15,19 @@ import { CampaignId, tickCampaignIfDue } from '@ai-job-bot/core';
  * Lazily advances the simulator if the campaign is active and overdue
  * (`tick-campaign-if-due` enforces the 60s minimum + row-level lock).
  */
-export const GET = async (req: Request, ctx: { params: Promise<{ id: string }> }) => {
-  const { id } = await ctx.params;
-  return requireAuth(async (_r, { user }) => {
-    let cid: CampaignId;
-    try {
-      cid = CampaignId.from(id);
-    } catch {
-      return Response.json({ error: 'invalid_id' }, { status: 400 });
-    }
-    const repo = new SupabaseCampaignRepo();
-    const eventRepo = new SupabaseCampaignEventRepo();
-    try {
+export const GET = withApiLogging(
+  'api/campaigns/[id].GET',
+  async (req: Request, ctx: { params: Promise<{ id: string }> }) => {
+    const { id } = await ctx.params;
+    return requireAuth(async (_r, { user }) => {
+      let cid: CampaignId;
+      try {
+        cid = CampaignId.from(id);
+      } catch {
+        return Response.json({ error: 'invalid_id' }, { status: 400 });
+      }
+      const repo = new SupabaseCampaignRepo();
+      const eventRepo = new SupabaseCampaignEventRepo();
       let campaign = await repo.findById(cid);
       if (!campaign) {
         return Response.json({ error: 'not_found' }, { status: 404 });
@@ -52,13 +53,6 @@ export const GET = async (req: Request, ctx: { params: Promise<{ id: string }> }
       void notifyIfJustCompleted(prevStatus, campaign);
 
       return Response.json(campaignToDto(campaign));
-    } catch (err) {
-      getServerLogger().error({
-        context: 'api/campaigns.get',
-        data: { id },
-        error: err,
-      });
-      return Response.json({ error: 'internal' }, { status: 500 });
-    }
-  })(req);
-};
+    })(req);
+  },
+);
