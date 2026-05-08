@@ -33,8 +33,14 @@ export class HeuristicResumeParser implements ResumeParser {
     // those URLs to `parseResumeText` as a fallback, so a profile with
     // hyperlinked contact icons no longer ends up missing linkedinUrl /
     // githubUrl / telegramUrl.
+    //
+    // Order matters: `extractText` transfers the buffer to a worker and
+    // detaches the caller's view, so any subsequent unpdf call on the
+    // SAME bytes reads freed memory and returns []. Clone first, hand
+    // each unpdf call its own owned copy.
+    const linkBytes = new Uint8Array(input.pdfBytes);
     const text = await extractPdfText(input.pdfBytes);
-    const links = await extractPdfLinks(input.pdfBytes);
+    const links = await extractPdfLinks(linkBytes);
     return parseResumeText(text, links);
   }
 }

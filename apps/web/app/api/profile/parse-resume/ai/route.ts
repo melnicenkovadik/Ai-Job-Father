@@ -157,7 +157,9 @@ export const POST = withApiLogging(
     // sees). Fall back to the same `classifyLinks` step the heuristic
     // route uses so paid AI parses don't end up with linkedin/github
     // null on a CV that clearly has them as hyperlinks.
-    const annotationUrls = await extractPdfLinks(bytes);
+    // Clone before passing — unpdf may transfer-detach its input buffer
+    // and we don't want to break the rest of the request flow.
+    const annotationUrls = await extractPdfLinks(new Uint8Array(bytes));
     if (annotationUrls.length > 0) {
       const buckets = classifyLinks(annotationUrls);
       parsed = {

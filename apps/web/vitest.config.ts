@@ -25,6 +25,11 @@ export default defineConfig({
       'messages/**/*.test.ts',
     ],
     environment: 'node',
+    // `lib/env.ts` runs createEnv() at import time — without this flag,
+    // any unit test that pulls a server-side helper through transitive
+    // imports crashes on missing real env vars. The validator only
+    // matters at runtime; tests don't read the env object.
+    env: { SKIP_ENV_VALIDATION: '1' },
     setupFiles: [],
   },
 });
