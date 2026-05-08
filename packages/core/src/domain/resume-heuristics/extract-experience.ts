@@ -228,16 +228,16 @@ export function extractExperience(experienceBody: string): readonly ExperienceEn
  * preserves correctness for synthetic CVs the unit tests cover.
  */
 function splitEntries(body: string): string[] {
-  // Prefer blank-line splitting when entries are cleanly separated AND every
-  // chunk contains a date anchor. Templates that scatter blank lines mid-entry
-  // (LiveCareer PDFs do this often) fall through to date-anchored splitting.
+  // unpdf joins multi-page PDFs with `\n\n`, which can land inside the
+  // experience section. Naive blank-line splitting would treat each
+  // page-fragment as a single entry even when it contains two role
+  // headers. We therefore *always* run the date-anchored splitter on the
+  // joined body, falling back to blank-split only when no date anchors
+  // are present (synthetic CVs the unit tests cover).
   const blankSplit = body
     .split(/\n\s*\n+/)
     .map((s) => s.trim())
     .filter(Boolean);
-  if (blankSplit.length >= 2 && blankSplit.every((c) => HEADER_LINE_RE.test(c))) {
-    return blankSplit;
-  }
 
   const lines = body.split('\n').map((l) => l.trim());
 
@@ -250,15 +250,49 @@ function splitEntries(body: string): string[] {
   if (headerIndices.length === 0) {
     return blankSplit;
   }
+  // Single header + clean blank-split that already separates entries: the
+  // legacy fast path. Keeps the existing test fixtures green.
+  if (
+    headerIndices.length === 1 &&
+    blankSplit.length >= 2 &&
+    blankSplit.every((c) => HEADER_LINE_RE.test(c))
+  ) {
+    return blankSplit;
+  }
+
+  // For each date-line, walk backward and absorb up to 2 short non-bullet,
+  // non-description, non-date lines that look like a role/company header.
+  // Layout we're catching: "Harvey | Software Engineer (contract)" sits one
+  // line above "Aug 2024 – Apr 2025 (9 months)" and was previously
+  // misattributed to the *previous* entry's tail.
+  const entryStarts: number[] = headerIndices.map((dateIdx, i) => {
+    if (i === 0) return 0;
+    const prevDate = headerIndices[i - 1] as number;
+    let s = dateIdx;
+    let absorbed = 0;
+    while (s - 1 > prevDate && absorbed < 2) {
+      const cand = lines[s - 1];
+      if (cand === undefined) break;
+      if (cand.length === 0) {
+        s--; // skip blank lines, don't count toward the budget
+        continue;
+      }
+      if (BULLET_RE.test(cand)) break;
+      if (looksLikeDate(cand)) break;
+      if (cand.length > 120) break;
+      // Header lines tend to be sentence-fragments without trailing periods.
+      // If the candidate looks unmistakably like description prose, stop.
+      if (looksLikeDescription(cand)) break;
+      s--;
+      absorbed++;
+    }
+    return s;
+  });
 
   const chunks: string[] = [];
-  for (let i = 0; i < headerIndices.length; i++) {
-    // For the FIRST entry, include any preamble before the date line — some
-    // CVs put company+role before the date (e.g. "Daimler AG \n Consultant \n
-    // bullets \n 2016-07 - Present"). Including the preamble lets the parser
-    // pick up role/company from those lines.
-    const start = i === 0 ? 0 : (headerIndices[i] as number);
-    const end = (headerIndices[i + 1] ?? lines.length) as number;
+  for (let i = 0; i < entryStarts.length; i++) {
+    const start = entryStarts[i] as number;
+    const end = (entryStarts[i + 1] ?? lines.length) as number;
     const chunk = lines
       .slice(start, end)
       .filter((l) => l.length > 0)
@@ -319,8 +353,11 @@ function parseExperienceEntry(chunk: string): ExperienceEntry | null {
     : ({} as { company?: string; role?: string });
 
   // 2. If still missing, parse non-date header lines.
-  //    First try splitting each line by company/role separators (`|`, ` — `,
-  //    ` at `, etc.). Fall back to "Company - Location" dash-prefix.
+  //    Pass A: prefer any line that splits cleanly by `|`, ` — `, ` at `,
+  //    etc. Real "Company | Role" lines always win over an orphaned
+  //    sentence ("feature delivery." sliding in from the previous entry's
+  //    tail). We grab the first such match and skip the legacy
+  //    first-line-wins fallback below.
   if (!company || !role) {
     for (const other of nonDateHeaderLines) {
       if (other === dateLine) continue;
@@ -328,17 +365,25 @@ function parseExperienceEntry(chunk: string): ExperienceEntry | null {
       if (split.company && split.role) {
         if (!company) company = split.company;
         if (!role) role = split.role;
-      } else {
-        const m = /^(.+?)\s+[—–\-]\s+/.exec(other);
-        const candidate = m?.[1]?.trim() ?? other.trim();
-        if (!company) {
-          company = candidate;
-          if (!role && dateLineRest && !looksLikeDate(dateLineRest)) {
-            role = stripTrailingPunct(dateLineRest);
-          }
-        } else if (!role) {
-          role = candidate;
+        if (company && role) break;
+      }
+    }
+  }
+  // Pass B: legacy "Company - Location" dash-prefix and single-fragment
+  // fallback for layouts without a separator. Only runs if Pass A came
+  // up empty.
+  if (!company || !role) {
+    for (const other of nonDateHeaderLines) {
+      if (other === dateLine) continue;
+      const m = /^(.+?)\s+[—–\-]\s+/.exec(other);
+      const candidate = m?.[1]?.trim() ?? other.trim();
+      if (!company) {
+        company = candidate;
+        if (!role && dateLineRest && !looksLikeDate(dateLineRest)) {
+          role = stripTrailingPunct(dateLineRest);
         }
+      } else if (!role) {
+        role = candidate;
       }
       if (company && role) break;
     }
