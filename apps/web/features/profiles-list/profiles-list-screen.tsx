@@ -4,6 +4,7 @@ import { Icon } from '@/components/icons';
 import { useTelegramBackButton } from '@/components/telegram/use-back-button';
 import { BottomTabBar, Headline, Spinner } from '@/components/ui';
 import { Screen, Scroll, Stack } from '@/components/ui/layout';
+import { profileTint } from '@/lib/profile/tint';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -171,6 +172,16 @@ function ProfileCard({
     );
   }
 
+  // Per-profile tint — derived from `profile.name`. Two profiles parsed
+  // from the same CV can share fullName + headline; the name pill ("WITH
+  // AI", "WITHout AI") plus the tint colour are what tells them apart.
+  const tint = profileTint(profile.name);
+  // Show the profile.name as a small pill whenever it's actually
+  // distinguishing — i.e. it's set AND it differs from the display
+  // headline. Falls quiet when name == display (the default
+  // "Profile" / "Vadym Melnychenko" case) so we don't double-print.
+  const showNamePill = Boolean(profile.name?.trim()) && profile.name !== display;
+
   return (
     <div
       className={`relative flex w-full min-w-0 flex-col rounded-[var(--radius-lg)] border bg-[var(--color-surface)] p-4 transition-colors ${
@@ -178,6 +189,13 @@ function ProfileCard({
           ? 'border-[var(--color-accent)]'
           : 'border-[var(--color-border)] hover:bg-[var(--color-surface-hi)]'
       }`}
+      style={{
+        // The left rail is the strong tint signal; a soft outer glow
+        // gives the card a halo so it pops in a long list without
+        // shouting.
+        borderLeft: `3px solid ${tint.border}`,
+        boxShadow: `0 0 0 1px ${tint.glow}`,
+      }}
     >
       <button
         type="button"
@@ -189,17 +207,28 @@ function ProfileCard({
       </button>
       <button type="button" onClick={onOpen} className="flex w-full min-w-0 flex-col text-left">
         <div className="flex min-w-0 items-start gap-2.5 pr-8">
-          <span className="inline-flex size-10 shrink-0 items-center justify-center rounded-full bg-[var(--color-accent-bg)] text-[14px] font-bold text-[var(--color-accent)]">
+          <span
+            className="inline-flex size-10 shrink-0 items-center justify-center rounded-full text-[14px] font-bold"
+            style={{ backgroundColor: tint.pill, color: tint.pillText }}
+          >
             {display.charAt(0).toUpperCase()}
           </span>
           <div className="min-w-0 flex-1">
-            <div className="flex min-w-0 items-center gap-1.5">
+            <div className="flex min-w-0 flex-wrap items-center gap-1.5">
               <span className="min-w-0 truncate text-[15px] font-semibold text-[var(--color-text)]">
                 {display}
               </span>
               {profile.isDefault ? (
                 <span className="shrink-0 rounded-[var(--radius-sm)] bg-[var(--color-accent)] px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[var(--color-accent-ink)]">
                   {defaultLabel}
+                </span>
+              ) : null}
+              {showNamePill ? (
+                <span
+                  className="min-w-0 max-w-full shrink-0 truncate rounded-[var(--radius-sm)] px-1.5 py-0.5 text-[10px] font-semibold"
+                  style={{ backgroundColor: tint.pill, color: tint.pillText }}
+                >
+                  {profile.name}
                 </span>
               ) : null}
             </div>
