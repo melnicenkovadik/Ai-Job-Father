@@ -5,6 +5,7 @@ import { env } from '@/lib/env';
 import { getServerLogger } from '@/lib/logger/server';
 import { withApiLogging } from '@/lib/logger/with-api-logging';
 import { createOpenAIResumeParser } from '@/lib/openai/resume-parser';
+import { extractPdfLinks } from '@/lib/resume/extract-pdf-links';
 import { SupabaseAiCreditRepo } from '@/lib/supabase/ai-credit-repo';
 import { SupabaseProfileRepo } from '@/lib/supabase/profile-repo';
 import { downloadResume, uploadResume } from '@/lib/supabase/resume-storage';
@@ -15,6 +16,7 @@ import {
   ResumeParseError,
   ResumeParserUnavailableError,
   ResumeRateLimitError,
+  classifyLinks,
 } from '@ai-job-bot/core';
 
 /**
@@ -148,6 +150,25 @@ export const POST = withApiLogging(
       parsed = await parser.parse(input);
     } catch (err) {
       return mapParserError(err);
+    }
+
+    // gpt-5.1 reads the PDF visually — text + layout — but not its Link
+    // annotations (those are a separate object layer the model never
+    // sees). Fall back to the same `classifyLinks` step the heuristic
+    // route uses so paid AI parses don't end up with linkedin/github
+    // null on a CV that clearly has them as hyperlinks.
+    const annotationUrls = await extractPdfLinks(bytes);
+    if (annotationUrls.length > 0) {
+      const buckets = classifyLinks(annotationUrls);
+      parsed = {
+        ...parsed,
+        linkedinUrl: parsed.linkedinUrl ?? buckets.linkedinUrl,
+        githubUrl: parsed.githubUrl ?? buckets.githubUrl,
+        telegramUrl: parsed.telegramUrl ?? buckets.telegramUrl,
+        twitterUrl: parsed.twitterUrl ?? buckets.twitterUrl,
+        portfolioUrl: parsed.portfolioUrl ?? buckets.portfolioUrl,
+        email: parsed.email ?? buckets.email,
+      };
     }
 
     // Parse succeeded — burn one credit. Race-safe via the conditional UPDATE
